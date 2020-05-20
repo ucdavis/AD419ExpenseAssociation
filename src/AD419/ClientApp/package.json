@@ -20,6 +20,8 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.5",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
     "ajv": "^6.12.2",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
@@ -31,7 +33,10 @@
     "typescript": "^3.9.3"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "react-app"
+    ]
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
