@@ -11,6 +11,8 @@ export default function AssociationContainer(): JSX.Element {
   // fire only once to grab initial orgs
   useEffect(() => {
     const getDepartments = async (): Promise<void> => {
+      // TODO: handle just getting orgs for current user
+      // TODO: handle api errors and possibly login issue errors
       const result = await fetch('/Organization');
       const data = (await result.json()) as Organization[];
 
@@ -30,6 +32,19 @@ export default function AssociationContainer(): JSX.Element {
     setSelectedOrg(org);
   };
 
+  // TODO: pass projects?  just accessions?
+  const associate = (): Promise<void> => {
+    console.log('associate');
+
+    return Promise.resolve();
+  };
+
+  const unassociate = (): Promise<void> => {
+    console.log('unassociate');
+
+    return Promise.resolve();
+  };
+
   return (
     <div>
       <select name='orgs' onChange={orgSelected}>
@@ -45,7 +60,11 @@ export default function AssociationContainer(): JSX.Element {
           <ExpenseRecordsContainer org={selectedOrg}></ExpenseRecordsContainer>
         </div>
         <div className='col-sm'>
-          <ProjectsContainer org={selectedOrg}></ProjectsContainer>
+          <ProjectsContainer
+            org={selectedOrg}
+            associate={associate}
+            unassociate={unassociate}
+          ></ProjectsContainer>
         </div>
       </div>
     </div>
