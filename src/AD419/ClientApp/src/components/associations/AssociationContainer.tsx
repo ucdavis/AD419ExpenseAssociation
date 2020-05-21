@@ -41,7 +41,7 @@ export default function AssociationContainer(): JSX.Element {
       </select>
       {selectedOrg && selectedOrg.name}
       <div className="col-sm">
-        <ExpenseRecordsContainer></ExpenseRecordsContainer>
+        <ExpenseRecordsContainer org={selectedOrg}></ExpenseRecordsContainer>
       </div>
       <div className="col-sm">
         <ProjectsContainer></ProjectsContainer>

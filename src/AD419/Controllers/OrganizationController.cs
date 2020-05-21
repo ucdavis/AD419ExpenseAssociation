@@ -9,8 +9,8 @@ namespace AD419.Controllers
     {
         private static readonly Organization[] Orgs = new[]
         {
-            new Organization { OrgR = "AANS", OrgR_Dept = "AANS" },
-            new Organization { OrgR = "ABAE", OrgR_Dept = "ABAE" },
+            new Organization { Code = "AANS", Name = "AANS" },
+            new Organization { Code = "ABAE", Name = "ABAE" },
         };
 
         [HttpGet]
@@ -21,7 +21,7 @@ namespace AD419.Controllers
     }
 
     public class Organization {
-        public string OrgR { get; set; }
-        public string OrgR_Dept { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
     }
 }
