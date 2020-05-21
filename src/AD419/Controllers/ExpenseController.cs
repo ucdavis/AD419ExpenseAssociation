@@ -17,25 +17,19 @@ namespace AD419.Controllers
         {
             this._dbService = dbService;
         }
-        private static readonly Expense[] Expenses = new[]
-        {
-            new Expense { Chart = "3", Code = "AAKH", Description = "Startup Funds", Spent = 11872.23m, FTE = 0.75m, Num = 12, IsAssociated = false },
-            new Expense { Chart = "3", Code = "ABCD", Description = "Project Funds", Spent = 22334.23m, FTE = 0.37m,  Num = 5, IsAssociated = true },
-        };
-
 
         [HttpGet]
-        public async Task<IEnumerable<Expense>> Get(string org, string grouping = "Organization", bool showAssociated = true, bool showUnassociated = true)
+        public async Task<IEnumerable<ExpenseModel>> Get(string org, string grouping = "Organization", bool showAssociated = true, bool showUnassociated = true)
         {
             using (var conn = _dbService.GetConnection()) {
-                return await conn.QueryAsync<Expense>("usp_getExpenseRecordGrouping", 
+                return await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGrouping", 
                 new { Grouping = "Organization", OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
                 commandType: CommandType.StoredProcedure);
             }
         }
     }
 
-    public class Expense
+    public class ExpenseModel
     {
         public string Chart { get; set; }
         public string Code { get; set; }

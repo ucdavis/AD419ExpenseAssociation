@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using AD419.Services;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AD419.Controllers
@@ -7,22 +11,28 @@ namespace AD419.Controllers
     [Route("[controller]")]
     public class AssociationController : ControllerBase
     {
-        private static readonly Project[] Projects = new[]
+        private readonly IDbService _dbService;
+
+        public AssociationController(IDbService dbService)
         {
-            new Project { Number = "CA-D-ASC-2522-CG", Accession = "1234567", PI = "Dobalina, Bob" },
-            new Project { Number = "CA-D-ASC-1234-AB", Accession = "9876543", PI = "Logan, Theodore" },
-        };
+            this._dbService = dbService;
+        }
 
         [HttpGet]
-        public IEnumerable<Project> Get(string org)
+        public async Task<IEnumerable<ProjectModel>> GetAsync(string org)
         {
-            return Projects;
+            using (var conn = _dbService.GetConnection())
+            {
+                return await conn.QueryAsync<ProjectModel>("usp_getProjectsByDept",
+                new { OrgR = org },
+                commandType: CommandType.StoredProcedure);
+            }
         }
     }
 
-    public class Project
+    public class ProjectModel
     {
-        public string Number { get; set; }
+        public string Project { get; set; }
         public string Accession { get; set; }
         public string PI { get; set; }
     }

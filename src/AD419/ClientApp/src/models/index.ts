@@ -4,7 +4,7 @@ export interface Organization {
 }
 
 export interface Project {
-  number: string;
+  project: string;
   accession: string;
   pi: string;
 }
