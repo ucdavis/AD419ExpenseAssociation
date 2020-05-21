@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import ExpenseRecordsContainer from "./ExpenseRecordsContainer";
-import ProjectsContainer from "./ProjectsContainer";
+import React, { useEffect, useState } from 'react';
+import ExpenseRecordsContainer from './ExpenseRecordsContainer';
+import ProjectsContainer from './ProjectsContainer';
 
-import { Organization } from "../../models";
+import { Organization } from '../../models';
 
 export default function AssociationContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -11,8 +11,8 @@ export default function AssociationContainer(): JSX.Element {
   // fire only once to grab initial orgs
   useEffect(() => {
     const getDepartments = async (): Promise<void> => {
-      const result = await fetch("/Organization");
-      const data = await result.json() as Organization[];
+      const result = await fetch('/Organization');
+      const data = (await result.json()) as Organization[];
 
       if (data && data.length > 0) {
         setOrgs(data);
@@ -26,13 +26,13 @@ export default function AssociationContainer(): JSX.Element {
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;
 
-    const org = orgs.find(o => o.code === val);
+    const org = orgs.find((o) => o.code === val);
     setSelectedOrg(org);
   };
 
   return (
-    <div className="row">
-      <select name="orgs" onChange={orgSelected}>
+    <div>
+      <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
             {org.name}
@@ -40,11 +40,13 @@ export default function AssociationContainer(): JSX.Element {
         ))}
       </select>
       {selectedOrg && selectedOrg.name}
-      <div className="col-sm">
-        <ExpenseRecordsContainer org={selectedOrg}></ExpenseRecordsContainer>
-      </div>
-      <div className="col-sm">
-        <ProjectsContainer></ProjectsContainer>
+      <div className='row'>
+        <div className='col-sm'>
+          <ExpenseRecordsContainer org={selectedOrg}></ExpenseRecordsContainer>
+        </div>
+        <div className='col-sm'>
+          <ProjectsContainer org={selectedOrg}></ProjectsContainer>
+        </div>
       </div>
     </div>
   );

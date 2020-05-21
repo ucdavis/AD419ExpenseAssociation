@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { Route } from "react-router";
-import { Layout } from "./components/Layout";
+import React, { Component } from 'react';
+import { Route } from 'react-router';
+import { Layout } from './components/Layout';
 
-import AssociationContainer from "./components/associations/AssociationContainer";
+import AssociationContainer from './components/associations/AssociationContainer';
 
-import "./custom.css";
+import './custom.css';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -12,7 +12,7 @@ export default class App extends Component {
   render(): JSX.Element {
     return (
       <Layout>
-        <Route exact path="/" component={AssociationContainer} />
+        <Route exact path='/' component={AssociationContainer} />
       </Layout>
     );
   }
