@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using AD419.Services;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -24,15 +25,13 @@ namespace AD419.Controllers
 
 
         [HttpGet]
-        public IEnumerable<Expense> Get(string org, string grouping = "Organization", bool showAssociated = false, bool showUnassociated = true)
+        public async Task<IEnumerable<Expense>> Get(string org, string grouping = "Organization", bool showAssociated = true, bool showUnassociated = true)
         {
             using (var conn = _dbService.GetConnection()) {
-                return conn.Query<Expense>("usp_getExpenseRecordGrouping", 
-                new { Grouping = "Organization", OrgR = "AANS", Associated = true, Unassociated = true },
+                return await conn.QueryAsync<Expense>("usp_getExpenseRecordGrouping", 
+                new { Grouping = "Organization", OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
                 commandType: CommandType.StoredProcedure);
             }
-            
-            // return Expenses;
         }
     }
 

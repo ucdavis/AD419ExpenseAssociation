@@ -12,7 +12,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     console.log('org changed to ', props.org);
 
     const getExpenses = async (): Promise<void> => {
-      const result = await fetch(`/Expense?org=${props.org}`);
+      const result = await fetch(`/Expense?org=${props.org?.code}`);
       const expenses = await result.json();
 
       setExpenses(expenses);
