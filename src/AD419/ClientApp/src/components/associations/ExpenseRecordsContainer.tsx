@@ -23,6 +23,10 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     }
   }, [props.org]);
 
+  const expenseSelected = (expense: Expense): void => {
+    console.log('selected');
+  }
+
     return (
       <div>
         <h1>Expenses</h1>
@@ -35,6 +39,9 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
                   <td>{p.description}</td>
                   <td>{p.spent}</td>
                   <td>{p.fte}</td>
+                  <td>
+                    <input type="checkbox" onClick={(): void => expenseSelected(p)}></input>
+                  </td>
                 </tr>
               ))}
             </tbody>
