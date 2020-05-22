@@ -57,6 +57,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     console.log('selected', event.target.checked);
   };
 
+  // change show associated/unassociated options
   const handleOptionsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     option: string
