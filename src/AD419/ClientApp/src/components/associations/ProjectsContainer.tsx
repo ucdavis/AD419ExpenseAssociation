@@ -36,8 +36,8 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         <table>
           <tbody>
             {projects.map((p) => (
-              <tr key={p.number}>
-                <td>{p.number}</td>
+              <tr key={p.project}>
+                <td>{p.project}</td>
                 <td>{p.pi}</td>
               </tr>
             ))}

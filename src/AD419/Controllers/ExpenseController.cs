@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using AD419.Services;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AD419.Controllers
@@ -7,20 +11,25 @@ namespace AD419.Controllers
     [Route("[controller]")]
     public class ExpenseController : ControllerBase
     {
-        private static readonly Expense[] Expenses = new[]
+        private readonly IDbService _dbService;
+
+        public ExpenseController(IDbService dbService)
         {
-            new Expense { Chart = "3", Code = "AAKH", Description = "Startup Funds", Spent = 11872.23m, FTE = 0.75m, Num = 12, IsAssociated = false },
-            new Expense { Chart = "3", Code = "ABCD", Description = "Project Funds", Spent = 22334.23m, FTE = 0.37m,  Num = 5, IsAssociated = true },
-        };
+            this._dbService = dbService;
+        }
 
         [HttpGet]
-        public IEnumerable<Expense> Get(string org, string grouping = "Organization", bool showAssociated = false, bool showUnassociated = true)
+        public async Task<IEnumerable<ExpenseModel>> Get(string org, string grouping = "Organization", bool showAssociated = true, bool showUnassociated = true)
         {
-            return Expenses;
+            using (var conn = _dbService.GetConnection()) {
+                return await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGrouping", 
+                new { Grouping = "Organization", OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
+                commandType: CommandType.StoredProcedure);
+            }
         }
     }
 
-    public class Expense
+    public class ExpenseModel
     {
         public string Chart { get; set; }
         public string Code { get; set; }

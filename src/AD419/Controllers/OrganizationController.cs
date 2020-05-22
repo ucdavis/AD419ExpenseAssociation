@@ -7,20 +7,20 @@ namespace AD419.Controllers
     [Route("[controller]")]
     public class OrganizationController : ControllerBase
     {
-        private static readonly Organization[] Orgs = new[]
+        private static readonly OrganizationModel[] Orgs = new[]
         {
-            new Organization { Code = "AANS", Name = "AANS" },
-            new Organization { Code = "ABAE", Name = "ABAE" },
+            new OrganizationModel { Code = "AANS", Name = "AANS" },
+            new OrganizationModel { Code = "ABAE", Name = "ABAE" },
         };
 
         [HttpGet]
-        public IEnumerable<Organization> Get()
+        public IEnumerable<OrganizationModel> Get()
         {
             return Orgs;
         }
     }
 
-    public class Organization {
+    public class OrganizationModel {
         public string Code { get; set; }
         public string Name { get; set; }
     }
