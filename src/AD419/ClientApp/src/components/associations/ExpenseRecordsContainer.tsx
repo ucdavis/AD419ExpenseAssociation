@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Organization, Expense } from '../../models';
+import { Organization, Expense, ExpenseGrouping } from '../../models';
 
 interface Props {
   org: Organization | undefined;
+  expenseGrouping: ExpenseGrouping;
+  setExpenseGrouping: (grouping: ExpenseGrouping) => void;
 }
 
 export default function ExpenseRecordsContainer(props: Props): JSX.Element {
@@ -12,7 +14,9 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     console.log('org changed to ', props.org);
 
     const getExpenses = async (): Promise<void> => {
-      const result = await fetch(`/Expense?org=${props.org?.code}`);
+      const result = await fetch(
+        `/Expense?org=${props.org?.code}&grouping=${props.expenseGrouping.grouping}&showAssociated=${props.expenseGrouping.showAssociated}&showUnassociated=${props.expenseGrouping.showUnassociated}`
+      );
       const expenses = await result.json();
 
       setExpenses(expenses);
@@ -21,32 +25,60 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     if (props.org) {
       getExpenses();
     }
-  }, [props.org]);
+  }, [
+    props.org,
+    props.expenseGrouping.grouping,
+    props.expenseGrouping.showAssociated,
+    props.expenseGrouping.showUnassociated,
+  ]);
 
-  const expenseSelected = (expense: Expense): void => {
-    console.log('selected');
-  }
+  const expenseSelected = (
+    expense: Expense,
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { checked } = event.target;
 
-    return (
+    if (checked) {
+      props.setExpenseGrouping({
+        ...props.expenseGrouping,
+        expenses: [...props.expenseGrouping.expenses, expense], // add our new expense to the list
+      });
+    } else {
+      props.setExpenseGrouping({
+        ...props.expenseGrouping,
+        expenses: [...props.expenseGrouping.expenses.filter(
+          (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
+        )],
+      });
+    }
+
+    console.log('selected', event.target.checked);
+  };
+
+  return (
+    <div>
+      <h1>Expenses</h1>
+      <p>Options go here</p>
       <div>
-        <h1>Expenses</h1>
-        <p>Options go here</p>
-        <div>
-          <table>
-            <tbody>
-              {expenses.map((p) => (
-                <tr key={`${p.chart}-${p.code}`}>
-                  <td>{p.description}</td>
-                  <td>{p.spent}</td>
-                  <td>{p.fte}</td>
-                  <td>
-                    <input type="checkbox" onClick={(): void => expenseSelected(p)}></input>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <table>
+          <tbody>
+            {expenses.map((p) => (
+              <tr key={`${p.chart}-${p.code}`}>
+                <td>{p.code}</td>
+                <td>{p.description}</td>
+                <td>{p.spent}</td>
+                <td>{p.fte}</td>
+                <td>
+                  <input
+                    type='checkbox'
+                    onChange={(event): void => expenseSelected(p, event)}
+                  ></input>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-    );
+    </div>
+  );
 }

@@ -2,11 +2,22 @@ import React, { useEffect, useState } from 'react';
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
-import { Organization } from '../../models';
+import { Organization, ExpenseGrouping } from '../../models';
 
 export default function AssociationContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization>();
+
+  // keep track of which groupings are selected in the expenses table
+  const defaultExpenseGrouping: ExpenseGrouping = {
+    expenses: [],
+    grouping: 'Organization',
+    showAssociated: false,
+    showUnassociated: true,
+  };
+  const [expenseGrouping, setExpenseGrouping] = useState<ExpenseGrouping>(
+    defaultExpenseGrouping
+  );
 
   // fire only once to grab initial orgs
   useEffect(() => {
@@ -57,7 +68,11 @@ export default function AssociationContainer(): JSX.Element {
       {selectedOrg && selectedOrg.name}
       <div className='row'>
         <div className='col-sm'>
-          <ExpenseRecordsContainer org={selectedOrg}></ExpenseRecordsContainer>
+          <ExpenseRecordsContainer
+            org={selectedOrg}
+            expenseGrouping={expenseGrouping}
+            setExpenseGrouping={setExpenseGrouping}
+          ></ExpenseRecordsContainer>
         </div>
         <div className='col-sm'>
           <ProjectsContainer
