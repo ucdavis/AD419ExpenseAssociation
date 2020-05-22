@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
-import { Organization, ExpenseGrouping } from '../../models';
+import { Organization, ExpenseGrouping, Association } from '../../models';
 
 export default function AssociationContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -35,6 +35,26 @@ export default function AssociationContainer(): JSX.Element {
 
     getDepartments(); // go grab the depts
   }, []);
+
+  // query for associations whenever the expense grouping changes
+  useEffect(() => {
+    const getAssociations = async (): Promise<void> => {
+      // TODO: for now we are just going to use the first grouping
+      // TODO: eventually we need to query by all selected grouped expenses
+      const firstExpense = expenseGrouping.expenses[0];
+      const result = await fetch(
+        `/Association/ByGrouping?org=${selectedOrg}&chart=${firstExpense.chart}&criterion=${firstExpense.code}&grouping=${expenseGrouping.grouping}`
+      );
+      const data = (await result.json()) as Association[];
+
+      console.log('found association data', data);
+    };
+
+    if (expenseGrouping.expenses && expenseGrouping.expenses.length > 0) {
+      getAssociations();
+    }
+    
+  }, [selectedOrg, expenseGrouping]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;

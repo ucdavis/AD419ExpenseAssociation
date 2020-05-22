@@ -31,12 +31,13 @@ namespace AD419.Controllers
 
         // GET /association/bygrouping
         [HttpGet("ByGrouping")]
-        public async Task<IEnumerable<AssociationModel>> GetByGrouping(string org, string criterion, string grouping = "Organization") {
+        public async Task<IEnumerable<AssociationModel>> GetByGrouping(string org, string chart, string criterion, string grouping = "Organization") {
             // return all associations for a given grouping identified by criterion
+            // TODO: what does isAssociated mean when querying assoications? will it ever return something if false?
             using (var conn = _dbService.GetConnection())
             {
                 return await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
-                new { OrgR = org, Grouping = grouping, Chart = "3", Criterion = "AACD", isAssociated = true },
+                new { OrgR = org, Grouping = grouping, Chart = chart, Criterion = criterion, isAssociated = true },
                 commandType: CommandType.StoredProcedure);
             }
         }
