@@ -43,7 +43,7 @@ export default function AssociationContainer(): JSX.Element {
       // TODO: eventually we need to query by all selected grouped expenses
       const firstExpense = expenseGrouping.expenses[0];
       const result = await fetch(
-        `/Association/ByGrouping?org=${selectedOrg}&chart=${firstExpense.chart}&criterion=${firstExpense.code}&grouping=${expenseGrouping.grouping}`
+        `/Association/ByGrouping?org=${selectedOrg?.code}&chart=${firstExpense.chart}&criterion=${firstExpense.code}&grouping=${expenseGrouping.grouping}`
       );
       const data = (await result.json()) as Association[];
 
@@ -53,7 +53,7 @@ export default function AssociationContainer(): JSX.Element {
     if (expenseGrouping.expenses && expenseGrouping.expenses.length > 0) {
       getAssociations();
     }
-    
+
   }, [selectedOrg, expenseGrouping]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {

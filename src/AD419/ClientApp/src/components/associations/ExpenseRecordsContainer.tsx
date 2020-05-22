@@ -96,6 +96,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
           <tbody>
             {expenses.map((p) => (
               <tr key={`${p.chart}-${p.code}`}>
+                <td>{p.chart}</td>
                 <td>{p.code}</td>
                 <td>{p.description}</td>
                 <td>{p.spent}</td>
