@@ -46,19 +46,50 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     } else {
       props.setExpenseGrouping({
         ...props.expenseGrouping,
-        expenses: [...props.expenseGrouping.expenses.filter(
-          (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
-        )],
+        expenses: [
+          ...props.expenseGrouping.expenses.filter(
+            (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
+          ),
+        ],
       });
     }
 
     console.log('selected', event.target.checked);
   };
 
+  const handleOptionsChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    option: string
+  ): void => {
+    props.setExpenseGrouping({
+      ...props.expenseGrouping,
+      [option]: event.target.checked,
+    });
+  };
+
   return (
     <div>
       <h1>Expenses</h1>
       <p>Options go here</p>
+      <div>
+        <input
+          type='checkbox'
+          checked={props.expenseGrouping.showAssociated}
+          onChange={(event): void =>
+            handleOptionsChange(event, 'showAssociated')
+          }
+        ></input>
+        <label>Associated</label>
+        <br></br>
+        <input
+          type='checkbox'
+          checked={props.expenseGrouping.showUnassociated}
+          onChange={(event): void =>
+            handleOptionsChange(event, 'showUnassociated')
+          }
+        ></input>
+        <label>Unassociated</label>
+      </div>
       <div>
         <table>
           <tbody>
