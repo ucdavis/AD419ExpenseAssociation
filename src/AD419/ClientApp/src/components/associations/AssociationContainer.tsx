@@ -78,6 +78,9 @@ export default function AssociationContainer(): JSX.Element {
 
   return (
     <div>
+      <div>
+        Selected expense count {expenseGrouping.expenses?.length}
+      </div>
       <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
