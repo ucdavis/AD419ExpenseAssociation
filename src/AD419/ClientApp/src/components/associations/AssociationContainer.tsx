@@ -70,10 +70,23 @@ export default function AssociationContainer(): JSX.Element {
     return Promise.resolve();
   };
 
-  const unassociate = (): Promise<void> => {
-    console.log('unassociate');
+  const unassociate = async (): Promise<void> => {
+    const data = { org: selectedOrg?.code, grouping: expenseGrouping.grouping, expenses: expenseGrouping.expenses };
 
-    return Promise.resolve();
+    const result = await fetch('/Association', {
+      method: 'DELETE',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8', // TODO: needed?
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (result.ok) {
+      // delete success, reset the expenses so none are selected
+      setExpenseGrouping({ ...expenseGrouping, expenses: [] });
+    }
+
+    console.log('unassociate done', result.ok);
   };
 
   return (

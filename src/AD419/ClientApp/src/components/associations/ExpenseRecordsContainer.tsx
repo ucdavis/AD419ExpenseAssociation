@@ -68,6 +68,10 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     });
   };
 
+  const isSelected = (expense: Expense): boolean => {
+    return props.expenseGrouping.expenses.some(e => e.chart === expense.chart && e.code === expense.code);
+  }
+
   return (
     <div>
       <h1>Expenses</h1>
@@ -94,17 +98,18 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
       <div>
         <table>
           <tbody>
-            {expenses.map((p) => (
-              <tr key={`${p.chart}-${p.code}`}>
-                <td>{p.chart}</td>
-                <td>{p.code}</td>
-                <td>{p.description}</td>
-                <td>{p.spent}</td>
-                <td>{p.fte}</td>
+            {expenses.map((expense) => (
+              <tr key={`${expense.chart}-${expense.code}`}>
+                <td>{expense.chart}</td>
+                <td>{expense.code}</td>
+                <td>{expense.description}</td>
+                <td>{expense.spent}</td>
+                <td>{expense.fte}</td>
                 <td>
                   <input
                     type='checkbox'
-                    onChange={(event): void => expenseSelected(p, event)}
+                    checked={isSelected(expense)}
+                    onChange={(event): void => expenseSelected(expense, event)}
                   ></input>
                 </td>
               </tr>
