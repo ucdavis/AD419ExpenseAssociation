@@ -50,16 +50,26 @@ namespace AD419.Controllers
             using (var conn = _dbService.GetConnection())
             {
                 await conn.OpenAsync();
-                
+
                 using (var txn = await conn.BeginTransactionAsync())
                 {
                     try
                     {
+                        // for each of our expense groupings, we need to pull back a list of expenseIDs
+                        // for each of those, we then unassociate
                         foreach (var expense in model.Expenses)
                         {
-                            await conn.ExecuteAsync("usp_deleteAssociationsByGrouping",
-                                new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code },
+                            var expenseIdentifiers = await conn.QueryAsync<ExpenseIdentifier>("usp_getExpensesByRecordGrouping",
+                                new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                                 commandType: CommandType.StoredProcedure, transaction: txn);
+
+                            foreach (var expenseIdentifier in expenseIdentifiers)
+                            {
+                                // now unassign each of these ids
+                                await conn.ExecuteAsync("usp_deleteAssociation",
+                                  new { OrgR = model.Org, ExpenseId = expenseIdentifier.ExpenseId },
+                                  commandType: CommandType.StoredProcedure, transaction: txn);
+                            }
                         }
 
                         // once everything is good, commit
@@ -76,6 +86,11 @@ namespace AD419.Controllers
                 }
             }
         }
+    }
+
+    public class ExpenseIdentifier
+    {
+        public int ExpenseId { get; set; }
     }
 
     public class UnassignModel
