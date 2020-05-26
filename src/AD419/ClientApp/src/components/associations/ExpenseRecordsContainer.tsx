@@ -99,7 +99,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
         <table>
           <tbody>
             {expenses.map((expense) => (
-              <tr key={`${expense.chart}-${expense.code}`}>
+              <tr key={`${expense.chart}-${expense.code}-assoc${expense.isAssociated}`}>
                 <td>{expense.chart}</td>
                 <td>{expense.code}</td>
                 <td>{expense.description}</td>
