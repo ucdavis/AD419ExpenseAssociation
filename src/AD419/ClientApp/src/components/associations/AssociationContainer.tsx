@@ -81,6 +81,11 @@ export default function AssociationContainer(): JSX.Element {
       body: JSON.stringify(data),
     });
 
+    if (result.ok) {
+      // delete success, reset the expenses so none are selected
+      setExpenseGrouping({ ...expenseGrouping, expenses: [] });
+    }
+
     console.log('unassociate done', result.ok);
   };
 
