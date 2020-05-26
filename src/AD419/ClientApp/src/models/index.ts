@@ -9,6 +9,12 @@ export interface Project {
   pi: string;
 }
 
+export interface Association {
+  project: string;
+  spent: number;
+  fte: number;
+}
+
 export interface Expense {
   chart: string;
   code: string;
@@ -17,4 +23,11 @@ export interface Expense {
   fte: number;
   num: number;
   isAssociated: boolean;
+}
+
+export interface ExpenseGrouping {
+  expenses: Expense[];
+  grouping: string;
+  showAssociated: boolean;
+  showUnassociated: boolean;
 }

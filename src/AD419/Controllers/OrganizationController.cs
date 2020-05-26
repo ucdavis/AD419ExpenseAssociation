@@ -9,8 +9,8 @@ namespace AD419.Controllers
     {
         private static readonly OrganizationModel[] Orgs = new[]
         {
-            new OrganizationModel { Code = "AANS", Name = "AANS" },
-            new OrganizationModel { Code = "ABAE", Name = "ABAE" },
+            new OrganizationModel { Code = "AARE", Name = "AARE" },
+            new OrganizationModel { Code = "AANS", Name = "AANS" },  
         };
 
         [HttpGet]

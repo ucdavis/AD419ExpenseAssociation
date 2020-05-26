@@ -2,11 +2,22 @@ import React, { useEffect, useState } from 'react';
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
-import { Organization } from '../../models';
+import { Organization, ExpenseGrouping, Association } from '../../models';
 
 export default function AssociationContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization>();
+
+  // keep track of which groupings are selected in the expenses table
+  const defaultExpenseGrouping: ExpenseGrouping = {
+    expenses: [],
+    grouping: 'Organization',
+    showAssociated: false,
+    showUnassociated: true,
+  };
+  const [expenseGrouping, setExpenseGrouping] = useState<ExpenseGrouping>(
+    defaultExpenseGrouping
+  );
 
   // fire only once to grab initial orgs
   useEffect(() => {
@@ -24,6 +35,26 @@ export default function AssociationContainer(): JSX.Element {
 
     getDepartments(); // go grab the depts
   }, []);
+
+  // query for associations whenever the expense grouping changes
+  useEffect(() => {
+    const getAssociations = async (): Promise<void> => {
+      // TODO: for now we are just going to use the first grouping
+      // TODO: eventually we need to query by all selected grouped expenses
+      const firstExpense = expenseGrouping.expenses[0];
+      const result = await fetch(
+        `/Association/ByGrouping?org=${selectedOrg?.code}&chart=${firstExpense.chart}&criterion=${firstExpense.code}&grouping=${expenseGrouping.grouping}`
+      );
+      const data = (await result.json()) as Association[];
+
+      console.log('found association data', data);
+    };
+
+    if (expenseGrouping.expenses && expenseGrouping.expenses.length > 0) {
+      getAssociations();
+    }
+
+  }, [selectedOrg, expenseGrouping]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;
@@ -47,6 +78,9 @@ export default function AssociationContainer(): JSX.Element {
 
   return (
     <div>
+      <div>
+        Selected expense count {expenseGrouping.expenses?.length}
+      </div>
       <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
@@ -57,7 +91,11 @@ export default function AssociationContainer(): JSX.Element {
       {selectedOrg && selectedOrg.name}
       <div className='row'>
         <div className='col-sm'>
-          <ExpenseRecordsContainer org={selectedOrg}></ExpenseRecordsContainer>
+          <ExpenseRecordsContainer
+            org={selectedOrg}
+            expenseGrouping={expenseGrouping}
+            setExpenseGrouping={setExpenseGrouping}
+          ></ExpenseRecordsContainer>
         </div>
         <div className='col-sm'>
           <ProjectsContainer
