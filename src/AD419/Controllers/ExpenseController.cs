@@ -19,11 +19,11 @@ namespace AD419.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ExpenseModel>> Get(string org, string grouping = "Organization", bool showAssociated = true, bool showUnassociated = true)
+        public async Task<IEnumerable<ExpenseModel>> Get(string org, string grouping, bool showAssociated = true, bool showUnassociated = true)
         {
             using (var conn = _dbService.GetConnection()) {
                 return await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGrouping", 
-                new { Grouping = "Organization", OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
+                new { Grouping = grouping, OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
                 commandType: CommandType.StoredProcedure);
             }
         }
