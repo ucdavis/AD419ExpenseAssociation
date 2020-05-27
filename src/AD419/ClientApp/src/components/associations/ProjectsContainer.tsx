@@ -27,17 +27,17 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   }, [props.org]);
 
   useEffect(() => {
-    console.log('associations changed');
-    
     // clear out existing selected associations and replace with props whenever parent changes
     // this will happen when we select a new expense or do an assignment action
+
+    // first we need to figure out each project's association percentage
     const totalAssociated = props.associations.reduce((sum, curr) => {
       return sum + curr.spent
     }, 0);
 
     const associationsWithPercentages = props.associations.map(assoc => ({
       ...assoc,
-      percent: roundToTwo((assoc.spent / totalAssociated) * 100.0 )
+      percent: (assoc.spent / totalAssociated) * 100.0
     }));
 
     setSelectedAssociations(associationsWithPercentages);
@@ -63,10 +63,8 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       
       setSelectedAssociations(newAssociations.map(assoc => ({
         ...assoc,
-        percent: roundToTwo(evenPercentage)
+        percent: evenPercentage
       })));
-
-      setSelectedAssociations([...selectedAssociations, newAssociation]); // add our new project to the list
     } else {
       setSelectedAssociations([
         ...selectedAssociations.filter(
@@ -110,7 +108,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
                     onChange={(event): void => projectSelected(p, event)}
                   ></input>
                 </td>
-                <td>{associationPercentage(p)}</td>
+                <td>{associationPercentage(p)?.toFixed(2)}</td>
                 <td>{p.project}</td>
                 <td>{p.pi}</td>
               </tr>
@@ -120,8 +118,4 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       </div>
     </div>
   );
-}
-
-function roundToTwo(num: number): number {
-  return +(Math.round(num + Number.EPSILON) + Number.EPSILON);
 }
