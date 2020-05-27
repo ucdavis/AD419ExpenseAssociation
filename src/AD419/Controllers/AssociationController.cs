@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using AD419.Services;
 using Dapper;
@@ -34,22 +35,28 @@ namespace AD419.Controllers
         [HttpPost("ByGrouping")]
         public async Task<IEnumerable<AssociationModel>> PostByGrouping([FromBody] ExpenseGroupingModel model)
         {
+            var associations = new List<AssociationModel>();
+
             // for each expense we need ot get back the association records and then join them together
             using (var conn = _dbService.GetConnection())
             {
-                var assoications = new List<AssociationModel>();
-
                 foreach (var expense in model.Expenses)
                 {
                     var expenseAssociations = await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
                         new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                         commandType: CommandType.StoredProcedure);
 
-                    assoications.AddRange(expenseAssociations);
+                    associations.AddRange(expenseAssociations);
                 }
-
-                return assoications;
             }
+
+            // need to group/sum by project in case we have multiple associations against the same project
+            return associations.GroupBy(g => g.Project).Select(r => new AssociationModel
+            {
+                Project = r.Key,
+                Spent = r.Sum(s => s.Spent),
+                FTE = r.Sum(s => s.FTE)
+            });
         }
 
         [HttpDelete]
