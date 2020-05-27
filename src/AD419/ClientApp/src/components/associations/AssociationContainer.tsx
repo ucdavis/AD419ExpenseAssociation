@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
-import { Organization, ExpenseGrouping, Association, Expense } from '../../models';
+import {
+  Organization,
+  ExpenseGrouping,
+  Association,
+  Expense,
+} from '../../models';
 
 const JSONHeader = {
   'Content-type': 'application/json; charset=UTF-8',
@@ -91,9 +96,9 @@ export default function AssociationContainer(): JSX.Element {
       associations,
       expenseGrouping: {
         ...expenseGrouping,
-        org: selectedOrg?.code
+        org: selectedOrg?.code,
       },
-      expenses: selectedExpenses
+      expenses: selectedExpenses,
     };
 
     const result = await fetch('/Association', {
@@ -104,6 +109,8 @@ export default function AssociationContainer(): JSX.Element {
 
     if (result.ok) {
       console.log('success associating');
+      // associate success, reset the expenses so none are selected
+      setSelectedExpenses([]);
     }
   };
 
