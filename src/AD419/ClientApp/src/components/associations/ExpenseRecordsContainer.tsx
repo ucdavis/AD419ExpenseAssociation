@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Organization, Expense, ExpenseGrouping } from '../../models';
+import Groupings from './Groupings';
 
 interface Props {
   org: Organization | undefined;
@@ -35,7 +36,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     expenseGrouping.grouping,
     expenseGrouping.showAssociated,
     expenseGrouping.showUnassociated,
-    setSelectedExpenses
+    setSelectedExpenses,
   ]);
 
   const expenseSelected = (
@@ -74,10 +75,20 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     );
   };
 
+  const setGrouping = (grouping: string): void => {
+    props.setExpenseGrouping({
+      ...expenseGrouping,
+      grouping,
+    });
+  };
+
   return (
     <div>
       <h1>Expenses</h1>
-      <p>Options go here</p>
+      <Groupings
+        grouping={props.expenseGrouping.grouping}
+        setGrouping={setGrouping}
+      ></Groupings>
       <div>
         <input
           type='checkbox'
@@ -104,6 +115,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
               <tr
                 key={`${expense.chart}-${expense.code}-assoc${expense.isAssociated}`}
               >
+                <td>{expense.num}</td>
                 <td>{expense.chart}</td>
                 <td>{expense.code}</td>
                 <td>{expense.description}</td>
