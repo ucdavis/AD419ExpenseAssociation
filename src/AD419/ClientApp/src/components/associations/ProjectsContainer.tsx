@@ -5,7 +5,7 @@ import { Organization, Project, Association } from '../../models';
 interface Props {
   org: Organization | undefined;
   associations: Association[];
-  associate: () => Promise<void>;
+  associate: (associations: Association[]) => Promise<void>;
   unassociate: () => Promise<void>;
 }
 
@@ -90,7 +90,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     <div>
       <h1>Projects</h1>
       <p>Save buttons go here</p>
-      <button className='btn btn-primary' onClick={props.associate}>
+      <button className='btn btn-primary' onClick={(): Promise<void> => props.associate(selectedAssociations)}>
         Assign
       </button>
       <button className='btn btn-warning' onClick={props.unassociate}>
