@@ -27,6 +27,8 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   }, [props.org]);
 
   useEffect(() => {
+    console.log('associations changed');
+    
     // clear out existing selected associations and replace with props whenever parent changes
     // this will happen when we select a new expense or do an assignment action
     const totalAssociated = props.associations.reduce((sum, curr) => {

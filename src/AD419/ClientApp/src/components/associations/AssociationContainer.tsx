@@ -67,6 +67,8 @@ export default function AssociationContainer(): JSX.Element {
 
     if (expenseGrouping.expenses && expenseGrouping.expenses.length > 0) {
       getAssociations();
+    } else {
+      setAssociations([]);
     }
 
   }, [selectedOrg, expenseGrouping]);
