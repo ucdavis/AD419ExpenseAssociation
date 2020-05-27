@@ -23,6 +23,8 @@ export default function AssociationContainer(): JSX.Element {
     defaultExpenseGrouping
   );
 
+  const [associations, setAssociations] = useState<Association[]>([]);
+
   // fire only once to grab initial orgs
   useEffect(() => {
     const getDepartments = async (): Promise<void> => {
@@ -59,6 +61,7 @@ export default function AssociationContainer(): JSX.Element {
 
       const associations = (await result.json()) as Association[];
 
+      setAssociations(associations);
       console.log('found association data', associations);
     };
 
@@ -123,6 +126,7 @@ export default function AssociationContainer(): JSX.Element {
         <div className='col-sm'>
           <ProjectsContainer
             org={selectedOrg}
+            associations={associations}
             associate={associate}
             unassociate={unassociate}
           ></ProjectsContainer>

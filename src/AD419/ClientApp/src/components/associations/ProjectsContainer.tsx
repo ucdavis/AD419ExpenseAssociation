@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { Organization, Project } from '../../models';
+import { Organization, Project, Association } from '../../models';
 
 interface Props {
   org: Organization | undefined;
+  associations: Association[];
   associate: () => Promise<void>;
   unassociate: () => Promise<void>;
 }
 
 export default function ProjectsContainer(props: Props): JSX.Element {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProjects, setSelectedProject] = useState<Project[]>([]);
+  const [selectedAssociations, setSelectedAssociations] = useState<Association[]>([]);
 
   useEffect(() => {
     const getProjects = async (): Promise<void> => {
@@ -25,6 +26,12 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     }
   }, [props.org]);
 
+  useEffect(() => {
+    // clear out existing selected associations and replace with props whenever parent changes
+    // this will happen when we select a new expense or do an assignment action
+    setSelectedAssociations(props.associations);
+  }, [props.associations]);
+
   const projectSelected = (
     project: Project,
     event: React.ChangeEvent<HTMLInputElement>
@@ -34,13 +41,16 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     const { checked } = event.target;
 
     if (checked) {
-      setSelectedProject([...selectedProjects, project]); // add our new project to the list
+      // TODO: we need to do a bunch of percentage calculations here
+      const newAssociation: Association = { project: project.project, percent: 50, spent: 0, fte: 0 };
+
+      setSelectedAssociations([...selectedAssociations, newAssociation]); // add our new project to the list
     } else {
-      setSelectedProject([
-        ...selectedProjects.filter(
-          (p) =>
+      setSelectedAssociations([
+        ...selectedAssociations.filter(
+          (assoc) =>
             !(
-              p.accession === project.accession && p.project === project.project
+              assoc.project === project.project
             )
         ),
       ]);
@@ -48,7 +58,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   };
 
   const isSelected = (project: Project): boolean => {
-    return selectedProjects.some((p) => p.project === project.project);
+    return selectedAssociations.some((assoc) => assoc.project === project.project);
   };
 
   return (
