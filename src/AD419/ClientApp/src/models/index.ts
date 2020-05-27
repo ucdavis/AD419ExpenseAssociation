@@ -28,7 +28,6 @@ export interface Expense {
 }
 
 export interface ExpenseGrouping {
-  expenses: Expense[];
   grouping: string;
   showAssociated: boolean;
   showUnassociated: boolean;

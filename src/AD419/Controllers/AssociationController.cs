@@ -34,7 +34,7 @@ namespace AD419.Controllers
         // POST /association/bygrouping
         // return all association expenses for the given grouping the expenses
         [HttpPost("ByGrouping")]
-        public async Task<IEnumerable<AssociationModel>> PostByGrouping([FromBody] ExpenseGroupingModel model)
+        public async Task<IEnumerable<AssociationModel>> PostByGrouping([FromBody] AssociationsModel model)
         {
             var associations = new List<AssociationModel>();
 
@@ -45,7 +45,7 @@ namespace AD419.Controllers
                 {
                     // TODO: NOTE: need to use the new version of this SPROC
                     var expenseAssociations = await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
-                        new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
+                        new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                         commandType: CommandType.StoredProcedure);
 
                     associations.AddRange(expenseAssociations);
@@ -77,7 +77,7 @@ namespace AD419.Controllers
                     try
                     {
                         // get the expenses which exist inside each expense grouping
-                        foreach (var expense in model.ExpenseGrouping.Expenses)
+                        foreach (var expense in model.Expenses)
                         {
                             var expenseDetails = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
                                 new
@@ -174,7 +174,7 @@ namespace AD419.Controllers
         }
 
         [HttpDelete]
-        public async Task<bool> Unassign([FromBody] ExpenseGroupingModel model)
+        public async Task<bool> Unassign([FromBody] UnassignmentModel model)
         {
             // calls usp_deleteAssociationsByGrouping for each expense group to be unassociated
             using (var conn = _dbService.GetConnection())
@@ -190,14 +190,14 @@ namespace AD419.Controllers
                         foreach (var expense in model.Expenses)
                         {
                             var expenseIdentifiers = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
-                                new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
+                                new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                                 commandType: CommandType.StoredProcedure, transaction: txn);
 
                             foreach (var expenseIdentifier in expenseIdentifiers)
                             {
                                 // now unassign each of these ids
                                 await conn.ExecuteAsync("usp_deleteAssociation",
-                                  new { OrgR = model.Org, ExpenseId = expenseIdentifier.ExpenseId },
+                                  new { OrgR = model.ExpenseGrouping.Org, ExpenseId = expenseIdentifier.ExpenseId },
                                   commandType: CommandType.StoredProcedure, transaction: txn);
                             }
                         }
@@ -229,6 +229,16 @@ namespace AD419.Controllers
     {
         public string Org { get; set; }
         public string Grouping { get; set; }
+    }
+
+    // TODO: maybe grouping + expenses can be a base class others will inherit from?
+    public class AssociationsModel {
+        public ExpenseGroupingModel ExpenseGrouping { get; set; }
+        public ExpenseModel[] Expenses { get; set; }
+    }
+
+    public class UnassignmentModel {
+        public ExpenseGroupingModel ExpenseGrouping { get; set; }
         public ExpenseModel[] Expenses { get; set; }
     }
 
@@ -236,6 +246,7 @@ namespace AD419.Controllers
     {
         public AssociationModel[] Associations { get; set; }
         public ExpenseGroupingModel ExpenseGrouping { get; set; }
+        public ExpenseModel[] Expenses { get; set; }
     }
 
     public class AssociationModel

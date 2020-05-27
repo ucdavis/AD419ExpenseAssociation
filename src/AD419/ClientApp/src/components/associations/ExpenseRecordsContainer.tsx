@@ -3,6 +3,8 @@ import { Organization, Expense, ExpenseGrouping } from '../../models';
 
 interface Props {
   org: Organization | undefined;
+  selectedExpenses: Expense[];
+  setSelectedExpenses: (expenses: Expense[]) => void;
   expenseGrouping: ExpenseGrouping;
   setExpenseGrouping: (grouping: ExpenseGrouping) => void;
 }
@@ -10,26 +12,30 @@ interface Props {
 export default function ExpenseRecordsContainer(props: Props): JSX.Element {
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
+  const { org, expenseGrouping, setSelectedExpenses } = props;
+
   useEffect(() => {
-    console.log('org changed to ', props.org);
+    console.log('org changed to ', org);
 
     const getExpenses = async (): Promise<void> => {
       const result = await fetch(
-        `/Expense?org=${props.org?.code}&grouping=${props.expenseGrouping.grouping}&showAssociated=${props.expenseGrouping.showAssociated}&showUnassociated=${props.expenseGrouping.showUnassociated}`
+        `/Expense?org=${org?.code}&grouping=${expenseGrouping.grouping}&showAssociated=${expenseGrouping.showAssociated}&showUnassociated=${expenseGrouping.showUnassociated}`
       );
       const expenses = await result.json();
 
       setExpenses(expenses);
     };
 
-    if (props.org) {
+    if (org) {
+      setSelectedExpenses([]);
       getExpenses();
     }
   }, [
-    props.org,
-    props.expenseGrouping.grouping,
-    props.expenseGrouping.showAssociated,
-    props.expenseGrouping.showUnassociated,
+    org,
+    expenseGrouping.grouping,
+    expenseGrouping.showAssociated,
+    expenseGrouping.showUnassociated,
+    setSelectedExpenses
   ]);
 
   const expenseSelected = (
@@ -39,19 +45,13 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     const { checked } = event.target;
 
     if (checked) {
-      props.setExpenseGrouping({
-        ...props.expenseGrouping,
-        expenses: [...props.expenseGrouping.expenses, expense], // add our new expense to the list
-      });
+      props.setSelectedExpenses([...props.selectedExpenses, expense]);
     } else {
-      props.setExpenseGrouping({
-        ...props.expenseGrouping,
-        expenses: [
-          ...props.expenseGrouping.expenses.filter(
-            (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
-          ),
-        ],
-      });
+      props.setSelectedExpenses([
+        ...props.selectedExpenses.filter(
+          (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
+        ),
+      ]);
     }
 
     console.log('selected', event.target.checked);
@@ -69,8 +69,10 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
   };
 
   const isSelected = (expense: Expense): boolean => {
-    return props.expenseGrouping.expenses.some(e => e.chart === expense.chart && e.code === expense.code);
-  }
+    return props.selectedExpenses.some(
+      (e) => e.chart === expense.chart && e.code === expense.code
+    );
+  };
 
   return (
     <div>
@@ -99,7 +101,9 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
         <table>
           <tbody>
             {expenses.map((expense) => (
-              <tr key={`${expense.chart}-${expense.code}-assoc${expense.isAssociated}`}>
+              <tr
+                key={`${expense.chart}-${expense.code}-assoc${expense.isAssociated}`}
+              >
                 <td>{expense.chart}</td>
                 <td>{expense.code}</td>
                 <td>{expense.description}</td>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
-import { Organization, ExpenseGrouping, Association } from '../../models';
+import { Organization, ExpenseGrouping, Association, Expense } from '../../models';
 
 const JSONHeader = {
   'Content-type': 'application/json; charset=UTF-8',
@@ -14,7 +14,6 @@ export default function AssociationContainer(): JSX.Element {
 
   // keep track of which groupings are selected in the expenses table
   const defaultExpenseGrouping: ExpenseGrouping = {
-    expenses: [],
     grouping: 'Organization',
     showAssociated: false,
     showUnassociated: true,
@@ -22,6 +21,8 @@ export default function AssociationContainer(): JSX.Element {
   const [expenseGrouping, setExpenseGrouping] = useState<ExpenseGrouping>(
     defaultExpenseGrouping
   );
+
+  const [selectedExpenses, setSelectedExpenses] = useState<Expense[]>([]);
 
   const [associations, setAssociations] = useState<Association[]>([]);
 
@@ -50,8 +51,11 @@ export default function AssociationContainer(): JSX.Element {
       // TODO: when changing org/grouping/associated, we need to clear out any already chosen expenses
       const data = {
         org: selectedOrg?.code,
-        grouping: expenseGrouping.grouping,
-        expenses: expenseGrouping.expenses,
+        expenseGrouping: {
+          ...expenseGrouping,
+          org: selectedOrg?.code,
+        },
+        expenses: selectedExpenses,
       };
 
       const result = await fetch('/Association/ByGrouping', {
@@ -66,12 +70,12 @@ export default function AssociationContainer(): JSX.Element {
       console.log('found association data', associations);
     };
 
-    if (expenseGrouping.expenses && expenseGrouping.expenses.length > 0) {
+    if (selectedExpenses && selectedExpenses.length > 0) {
       getAssociations();
     } else {
       setAssociations([]);
     }
-  }, [selectedOrg, expenseGrouping]);
+  }, [selectedOrg, expenseGrouping, selectedExpenses]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;
@@ -82,13 +86,14 @@ export default function AssociationContainer(): JSX.Element {
 
   // TODO: pass projects?  just accessions?
   const associate = async (associations: Association[]): Promise<void> => {
-    console.log('associate', associations, expenseGrouping.expenses);
+    console.log('associate', associations, selectedExpenses);
     const data = {
       associations,
       expenseGrouping: {
         ...expenseGrouping,
         org: selectedOrg?.code
-      }
+      },
+      expenses: selectedExpenses
     };
 
     const result = await fetch('/Association', {
@@ -105,8 +110,11 @@ export default function AssociationContainer(): JSX.Element {
   const unassociate = async (): Promise<void> => {
     const data = {
       org: selectedOrg?.code,
-      grouping: expenseGrouping.grouping,
-      expenses: expenseGrouping.expenses,
+      expenseGrouping: {
+        ...expenseGrouping,
+        org: selectedOrg?.code,
+      },
+      expenses: selectedExpenses,
     };
 
     const result = await fetch('/Association', {
@@ -117,7 +125,7 @@ export default function AssociationContainer(): JSX.Element {
 
     if (result.ok) {
       // delete success, reset the expenses so none are selected
-      setExpenseGrouping({ ...expenseGrouping, expenses: [] });
+      setSelectedExpenses([]);
     }
 
     console.log('unassociate done', result.ok);
@@ -125,7 +133,7 @@ export default function AssociationContainer(): JSX.Element {
 
   return (
     <div>
-      <div>Selected expense count {expenseGrouping.expenses?.length}</div>
+      <div>Selected expense count {selectedExpenses?.length}</div>
       <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
@@ -138,6 +146,8 @@ export default function AssociationContainer(): JSX.Element {
         <div className='col-sm'>
           <ExpenseRecordsContainer
             org={selectedOrg}
+            selectedExpenses={selectedExpenses}
+            setSelectedExpenses={setSelectedExpenses}
             expenseGrouping={expenseGrouping}
             setExpenseGrouping={setExpenseGrouping}
           ></ExpenseRecordsContainer>
