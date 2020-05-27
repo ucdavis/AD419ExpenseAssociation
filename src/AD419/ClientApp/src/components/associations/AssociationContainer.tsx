@@ -4,6 +4,10 @@ import ProjectsContainer from './ProjectsContainer';
 
 import { Organization, ExpenseGrouping, Association } from '../../models';
 
+const JSONHeader = {
+  'Content-type': 'application/json; charset=UTF-8'
+};
+
 export default function AssociationContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization>();
@@ -41,13 +45,21 @@ export default function AssociationContainer(): JSX.Element {
     const getAssociations = async (): Promise<void> => {
       // TODO: for now we are just going to use the first grouping
       // TODO: eventually we need to query by all selected grouped expenses
-      const firstExpense = expenseGrouping.expenses[0];
-      const result = await fetch(
-        `/Association/ByGrouping?org=${selectedOrg?.code}&chart=${firstExpense.chart}&criterion=${firstExpense.code}&grouping=${expenseGrouping.grouping}`
-      );
-      const data = (await result.json()) as Association[];
+      const data = {
+        org: selectedOrg?.code,
+        grouping: expenseGrouping.grouping,
+        expenses: expenseGrouping.expenses,
+      };
+      
+      const result = await fetch('/Association/ByGrouping', {
+        method: 'POST',
+        headers: JSONHeader,
+        body: JSON.stringify(data)
+      })
 
-      console.log('found association data', data);
+      const associations = (await result.json()) as Association[];
+
+      console.log('found association data', associations);
     };
 
     if (expenseGrouping.expenses && expenseGrouping.expenses.length > 0) {
@@ -75,9 +87,7 @@ export default function AssociationContainer(): JSX.Element {
 
     const result = await fetch('/Association', {
       method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8', // TODO: needed?
-      },
+      headers: JSONHeader,
       body: JSON.stringify(data),
     });
 

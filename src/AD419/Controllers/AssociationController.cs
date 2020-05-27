@@ -29,22 +29,31 @@ namespace AD419.Controllers
             }
         }
 
-        // GET /association/bygrouping
-        [HttpGet("ByGrouping")]
-        public async Task<IEnumerable<AssociationModel>> GetByGrouping(string org, string chart, string criterion, string grouping = "Organization")
+        // POST /association/bygrouping
+        // return all association expenses for the given grouping the expenses
+        [HttpPost("ByGrouping")]
+        public async Task<IEnumerable<AssociationModel>> PostByGrouping([FromBody] ExpenseGroupingModel model)
         {
-            // return all associations for a given grouping identified by criterion
-            // TODO: what does isAssociated mean when querying assoications? will it ever return something if false?
+            // for each expense we need ot get back the association records and then join them together
             using (var conn = _dbService.GetConnection())
             {
-                return await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
-                new { OrgR = org, Grouping = grouping, Chart = chart, Criterion = criterion, isAssociated = true },
-                commandType: CommandType.StoredProcedure);
+                var assoications = new List<AssociationModel>();
+
+                foreach (var expense in model.Expenses)
+                {
+                    var expenseAssociations = await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
+                        new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
+                        commandType: CommandType.StoredProcedure);
+
+                    assoications.AddRange(expenseAssociations);
+                }
+
+                return assoications;
             }
         }
 
         [HttpDelete]
-        public async Task<bool> Unassign([FromBody] UnassignModel model)
+        public async Task<bool> Unassign([FromBody] ExpenseGroupingModel model)
         {
             // calls usp_deleteAssociationsByGrouping for each expense group to be unassociated
             using (var conn = _dbService.GetConnection())
@@ -93,7 +102,7 @@ namespace AD419.Controllers
         public int ExpenseId { get; set; }
     }
 
-    public class UnassignModel
+    public class ExpenseGroupingModel
     {
         public string Org { get; set; }
         public string Grouping { get; set; }
