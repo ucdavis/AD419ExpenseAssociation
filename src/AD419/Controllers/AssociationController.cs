@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,11 +65,9 @@ namespace AD419.Controllers
         [HttpPut]
         public async Task<bool> Assign([FromBody] AssignmentModel model)
         {
-            // 1. First we need to get all of the expenses which we want to associate (expenseIds)
-            // 2. Remove all of their existing associations
-            // 3. For each expenseId, associate all assignments selected
-
-            // TODO: instead of doing everything serially we can do a lot of these queries in parallel
+            // Nested loop through each expense grouping
+            // each one contains multiple expenses (expenseId)
+            // for each, delete their existing associations and create new ones according to distribution percentages
             using (var conn = _dbService.GetConnection())
             {
                 await conn.OpenAsync();
@@ -77,12 +76,10 @@ namespace AD419.Controllers
                 {
                     try
                     {
-                        var expenseIds = new List<int>();
-
-                        // 1. Get all expenseIds we want
+                        // get the expenses which exist inside each expense grouping
                         foreach (var expense in model.ExpenseGrouping.Expenses)
                         {
-                            var expenseIdentifiers = await conn.QueryAsync<ExpenseIdentifier>("usp_getExpensesByRecordGrouping",
+                            var expenseDetails = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
                                 new
                                 {
                                     OrgR = model.ExpenseGrouping.Org,
@@ -93,39 +90,82 @@ namespace AD419.Controllers
                                 },
                                 commandType: CommandType.StoredProcedure, transaction: txn);
 
-                            expenseIds.AddRange(expenseIdentifiers.Select(ei => ei.ExpenseId));
-                        }
 
-                        // 2. Delete their existing expenses
-                        foreach (var expenseId in expenseIds)
-                        {
-                            await conn.QueryAsync<ExpenseIdentifier>("usp_deleteAssociation",
-                               new
-                               {
-                                   OrgR = model.ExpenseGrouping.Org,
-                                   ExpenseID = expenseId
-                               },
-                               commandType: CommandType.StoredProcedure, transaction: txn);
-
-                            foreach (var association in model.Associations)
+                            // Delete all existing association for this expense
+                            foreach (var expenseDetail in expenseDetails)
                             {
-                                // TODO: need to verify calculations and distribute all remaining money if any
-                                await conn.QueryAsync<ExpenseIdentifier>("usp_deleteAssociation",
-                                    new
+                                await conn.QueryAsync<ExpenseDetail>("usp_deleteAssociation",
+                                   new
+                                   {
+                                       OrgR = model.ExpenseGrouping.Org,
+                                       ExpenseID = expenseDetail.ExpenseId
+                                   },
+                                   commandType: CommandType.StoredProcedure, transaction: txn);
+
+                                var currentSpentSum = 0.0M;
+                                var currentFTESum = 0.0M;
+
+                                var associationsToInsert = new List<AssociationModel>();
+
+                                // create the needed number of new associations with expenses distributed
+                                for (int i = 0; i < model.Associations.Length; i++)
+                                {
+                                    var association = model.Associations[i];
+
+                                    // if this is the last association in the list, just distribute what's left
+                                    if (i == model.Associations.Length - 1)
                                     {
-                                        OrgR = model.ExpenseGrouping.Org,
-                                        ExpenseID = expenseId,
-                                        Accession = association.Accession,
-                                        Expenses = association.Spent,
-                                        FTE = association.FTE
-                                    },
-                                    commandType: CommandType.StoredProcedure, transaction: txn);
+                                        associationsToInsert.Add(new AssociationModel
+                                        {
+                                            Project = association.Project,
+                                            Accession = association.Accession,
+                                            Spent = expenseDetail.Expenses - currentSpentSum,
+                                            FTE = expenseDetail.FTE - currentFTESum
+                                        });
+                                    }
+                                    else
+                                    {
+                                        // otherwise, distribute based on percentages
+                                        var percentage = association.Percent / 100.0M;
+                                        var spent = Math.Round(percentage * expenseDetail.Expenses, 2);
+                                        var fte = Math.Round(percentage * expenseDetail.FTE, 4); // FTE accurate to 4 decimals
+
+                                        associationsToInsert.Add(new AssociationModel
+                                        {
+                                            Project = association.Project,
+                                            Accession = association.Accession,
+                                            Spent = spent,
+                                            FTE = fte
+                                        });
+
+                                        currentSpentSum += spent;
+                                        currentFTESum += fte;
+                                    }
+                                }
+
+                                // create the needed number of new associations with expenses distributed
+                                foreach (var association in associationsToInsert)
+                                {
+                                    await conn.QueryAsync<ExpenseDetail>("usp_insertAssociation",
+                                        new
+                                        {
+                                            OrgR = model.ExpenseGrouping.Org,
+                                            ExpenseID = expenseDetail.ExpenseId,
+                                            Accession = association.Accession,
+                                            Expenses = association.Spent,
+                                            FTE = association.FTE
+                                        },
+                                        commandType: CommandType.StoredProcedure, transaction: txn);
+                                }
                             }
                         }
+
+                        await txn.CommitAsync();
                     }
                     catch
                     {
-
+                        await txn.RollbackAsync();
+                        throw;
                     }
                 }
             }
@@ -149,7 +189,7 @@ namespace AD419.Controllers
                         // for each of those, we then unassociate
                         foreach (var expense in model.Expenses)
                         {
-                            var expenseIdentifiers = await conn.QueryAsync<ExpenseIdentifier>("usp_getExpensesByRecordGrouping",
+                            var expenseIdentifiers = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
                                 new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                                 commandType: CommandType.StoredProcedure, transaction: txn);
 
@@ -178,9 +218,11 @@ namespace AD419.Controllers
         }
     }
 
-    public class ExpenseIdentifier
+    public class ExpenseDetail
     {
         public int ExpenseId { get; set; }
+        public decimal Expenses { get; set; }
+        public decimal FTE { get; set; }
     }
 
     public class ExpenseGroupingModel
@@ -200,6 +242,7 @@ namespace AD419.Controllers
     {
         public string Project { get; set; }
         public string Accession { get; set; }
+        public decimal Percent { get; set; }
         public decimal Spent { get; set; }
         public decimal FTE { get; set; }
     }

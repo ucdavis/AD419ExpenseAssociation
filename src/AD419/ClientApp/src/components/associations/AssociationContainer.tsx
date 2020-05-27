@@ -5,7 +5,7 @@ import ProjectsContainer from './ProjectsContainer';
 import { Organization, ExpenseGrouping, Association } from '../../models';
 
 const JSONHeader = {
-  'Content-type': 'application/json; charset=UTF-8'
+  'Content-type': 'application/json; charset=UTF-8',
 };
 
 export default function AssociationContainer(): JSX.Element {
@@ -53,12 +53,12 @@ export default function AssociationContainer(): JSX.Element {
         grouping: expenseGrouping.grouping,
         expenses: expenseGrouping.expenses,
       };
-      
+
       const result = await fetch('/Association/ByGrouping', {
         method: 'POST',
         headers: JSONHeader,
-        body: JSON.stringify(data)
-      })
+        body: JSON.stringify(data),
+      });
 
       const associations = (await result.json()) as Association[];
 
@@ -71,7 +71,6 @@ export default function AssociationContainer(): JSX.Element {
     } else {
       setAssociations([]);
     }
-
   }, [selectedOrg, expenseGrouping]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -82,14 +81,33 @@ export default function AssociationContainer(): JSX.Element {
   };
 
   // TODO: pass projects?  just accessions?
-  const associate = (associations: Association[]): Promise<void> => {
+  const associate = async (associations: Association[]): Promise<void> => {
     console.log('associate', associations, expenseGrouping.expenses);
+    const data = {
+      associations,
+      expenseGrouping: {
+        ...expenseGrouping,
+        org: selectedOrg?.code
+      }
+    };
 
-    return Promise.resolve();
+    const result = await fetch('/Association', {
+      method: 'PUT',
+      headers: JSONHeader,
+      body: JSON.stringify(data),
+    });
+
+    if (result.ok) {
+      console.log('success associating');
+    }
   };
 
   const unassociate = async (): Promise<void> => {
-    const data = { org: selectedOrg?.code, grouping: expenseGrouping.grouping, expenses: expenseGrouping.expenses };
+    const data = {
+      org: selectedOrg?.code,
+      grouping: expenseGrouping.grouping,
+      expenses: expenseGrouping.expenses,
+    };
 
     const result = await fetch('/Association', {
       method: 'DELETE',
@@ -107,9 +125,7 @@ export default function AssociationContainer(): JSX.Element {
 
   return (
     <div>
-      <div>
-        Selected expense count {expenseGrouping.expenses?.length}
-      </div>
+      <div>Selected expense count {expenseGrouping.expenses?.length}</div>
       <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
