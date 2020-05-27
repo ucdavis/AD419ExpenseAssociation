@@ -42,6 +42,7 @@ namespace AD419.Controllers
             {
                 foreach (var expense in model.Expenses)
                 {
+                    // TODO: NOTE: need to use the new version of this SPROC
                     var expenseAssociations = await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
                         new { OrgR = model.Org, Grouping = model.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                         commandType: CommandType.StoredProcedure);
@@ -51,12 +52,85 @@ namespace AD419.Controllers
             }
 
             // need to group/sum by project in case we have multiple associations against the same project
-            return associations.GroupBy(g => g.Project).Select(r => new AssociationModel
+            return associations.GroupBy(g => new { g.Project, g.Accession }).Select(r => new AssociationModel
             {
-                Project = r.Key,
+                Project = r.Key.Project,
+                Accession = r.Key.Accession,
                 Spent = r.Sum(s => s.Spent),
                 FTE = r.Sum(s => s.FTE)
             });
+        }
+
+        [HttpPut]
+        public async Task<bool> Assign([FromBody] AssignmentModel model)
+        {
+            // 1. First we need to get all of the expenses which we want to associate (expenseIds)
+            // 2. Remove all of their existing associations
+            // 3. For each expenseId, associate all assignments selected
+
+            // TODO: instead of doing everything serially we can do a lot of these queries in parallel
+            using (var conn = _dbService.GetConnection())
+            {
+                await conn.OpenAsync();
+
+                using (var txn = await conn.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var expenseIds = new List<int>();
+
+                        // 1. Get all expenseIds we want
+                        foreach (var expense in model.ExpenseGrouping.Expenses)
+                        {
+                            var expenseIdentifiers = await conn.QueryAsync<ExpenseIdentifier>("usp_getExpensesByRecordGrouping",
+                                new
+                                {
+                                    OrgR = model.ExpenseGrouping.Org,
+                                    Grouping = model.ExpenseGrouping.Grouping,
+                                    Chart = expense.Chart,
+                                    Criterion = expense.Code,
+                                    isAssociated = expense.IsAssociated
+                                },
+                                commandType: CommandType.StoredProcedure, transaction: txn);
+
+                            expenseIds.AddRange(expenseIdentifiers.Select(ei => ei.ExpenseId));
+                        }
+
+                        // 2. Delete their existing expenses
+                        foreach (var expenseId in expenseIds)
+                        {
+                            await conn.QueryAsync<ExpenseIdentifier>("usp_deleteAssociation",
+                               new
+                               {
+                                   OrgR = model.ExpenseGrouping.Org,
+                                   ExpenseID = expenseId
+                               },
+                               commandType: CommandType.StoredProcedure, transaction: txn);
+
+                            foreach (var association in model.Associations)
+                            {
+                                // TODO: need to verify calculations and distribute all remaining money if any
+                                await conn.QueryAsync<ExpenseIdentifier>("usp_deleteAssociation",
+                                    new
+                                    {
+                                        OrgR = model.ExpenseGrouping.Org,
+                                        ExpenseID = expenseId,
+                                        Accession = association.Accession,
+                                        Expenses = association.Spent,
+                                        FTE = association.FTE
+                                    },
+                                    commandType: CommandType.StoredProcedure, transaction: txn);
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+
+            return true;
         }
 
         [HttpDelete]
@@ -116,9 +190,16 @@ namespace AD419.Controllers
         public ExpenseModel[] Expenses { get; set; }
     }
 
+    public class AssignmentModel
+    {
+        public AssociationModel[] Associations { get; set; }
+        public ExpenseGroupingModel ExpenseGrouping { get; set; }
+    }
+
     public class AssociationModel
     {
         public string Project { get; set; }
+        public string Accession { get; set; }
         public decimal Spent { get; set; }
         public decimal FTE { get; set; }
     }

@@ -11,6 +11,7 @@ export interface Project {
 
 export interface Association {
   project: string;
+  accession: string;
   percent: number;
   spent: number;
   fte: number;

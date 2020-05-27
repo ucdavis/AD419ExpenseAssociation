@@ -47,6 +47,7 @@ export default function AssociationContainer(): JSX.Element {
     const getAssociations = async (): Promise<void> => {
       // TODO: for now we are just going to use the first grouping
       // TODO: eventually we need to query by all selected grouped expenses
+      // TODO: when changing org/grouping/associated, we need to clear out any already chosen expenses
       const data = {
         org: selectedOrg?.code,
         grouping: expenseGrouping.grouping,

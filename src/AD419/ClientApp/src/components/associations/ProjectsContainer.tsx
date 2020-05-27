@@ -55,7 +55,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       // TODO: FUTURE FEATURE: once a percentage has been manually changed, don't change existing percentages
 
       // new association desired, add to the list and then distribute percentages equally across all associations
-      const newAssociation: Association = { project: project.project, percent: 0, spent: 0, fte: 0 };
+      const newAssociation: Association = { project: project.project, accession: project.accession, percent: 0, spent: 0, fte: 0 };
       const newAssociations = [...selectedAssociations, newAssociation];
 
       // amount each row should have with an equal distribution
