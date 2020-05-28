@@ -1,6 +1,12 @@
 import React from 'react';
 import { Expense } from '../../models';
-import { useTable, Column, CellProps } from 'react-table';
+import {
+  useTable,
+  Column,
+  CellProps,
+  useFilters,
+  useGlobalFilter,
+} from 'react-table';
 import NumberDisplay from '../NumberDisplay';
 
 interface Props {
@@ -25,6 +31,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
   ): void => {
     const { checked } = event.target;
 
+    console.log('selected', checked);
     if (checked) {
       props.setSelectedExpenses([...props.selectedExpenses, expense]);
     } else {
@@ -77,25 +84,41 @@ export default function ExpenseTable(props: Props): JSX.Element {
     },
   ];
 
-  // TODO: do we need to have any deps?
   // columns will never change but we still need the memo or we'll get a memory leak
-  //   eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const columns: Column<Expense>[] = React.useMemo(() => cols, [
     props.selectedExpenses,
     props.expenses,
   ]);
 
   const {
+    state,
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
-  } = useTable<Expense>({ columns, data });
+    preGlobalFilteredRows,
+    setGlobalFilter,
+  } = useTable<Expense>({ columns, data }, useFilters, useGlobalFilter);
 
   return (
     <table {...getTableProps()}>
       <thead>
+        <tr>
+          <th
+            colSpan={6}
+            style={{
+              textAlign: 'left',
+            }}
+          >
+            <GlobalFilter
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          </th>
+        </tr>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
@@ -119,3 +142,25 @@ export default function ExpenseTable(props: Props): JSX.Element {
     </table>
   );
 }
+
+// Define a default UI for filtering
+export const GlobalFilter = ({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter,
+}: any): JSX.Element => {
+  const count = preGlobalFilteredRows.length;
+
+  return (
+    <span>
+      Search:{' '}
+      <input
+        value={globalFilter || ''}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+          setGlobalFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+        }}
+        placeholder={`${count} records...`}
+      />
+    </span>
+  );
+};
