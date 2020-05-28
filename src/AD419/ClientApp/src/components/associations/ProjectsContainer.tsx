@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Organization, Project, Association } from '../../models';
+import ProjectsTable from './ProjectsTable';
 
 interface Props {
   org: Organization | undefined;
@@ -84,19 +85,6 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     );
   };
 
-  const isSelected = (project: Project): boolean => {
-    return selectedAssociations.some(
-      (assoc) => assoc.project === project.project
-    );
-  };
-
-  // return the percentage associated with this project
-  const associationPercentage = (project: Project): number | undefined => {
-    return selectedAssociations.find(
-      (assoc) => assoc.project === project.project
-    )?.percent;
-  };
-
   return (
     <div>
       <h1>Projects</h1>
@@ -111,24 +99,12 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         Unassign
       </button>
       <div>
-        <table>
-          <tbody>
-            {projects.map((p) => (
-              <tr key={p.project}>
-                <td>
-                  <input
-                    type='checkbox'
-                    checked={isSelected(p)}
-                    onChange={(event): void => projectSelected(p, event)}
-                  ></input>
-                </td>
-                <td>{associationPercentage(p)?.toFixed(2)}</td>
-                <td>{p.project}</td>
-                <td>{p.pi}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        REACT TABLE
+        <ProjectsTable
+          projects={projects}
+          projectSelected={projectSelected}
+          selectedAssociations={selectedAssociations}
+        ></ProjectsTable>
       </div>
     </div>
   );
