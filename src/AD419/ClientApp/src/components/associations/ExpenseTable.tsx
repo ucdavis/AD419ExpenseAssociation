@@ -6,10 +6,12 @@ import {
   CellProps,
   useFilters,
   useGlobalFilter,
+  TableState,
 } from 'react-table';
 import NumberDisplay from '../NumberDisplay';
 
 interface Props {
+    grouping: string;
   expenses: Expense[];
   selectedExpenses: Expense[];
   setSelectedExpenses: (expenses: Expense[]) => void;
@@ -19,10 +21,15 @@ export default function ExpenseTable(props: Props): JSX.Element {
   // TODO: is this the right way to use a memo of non-static data?
   const data = React.useMemo(() => props.expenses, [props.expenses]);
 
-  const isSelected = (expense: Expense): boolean => {
-    return props.selectedExpenses.some(
-      (e) => e.chart === expense.chart && e.code === expense.code
+  const areEqual = (expA: Expense, expB: Expense): boolean => {
+    return (
+      expA.chart === expB.chart &&
+      expA.code === expB.code &&
+      expA.isAssociated === expB.isAssociated
     );
+  };
+  const isSelected = (expense: Expense): boolean => {
+    return props.selectedExpenses.some((e) => areEqual(e, expense));
   };
 
   const expenseSelected = (
@@ -36,9 +43,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
       props.setSelectedExpenses([...props.selectedExpenses, expense]);
     } else {
       props.setSelectedExpenses([
-        ...props.selectedExpenses.filter(
-          (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
-        ),
+        ...props.selectedExpenses.filter((exp) => !areEqual(exp, expense)),
       ]);
     }
   };
@@ -53,11 +58,12 @@ export default function ExpenseTable(props: Props): JSX.Element {
       accessor: 'chart',
     },
     {
+      id: 'code',
       Header: 'Code',
       accessor: 'code',
     },
     {
-      Header: 'Desc',
+      Header: 'Description',
       accessor: 'description',
     },
     {
@@ -91,6 +97,15 @@ export default function ExpenseTable(props: Props): JSX.Element {
     props.expenses,
   ]);
 
+  const initialState: Partial<TableState<Expense>> = {
+    hiddenColumns: [],
+  };
+
+  const { grouping } = props;
+  if (grouping === 'PI' || grouping === 'Employee' || grouping === 'None'){
+      initialState.hiddenColumns = ['code']; // hide code for certain groupings
+  }
+
   const {
     state,
     getTableProps,
@@ -100,7 +115,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
     prepareRow,
     preGlobalFilteredRows,
     setGlobalFilter,
-  } = useTable<Expense>({ columns, data }, useFilters, useGlobalFilter);
+  } = useTable<Expense>({ columns, data, initialState }, useFilters, useGlobalFilter);
 
   return (
     <table {...getTableProps()}>

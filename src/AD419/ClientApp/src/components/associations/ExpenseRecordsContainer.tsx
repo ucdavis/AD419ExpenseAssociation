@@ -86,6 +86,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
       </div>
       <div>
         <ExpenseTable
+          grouping={expenseGrouping.grouping}
           expenses={expenses}
           selectedExpenses={props.selectedExpenses}
           setSelectedExpenses={props.setSelectedExpenses}
