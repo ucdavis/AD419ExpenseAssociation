@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// TODO: copied from another project -- fix later if we want to
 import React from 'react';
 
 // Define a default UI for filtering
