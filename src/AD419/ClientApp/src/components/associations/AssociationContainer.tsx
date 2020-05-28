@@ -92,6 +92,7 @@ export default function AssociationContainer(): JSX.Element {
   // TODO: pass projects?  just accessions?
   const associate = async (associations: Association[]): Promise<void> => {
     console.log('associate', associations, selectedExpenses);
+    
     const data = {
       associations,
       expenseGrouping: {

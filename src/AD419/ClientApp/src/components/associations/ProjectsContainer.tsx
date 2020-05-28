@@ -85,6 +85,23 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     );
   };
 
+  const handleProjectPercentageChange = (project: Project, percent: number): void => {
+    const associations = selectedAssociations.map(assoc => {
+      if (project.accession === assoc.accession) {
+        // this is the one we want to change, so update the values
+        return {
+          ...assoc,
+          percent
+        }
+      }
+
+      // otherwise just return the ones we don't care about
+      return assoc;
+    });
+
+    setSelectedAssociations(associations);
+  };
+
   return (
     <div>
       <h1>Projects</h1>
@@ -103,6 +120,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         <ProjectsTable
           projects={projects}
           projectSelected={projectSelected}
+          projectPercentageChange={handleProjectPercentageChange}
           selectedAssociations={selectedAssociations}
         ></ProjectsTable>
       </div>

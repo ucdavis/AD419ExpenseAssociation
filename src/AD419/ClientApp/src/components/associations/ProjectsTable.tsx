@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, Association } from '../../models';
 import {
   Column,
@@ -15,6 +15,7 @@ interface Props {
     project: Project,
     event: React.ChangeEvent<HTMLInputElement>
   ) => void;
+  projectPercentageChange: (project: Project, percent: number) => void;
   selectedAssociations: Association[];
 }
 
@@ -28,18 +29,41 @@ export default function ProjectsTable(props: Props): JSX.Element {
     );
   };
 
-  const handleSelected = (
-    project: Project,
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    props.projectSelected(project, event);
-  };
-
   // return the percentage associated with this project
   const associationPercentage = (project: Project): number | undefined => {
     return props.selectedAssociations.find(
       (assoc) => assoc.project === project.project
     )?.percent;
+  };
+
+  const handlePercentageChange = (
+    project: Project,
+    event: React.FocusEvent<HTMLInputElement>
+  ): void => {
+    const val = parseFloat(event.target.value) || 0;
+    props.projectPercentageChange(project, val);
+  };
+
+  const PercentInput = ({ row }: CellProps<Project>): JSX.Element => {
+    const [percent, setPercent] = useState<string>('');
+
+    useEffect(() => {
+      setPercent(associationPercentage(row.original)?.toFixed(2) || '');
+    }, [row.original]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+      setPercent(e.target.value);
+    };
+
+    return (
+      <input
+        key={row.original.accession}
+        type='text'
+        value={percent}
+        onChange={handleChange}
+        onBlur={(event): void => handlePercentageChange(row.original, event)}
+      ></input>
+    );
   };
 
   const cols: Column<Project>[] = [
@@ -49,15 +73,13 @@ export default function ProjectsTable(props: Props): JSX.Element {
         <input
           type='checkbox'
           checked={isSelected(row.original)}
-          onChange={(event): void => handleSelected(row.original, event)}
+          onChange={(event): void => props.projectSelected(row.original, event)}
         ></input>
       ),
     },
     {
       id: 'percentage',
-      Cell: ({ row }: CellProps<Project>): JSX.Element => (
-        <>{associationPercentage(row.original)?.toFixed(2)}</>
-      ),
+      Cell: PercentInput,
     },
     {
       Header: 'Project',
