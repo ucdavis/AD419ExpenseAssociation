@@ -102,12 +102,23 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     setSelectedAssociations(associations);
   };
 
+  const canAssociate = (): boolean => {
+    // % needs to add up to 100 (or close to)
+    const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
+      return sum + curr.percent;
+    }, 0);
+
+    // TODO: what precision do we care about
+    return totalAssocationPercent.toFixed(2) === '100.00';
+  }
+
   return (
     <div>
       <h1>Projects</h1>
       <p>Save buttons go here</p>
       <button
         className='btn btn-primary'
+        disabled={!canAssociate()}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
         Assign
