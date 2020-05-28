@@ -85,12 +85,40 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     );
   };
 
+  const handleProjectPercentageChange = (project: Project, percent: number): void => {
+    const associations = selectedAssociations.map(assoc => {
+      if (project.accession === assoc.accession) {
+        // this is the one we want to change, so update the values
+        return {
+          ...assoc,
+          percent
+        }
+      }
+
+      // otherwise just return the ones we don't care about
+      return assoc;
+    });
+
+    setSelectedAssociations(associations);
+  };
+
+  const canAssociate = (): boolean => {
+    // % needs to add up to 100 (or close to)
+    const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
+      return sum + curr.percent;
+    }, 0);
+
+    // TODO: what precision do we care about
+    return totalAssocationPercent.toFixed(2) === '100.00';
+  }
+
   return (
     <div>
       <h1>Projects</h1>
       <p>Save buttons go here</p>
       <button
         className='btn btn-primary'
+        disabled={!canAssociate()}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
         Assign
@@ -103,6 +131,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         <ProjectsTable
           projects={projects}
           projectSelected={projectSelected}
+          projectPercentageChange={handleProjectPercentageChange}
           selectedAssociations={selectedAssociations}
         ></ProjectsTable>
       </div>
