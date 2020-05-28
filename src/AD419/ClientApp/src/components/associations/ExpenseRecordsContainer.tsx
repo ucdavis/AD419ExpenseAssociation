@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Organization, Expense, ExpenseGrouping } from '../../models';
 import Groupings from './Groupings';
+import ExpenseTable from './ExpenseTable';
 
 interface Props {
   org: Organization | undefined;
@@ -39,25 +40,6 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
     setSelectedExpenses,
   ]);
 
-  const expenseSelected = (
-    expense: Expense,
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const { checked } = event.target;
-
-    if (checked) {
-      props.setSelectedExpenses([...props.selectedExpenses, expense]);
-    } else {
-      props.setSelectedExpenses([
-        ...props.selectedExpenses.filter(
-          (exp) => !(exp.chart === expense.chart && exp.code === expense.code)
-        ),
-      ]);
-    }
-
-    console.log('selected', event.target.checked);
-  };
-
   // change show associated/unassociated options
   const handleOptionsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -67,12 +49,6 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
       ...props.expenseGrouping,
       [option]: event.target.checked,
     });
-  };
-
-  const isSelected = (expense: Expense): boolean => {
-    return props.selectedExpenses.some(
-      (e) => e.chart === expense.chart && e.code === expense.code
-    );
   };
 
   const setGrouping = (grouping: string): void => {
@@ -109,29 +85,12 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
         <label>Unassociated</label>
       </div>
       <div>
-        <table>
-          <tbody>
-            {expenses.map((expense) => (
-              <tr
-                key={`${expense.chart}-${expense.code}-assoc${expense.isAssociated}`}
-              >
-                <td>{expense.num}</td>
-                <td>{expense.chart}</td>
-                <td>{expense.code}</td>
-                <td>{expense.description}</td>
-                <td>{expense.spent}</td>
-                <td>{expense.fte}</td>
-                <td>
-                  <input
-                    type='checkbox'
-                    checked={isSelected(expense)}
-                    onChange={(event): void => expenseSelected(expense, event)}
-                  ></input>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ExpenseTable
+          grouping={expenseGrouping.grouping}
+          expenses={expenses}
+          selectedExpenses={props.selectedExpenses}
+          setSelectedExpenses={props.setSelectedExpenses}
+        ></ExpenseTable>
       </div>
     </div>
   );
