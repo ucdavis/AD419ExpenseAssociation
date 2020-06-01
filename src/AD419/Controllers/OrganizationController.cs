@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using AD419.Services;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AD419.Controllers
@@ -7,21 +11,36 @@ namespace AD419.Controllers
     [Route("[controller]")]
     public class OrganizationController : ControllerBase
     {
-        private static readonly OrganizationModel[] Orgs = new[]
+        private readonly IDbService _dbService;
+
+        public OrganizationController(IDbService dbService)
         {
-            new OrganizationModel { Code = "AARE", Name = "AARE" },
-            new OrganizationModel { Code = "AANS", Name = "AANS" },  
-        };
+            this._dbService = dbService;
+        }
 
         [HttpGet]
-        public IEnumerable<OrganizationModel> Get()
+        public async Task<IActionResult> Get()
         {
-            return Orgs;
-        }
-    }
+            using (var conn = _dbService.GetConnection())
+            {
+                var roles = await conn.QueryAsync<string>("usp_GetRolesByLoginID",
+                    new { LoginID = "postit", ApplicationName = "AD419" },
+                    commandType: CommandType.StoredProcedure);
 
-    public class OrganizationModel {
-        public string Code { get; set; }
-        public string Name { get; set; }
+                if (roles.Any(r => r == "Admin"))
+                {
+                    // return all orgs
+                    return Ok(await conn.QueryAsync("usp_getReportingOrg",
+                        commandType: CommandType.StoredProcedure));
+                }
+                else
+                {
+                    // not an admin, return just the user's orgs
+                    return Ok(await conn.QueryAsync("usp_GetReportingOrgByUser",
+                        new { LoginID = "postit", ApplicationName = "AD419" },
+                        commandType: CommandType.StoredProcedure));
+                }
+            }
+        }
     }
 }

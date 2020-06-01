@@ -37,11 +37,20 @@ export default function AssociationContainer(): JSX.Element {
       // TODO: handle just getting orgs for current user
       // TODO: handle api errors and possibly login issue errors
       const result = await fetch('/Organization');
-      const data = (await result.json()) as Organization[];
+      const data = (await result.json());
+
+      // need to allow any because the return type is odd
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const orgs: Organization[] = data.map((d: any) => {
+        return {
+          code: d.OrgR,
+          name: d['Org-Dept']
+        };
+      });
 
       if (data && data.length > 0) {
-        setOrgs(data);
-        setSelectedOrg(data[0]);
+        setOrgs(orgs);
+        setSelectedOrg(orgs[0]);
       }
     };
 
