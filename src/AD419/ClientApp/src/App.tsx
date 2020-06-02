@@ -4,7 +4,7 @@ import { Layout } from './components/Layout';
 
 import AssociationContainer from './components/associations/AssociationContainer';
 
-import './custom.css';
+import './sass/custom.scss'
 
 export default class App extends Component {
   static displayName = App.name;

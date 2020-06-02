@@ -1,0 +1,12 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import 'node_modules/@ucdavis/gunrockin/sass/gunrockin.scss';
+$primary-color:    $bodega;
+$secondary-color:  $california;
+$theme-colors: (
+ primary: $primary-color,
+ secondary: $secondary-color
+);
+@import 'node_modules/bootstrap/scss/bootstrap';
+$font-path: '/src/node_modules/@ucdavis/gunrockin/media';
+@import 'node_modules/@ucdavis/gunrockin/sass/typography.scss';
