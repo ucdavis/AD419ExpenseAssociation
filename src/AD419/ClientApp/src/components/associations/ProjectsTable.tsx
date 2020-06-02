@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Project, Association } from '../../models';
-import {
-  Column,
-  CellProps,
-  useTable,
-  useFilters,
-  useGlobalFilter,
-} from 'react-table';
-import { GlobalFilter } from '../GlobalFilter';
+import { PercentInput } from './PercentInput';
+import { ProjectFilter } from '../GlobalFilter';
 
 interface Props {
   projects: Project[];
@@ -21,7 +15,37 @@ interface Props {
 
 export default function ProjectsTable(props: Props): JSX.Element {
   // TODO: is this the right way to use a memo of non-static data?
-  const data = React.useMemo(() => props.projects, [props.projects]);
+  const projects = React.useMemo(() => props.projects, [props.projects]);
+
+  // ability to filter the unselected projects by project or PI
+  const [filter, setFilter] = useState<string>();
+
+  // we break the projects list into separate lists for those that have already been selected
+  const unselectedProjects: Project[] = [],
+    selectedProjects: Project[] = [];
+
+  for (let i = 0; i < projects.length; i++) {
+    const proj = projects[i];
+
+    if (
+      props.selectedAssociations.some((sa) => sa.accession === proj.accession)
+    ) {
+      selectedProjects.push(proj);
+    } else {
+      if (filter) {
+        const lowercaseFilter = filter.toLowerCase();
+        // we have a filter, so we need to only push if we match the filter
+        if (
+          proj.project.toLowerCase().includes(lowercaseFilter) ||
+          proj.pi.toLowerCase().includes(lowercaseFilter)
+        ) {
+          unselectedProjects.push(proj);
+        }
+      } else {
+        unselectedProjects.push(proj);
+      }
+    }
+  }
 
   const isSelected = (project: Project): boolean => {
     return props.selectedAssociations.some(
@@ -29,123 +53,68 @@ export default function ProjectsTable(props: Props): JSX.Element {
     );
   };
 
-  // return the percentage associated with this project
-  const associationPercentage = (project: Project): number | undefined => {
-    return props.selectedAssociations.find(
-      (assoc) => assoc.project === project.project
-    )?.percent;
-  };
-
-  const handlePercentageChange = (
-    project: Project,
-    event: React.FocusEvent<HTMLInputElement>
-  ): void => {
-    const val = parseFloat(event.target.value) || 0;
-    props.projectPercentageChange(project, val);
-  };
-
-  const PercentInput = ({ row }: CellProps<Project>): JSX.Element => {
-    const [percent, setPercent] = useState<string>('');
-
-    useEffect(() => {
-      setPercent(associationPercentage(row.original)?.toFixed(2) || '');
-    }, [row.original]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-      setPercent(e.target.value);
-    };
-
-    return (
-      <input
-        key={row.original.accession}
-        type='text'
-        value={percent}
-        onChange={handleChange}
-        onBlur={(event): void => handlePercentageChange(row.original, event)}
-      ></input>
-    );
-  };
-
-  const cols: Column<Project>[] = [
-    {
-      id: '_select',
-      Cell: ({ row }: CellProps<Project>): JSX.Element => (
-        <input
-          type='checkbox'
-          checked={isSelected(row.original)}
-          onChange={(event): void => props.projectSelected(row.original, event)}
-        ></input>
-      ),
-    },
-    {
-      id: 'percentage',
-      Cell: PercentInput,
-    },
-    {
-      Header: 'Project',
-      accessor: 'project', // accessor is the "key" in the data
-    },
-    {
-      Header: 'PI',
-      accessor: 'pi',
-    },
-  ];
-
-  // columns will never change but we still need the memo or we'll get a memory leak
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const columns: Column<Project>[] = React.useMemo(() => cols, [
-    props.projects,
-    props.selectedAssociations,
-  ]);
-
-  const {
-    state,
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-  } = useTable<Project>({ columns, data }, useFilters, useGlobalFilter);
-
+  // TODO: we'll do two separate tables for now.  If they prove to be similar, refactor
   return (
-    <table {...getTableProps()}>
-      <thead>
-        <tr>
-          <th
-            colSpan={6}
-            style={{
-              textAlign: 'left',
-            }}
-          >
-            <GlobalFilter
-              preGlobalFilteredRows={preGlobalFilteredRows}
-              globalFilter={state.globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
-          </th>
-        </tr>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
+    <>
+      <div>
+        <ProjectFilter filter={filter} setFilter={setFilter}></ProjectFilter>
+      </div>
+      <table className='table'>
+        <thead>
+          <tr>
+            <th></th>
+            <th>%</th>
+            <th>Project</th>
+            <th>PI</th>
           </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-              })}
+        </thead>
+        <tbody>
+          {selectedProjects.map((proj) => (
+            <tr key={proj.accession}>
+              <td>
+                <input
+                  type='checkbox'
+                  checked={isSelected(proj)}
+                  onChange={(event): void => props.projectSelected(proj, event)}
+                ></input>
+              </td>
+              <td>
+                <PercentInput
+                  project={proj}
+                  selectedAssociations={props.selectedAssociations}
+                  projectPercentageChange={props.projectPercentageChange}
+                ></PercentInput>
+              </td>
+              <td>{proj.project}</td>
+              <td>{proj.pi}</td>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+      <table className='table'>
+        <tbody>
+          {unselectedProjects.map((proj) => (
+            <tr key={proj.accession}>
+              <td>
+                <input
+                  type='checkbox'
+                  checked={isSelected(proj)}
+                  onChange={(event): void => props.projectSelected(proj, event)}
+                ></input>
+              </td>
+              <td>
+                <PercentInput
+                  project={proj}
+                  selectedAssociations={props.selectedAssociations}
+                  projectPercentageChange={props.projectPercentageChange}
+                ></PercentInput>
+              </td>
+              <td>{proj.project}</td>
+              <td>{proj.pi}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }

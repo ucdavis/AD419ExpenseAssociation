@@ -103,13 +103,18 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   };
 
   const canAssociate = (): boolean => {
+    // first, we need to have at least one association given from the parent
+    if (props.associations.length === 0) {
+      return false;
+    }
+
     // % needs to add up to 100 (or close to)
     const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
       return sum + curr.percent;
     }, 0);
 
-    // TODO: what precision do we care about
-    return totalAssocationPercent.toFixed(2) === '100.00';
+    // TODO: what precision do we care about?
+    return Math.round(totalAssocationPercent) === 100.00;
   }
 
   return (
@@ -127,7 +132,6 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         Unassign
       </button>
       <div>
-        REACT TABLE
         <ProjectsTable
           projects={projects}
           projectSelected={projectSelected}
