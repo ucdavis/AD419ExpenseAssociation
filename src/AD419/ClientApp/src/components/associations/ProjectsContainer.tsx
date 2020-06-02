@@ -112,6 +112,19 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     return totalAssocationPercent.toFixed(2) === '100.00';
   }
 
+  // we break the projects list into separate lists for those that have already been selected
+  const unselectedProjects: Project[] = [], selectedProjects: Project[] = [];
+
+  for (let i = 0; i < projects.length; i++) {
+    const proj = projects[i];
+    
+    if (selectedAssociations.some(sa => sa.accession === proj.accession)) {
+      selectedProjects.push(proj);
+    } else {
+      unselectedProjects.push(proj);
+    }
+  }
+
   return (
     <div>
       <h1>Projects</h1>
@@ -127,9 +140,14 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         Unassign
       </button>
       <div>
-        REACT TABLE
         <ProjectsTable
-          projects={projects}
+          projects={selectedProjects}
+          projectSelected={projectSelected}
+          projectPercentageChange={handleProjectPercentageChange}
+          selectedAssociations={selectedAssociations}
+        ></ProjectsTable>
+        <ProjectsTable
+          projects={unselectedProjects}
           projectSelected={projectSelected}
           projectPercentageChange={handleProjectPercentageChange}
           selectedAssociations={selectedAssociations}
