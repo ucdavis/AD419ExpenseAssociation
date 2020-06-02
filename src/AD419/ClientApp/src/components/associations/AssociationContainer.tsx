@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
@@ -27,6 +27,7 @@ export default function AssociationContainer(): JSX.Element {
     defaultExpenseGrouping
   );
 
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [selectedExpenses, setSelectedExpenses] = useState<Expense[]>([]);
 
   const [associations, setAssociations] = useState<Association[]>([]);
@@ -37,14 +38,14 @@ export default function AssociationContainer(): JSX.Element {
       // TODO: handle just getting orgs for current user
       // TODO: handle api errors and possibly login issue errors
       const result = await fetch('/Organization');
-      const data = (await result.json());
+      const data = await result.json();
 
       // need to allow any because the return type is odd
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const orgs: Organization[] = data.map((d: any) => {
         return {
           code: d.OrgR,
-          name: d['Org-Dept']
+          name: d['Org-Dept'],
         };
       });
 
@@ -60,9 +61,6 @@ export default function AssociationContainer(): JSX.Element {
   // query for associations whenever the expense grouping changes
   useEffect(() => {
     const getAssociations = async (): Promise<void> => {
-      // TODO: for now we are just going to use the first grouping
-      // TODO: eventually we need to query by all selected grouped expenses
-      // TODO: when changing org/grouping/associated, we need to clear out any already chosen expenses
       const data = {
         org: selectedOrg?.code,
         expenseGrouping: {
@@ -90,6 +88,37 @@ export default function AssociationContainer(): JSX.Element {
       setAssociations([]);
     }
   }, [selectedOrg, expenseGrouping, selectedExpenses]);
+
+  const getExpensesCallback = useCallback(async (): Promise<void> => {
+    const result = await fetch(
+      `/Expense?org=${selectedOrg?.code}&grouping=${expenseGrouping.grouping}&showAssociated=${expenseGrouping.showAssociated}&showUnassociated=${expenseGrouping.showUnassociated}`
+    );
+    const expenses = await result.json();
+
+    setExpenses(expenses);
+  }, [
+    expenseGrouping.grouping,
+    expenseGrouping.showAssociated,
+    expenseGrouping.showUnassociated,
+    selectedOrg,
+  ]);
+
+  // requery whenever our grouping or org changes
+  useEffect(() => {
+    console.log('org changed to ', selectedOrg);
+
+    if (selectedOrg) {
+      setSelectedExpenses([]);
+      getExpensesCallback();
+    }
+  }, [
+    selectedOrg,
+    expenseGrouping.grouping,
+    expenseGrouping.showAssociated,
+    expenseGrouping.showUnassociated,
+    setSelectedExpenses,
+    getExpensesCallback,
+  ]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;
@@ -122,6 +151,7 @@ export default function AssociationContainer(): JSX.Element {
     if (result.ok) {
       console.log('success associating');
       // associate success, reset the expenses so none are selected
+      await getExpensesCallback();
       setSelectedExpenses([]);
     }
   };
@@ -144,6 +174,7 @@ export default function AssociationContainer(): JSX.Element {
 
     if (result.ok) {
       // delete success, reset the expenses so none are selected
+      await getExpensesCallback();
       setSelectedExpenses([]);
     }
 
@@ -164,7 +195,7 @@ export default function AssociationContainer(): JSX.Element {
       <div className='row'>
         <div className='col-sm'>
           <ExpenseRecordsContainer
-            org={selectedOrg}
+            expenses={expenses}
             selectedExpenses={selectedExpenses}
             setSelectedExpenses={setSelectedExpenses}
             expenseGrouping={expenseGrouping}

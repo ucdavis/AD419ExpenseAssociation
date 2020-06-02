@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Organization, Expense, ExpenseGrouping } from '../../models';
+import React from 'react';
+import { Expense, ExpenseGrouping } from '../../models';
 import Groupings from './Groupings';
 import ExpenseTable from './ExpenseTable';
 
 interface Props {
-  org: Organization | undefined;
+  expenses: Expense[];
   selectedExpenses: Expense[];
   setSelectedExpenses: (expenses: Expense[]) => void;
   expenseGrouping: ExpenseGrouping;
@@ -12,33 +12,7 @@ interface Props {
 }
 
 export default function ExpenseRecordsContainer(props: Props): JSX.Element {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-
-  const { org, expenseGrouping, setSelectedExpenses } = props;
-
-  useEffect(() => {
-    console.log('org changed to ', org);
-
-    const getExpenses = async (): Promise<void> => {
-      const result = await fetch(
-        `/Expense?org=${org?.code}&grouping=${expenseGrouping.grouping}&showAssociated=${expenseGrouping.showAssociated}&showUnassociated=${expenseGrouping.showUnassociated}`
-      );
-      const expenses = await result.json();
-
-      setExpenses(expenses);
-    };
-
-    if (org) {
-      setSelectedExpenses([]);
-      getExpenses();
-    }
-  }, [
-    org,
-    expenseGrouping.grouping,
-    expenseGrouping.showAssociated,
-    expenseGrouping.showUnassociated,
-    setSelectedExpenses,
-  ]);
+  const { expenseGrouping } = props;
 
   // change show associated/unassociated options
   const handleOptionsChange = (
@@ -87,7 +61,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
       <div>
         <ExpenseTable
           grouping={expenseGrouping.grouping}
-          expenses={expenses}
+          expenses={props.expenses}
           selectedExpenses={props.selectedExpenses}
           setSelectedExpenses={props.setSelectedExpenses}
         ></ExpenseTable>

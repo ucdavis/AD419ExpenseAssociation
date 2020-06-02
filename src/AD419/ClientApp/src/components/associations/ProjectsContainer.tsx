@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import { Organization, Project, Association } from '../../models';
 import ProjectsTable from './ProjectsTable';
@@ -102,12 +102,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     setSelectedAssociations(associations);
   };
 
-  const canAssociate = (): boolean => {
-    // first, we need to have at least one association given from the parent
-    if (props.associations.length === 0) {
-      return false;
-    }
-
+  const canAssociate = useMemo((): boolean => {
     // % needs to add up to 100 (or close to)
     const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
       return sum + curr.percent;
@@ -115,7 +110,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
 
     // TODO: what precision do we care about?
     return Math.round(totalAssocationPercent) === 100.00;
-  }
+  }, [selectedAssociations]);
 
   return (
     <div>
@@ -123,7 +118,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       <p>Save buttons go here</p>
       <button
         className='btn btn-primary'
-        disabled={!canAssociate()}
+        disabled={!canAssociate}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
         Assign

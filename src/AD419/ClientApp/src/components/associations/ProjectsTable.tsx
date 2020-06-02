@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
 import { ProjectFilter } from '../GlobalFilter';
@@ -53,6 +53,13 @@ export default function ProjectsTable(props: Props): JSX.Element {
     );
   };
 
+  const total = useMemo(() => {
+    // get the total of all selected associations
+    return props.selectedAssociations.reduce((sum, curr) => {
+      return sum + curr.percent;
+    }, 0);
+  }, [props.selectedAssociations]);
+
   // TODO: we'll do two separate tables for now.  If they prove to be similar, refactor
   return (
     <>
@@ -63,7 +70,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
         <thead>
           <tr>
             <th></th>
-            <th>%</th>
+            <th>{total.toFixed(2)} %</th>
             <th>Project</th>
             <th>PI</th>
           </tr>
