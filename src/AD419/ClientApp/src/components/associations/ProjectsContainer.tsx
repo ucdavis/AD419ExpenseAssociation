@@ -108,21 +108,8 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       return sum + curr.percent;
     }, 0);
 
-    // TODO: what precision do we care about
-    return totalAssocationPercent.toFixed(2) === '100.00';
-  }
-
-  // we break the projects list into separate lists for those that have already been selected
-  const unselectedProjects: Project[] = [], selectedProjects: Project[] = [];
-
-  for (let i = 0; i < projects.length; i++) {
-    const proj = projects[i];
-    
-    if (selectedAssociations.some(sa => sa.accession === proj.accession)) {
-      selectedProjects.push(proj);
-    } else {
-      unselectedProjects.push(proj);
-    }
+    // TODO: what precision do we care about?
+    return Math.round(totalAssocationPercent) === 100.00;
   }
 
   return (
@@ -141,13 +128,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       </button>
       <div>
         <ProjectsTable
-          projects={selectedProjects}
-          projectSelected={projectSelected}
-          projectPercentageChange={handleProjectPercentageChange}
-          selectedAssociations={selectedAssociations}
-        ></ProjectsTable>
-        <ProjectsTable
-          projects={unselectedProjects}
+          projects={projects}
           projectSelected={projectSelected}
           projectPercentageChange={handleProjectPercentageChange}
           selectedAssociations={selectedAssociations}
