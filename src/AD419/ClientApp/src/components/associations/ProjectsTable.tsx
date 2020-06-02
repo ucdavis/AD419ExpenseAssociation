@@ -34,7 +34,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
       </thead>
       <tbody>
         {projects.map((proj) => (
-          <tr>
+          <tr key={proj.accession}>
             <td>
               <input
                 type='checkbox'
