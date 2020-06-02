@@ -103,11 +103,6 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   };
 
   const canAssociate = (): boolean => {
-    // first, we need to have at least one association given from the parent
-    if (props.associations.length === 0) {
-      return false;
-    }
-
     // % needs to add up to 100 (or close to)
     const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
       return sum + curr.percent;
