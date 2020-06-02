@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
+import { ProjectFilter } from '../GlobalFilter';
 
 interface Props {
   projects: Project[];
@@ -16,6 +17,9 @@ export default function ProjectsTable(props: Props): JSX.Element {
   // TODO: is this the right way to use a memo of non-static data?
   const projects = React.useMemo(() => props.projects, [props.projects]);
 
+  // ability to filter the unselected projects by project or PI
+  const [filter, setFilter] = useState<string>();
+
   // we break the projects list into separate lists for those that have already been selected
   const unselectedProjects: Project[] = [],
     selectedProjects: Project[] = [];
@@ -23,10 +27,23 @@ export default function ProjectsTable(props: Props): JSX.Element {
   for (let i = 0; i < projects.length; i++) {
     const proj = projects[i];
 
-    if (props.selectedAssociations.some((sa) => sa.accession === proj.accession)) {
+    if (
+      props.selectedAssociations.some((sa) => sa.accession === proj.accession)
+    ) {
       selectedProjects.push(proj);
     } else {
-      unselectedProjects.push(proj);
+      if (filter) {
+        const lowercaseFilter = filter.toLowerCase();
+        // we have a filter, so we need to only push if we match the filter
+        if (
+          proj.project.toLowerCase().includes(lowercaseFilter) ||
+          proj.pi.toLowerCase().includes(lowercaseFilter)
+        ) {
+          unselectedProjects.push(proj);
+        }
+      } else {
+        unselectedProjects.push(proj);
+      }
     }
   }
 
@@ -39,6 +56,9 @@ export default function ProjectsTable(props: Props): JSX.Element {
   // TODO: we'll do two separate tables for now.  If they prove to be similar, refactor
   return (
     <>
+      <div>
+        <ProjectFilter filter={filter} setFilter={setFilter}></ProjectFilter>
+      </div>
       <table className='table'>
         <thead>
           <tr>
