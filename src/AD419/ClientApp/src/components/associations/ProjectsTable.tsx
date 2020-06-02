@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Project, Association } from '../../models';
-import {
-  Column,
-  CellProps,
-  useTable,
-  useFilters,
-  useGlobalFilter,
-} from 'react-table';
-import { GlobalFilter } from '../GlobalFilter';
+import { PercentInput } from './PercentInput';
 
 interface Props {
   projects: Project[];
@@ -21,7 +14,7 @@ interface Props {
 
 export default function ProjectsTable(props: Props): JSX.Element {
   // TODO: is this the right way to use a memo of non-static data?
-  const data = React.useMemo(() => props.projects, [props.projects]);
+  const projects = React.useMemo(() => props.projects, [props.projects]);
 
   const isSelected = (project: Project): boolean => {
     return props.selectedAssociations.some(
@@ -29,122 +22,37 @@ export default function ProjectsTable(props: Props): JSX.Element {
     );
   };
 
-  // return the percentage associated with this project
-  const associationPercentage = (project: Project): number | undefined => {
-    return props.selectedAssociations.find(
-      (assoc) => assoc.project === project.project
-    )?.percent;
-  };
-
-  const handlePercentageChange = (
-    project: Project,
-    event: React.FocusEvent<HTMLInputElement>
-  ): void => {
-    const val = parseFloat(event.target.value) || 0;
-    props.projectPercentageChange(project, val);
-  };
-
-  const PercentInput = ({ row }: CellProps<Project>): JSX.Element => {
-    const [percent, setPercent] = useState<string>('');
-
-    useEffect(() => {
-      setPercent(associationPercentage(row.original)?.toFixed(2) || '');
-    }, [row.original]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-      setPercent(e.target.value);
-    };
-
-    return (
-      <input
-        key={row.original.accession}
-        type='text'
-        value={percent}
-        onChange={handleChange}
-        onBlur={(event): void => handlePercentageChange(row.original, event)}
-      ></input>
-    );
-  };
-
-  const cols: Column<Project>[] = [
-    {
-      id: '_select',
-      Cell: ({ row }: CellProps<Project>): JSX.Element => (
-        <input
-          type='checkbox'
-          checked={isSelected(row.original)}
-          onChange={(event): void => props.projectSelected(row.original, event)}
-        ></input>
-      ),
-    },
-    {
-      id: 'percentage',
-      Cell: PercentInput,
-    },
-    {
-      Header: 'Project',
-      accessor: 'project', // accessor is the "key" in the data
-    },
-    {
-      Header: 'PI',
-      accessor: 'pi',
-    },
-  ];
-
-  // columns will never change but we still need the memo or we'll get a memory leak
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const columns: Column<Project>[] = React.useMemo(() => cols, [
-    props.projects,
-    props.selectedAssociations,
-  ]);
-
-  const {
-    state,
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-  } = useTable<Project>({ columns, data }, useFilters, useGlobalFilter);
-
   return (
-    <table {...getTableProps()}>
+    <table>
       <thead>
         <tr>
-          <th
-            colSpan={6}
-            style={{
-              textAlign: 'left',
-            }}
-          >
-            <GlobalFilter
-              preGlobalFilteredRows={preGlobalFilteredRows}
-              globalFilter={state.globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
-          </th>
+          <th></th>
+          <th>%</th>
+          <th>Project</th>
+          <th>PI</th>
         </tr>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
+      </thead>
+      <tbody>
+        {projects.map((proj) => (
+          <tr>
+            <td>
+              <input
+                type='checkbox'
+                checked={isSelected(proj)}
+                onChange={(event): void => props.projectSelected(proj, event)}
+              ></input>
+            </td>
+            <td>
+              <PercentInput
+                project={proj}
+                selectedAssociations={props.selectedAssociations}
+                projectPercentageChange={props.projectPercentageChange}
+              ></PercentInput>
+            </td>
+            <td>{proj.project}</td>
+            <td>{proj.pi}</td>
           </tr>
         ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-              })}
-            </tr>
-          );
-        })}
       </tbody>
     </table>
   );
