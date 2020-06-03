@@ -63,7 +63,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
             return true;
           }
         }
-        
+
         // nothing matched, don't include this expense
         return false;
       });
@@ -91,7 +91,12 @@ export default function ExpenseTable(props: Props): JSX.Element {
         </thead>
         <tbody>
           {data.map((expense) => (
-            <tr key={expense.chart + expense.code + expense.isAssociated}>
+            <tr
+              key={expense.chart + expense.code + expense.isAssociated}
+              className={`expense-${
+                expense.isAssociated ? 'associated' : 'unassociated'
+              }`}
+            >
               <td>{expense.num}</td>
               <td>{expense.chart}</td>
               {showCode && <td>{expense.code}</td>}
