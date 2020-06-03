@@ -175,7 +175,6 @@ export default function AssociationContainer(): JSX.Element {
 
   return (
     <div>
-      <div>Selected expense count {selectedExpenses?.length}</div>
       <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
@@ -183,7 +182,6 @@ export default function AssociationContainer(): JSX.Element {
           </option>
         ))}
       </select>
-      {selectedOrg && selectedOrg.name}
       <div className='row'>
         <div className='col-sm'>
           <ExpenseRecordsContainer
