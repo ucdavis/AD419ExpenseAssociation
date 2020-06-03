@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import { Organization, Project, Association } from '../../models';
 import ProjectsTable from './ProjectsTable';
@@ -85,14 +85,17 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     );
   };
 
-  const handleProjectPercentageChange = (project: Project, percent: number): void => {
-    const associations = selectedAssociations.map(assoc => {
+  const handleProjectPercentageChange = (
+    project: Project,
+    percent: number
+  ): void => {
+    const associations = selectedAssociations.map((assoc) => {
       if (project.accession === assoc.accession) {
         // this is the one we want to change, so update the values
         return {
           ...assoc,
-          percent
-        }
+          percent,
+        };
       }
 
       // otherwise just return the ones we don't care about
@@ -102,28 +105,22 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     setSelectedAssociations(associations);
   };
 
-  const canAssociate = (): boolean => {
-    // first, we need to have at least one association given from the parent
-    if (props.associations.length === 0) {
-      return false;
-    }
-
+  const canAssociate = useMemo((): boolean => {
     // % needs to add up to 100 (or close to)
     const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
       return sum + curr.percent;
     }, 0);
 
     // TODO: what precision do we care about?
-    return Math.round(totalAssocationPercent) === 100.00;
-  }
+    return Math.round(totalAssocationPercent) === 100.0;
+  }, [selectedAssociations]);
 
   return (
     <div>
       <h1>Projects</h1>
-      <p>Save buttons go here</p>
       <button
         className='btn btn-primary'
-        disabled={!canAssociate()}
+        disabled={!canAssociate}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
         Assign
