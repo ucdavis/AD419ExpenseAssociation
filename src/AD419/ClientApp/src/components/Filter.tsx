@@ -14,6 +14,7 @@ export const TableFilter = (props: Props): JSX.Element => {
     <span>
       Search:{' '}
       <input
+      type="search"
         value={filter || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
