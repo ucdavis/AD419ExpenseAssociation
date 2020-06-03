@@ -31,7 +31,6 @@ export default function ExpenseTable(props: Props): JSX.Element {
   ): void => {
     const { checked } = event.target;
 
-    console.log('selected', checked);
     if (checked) {
       props.setSelectedExpenses([...props.selectedExpenses, expense]);
     } else {
