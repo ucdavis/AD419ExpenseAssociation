@@ -79,7 +79,6 @@ export default function AssociationContainer(): JSX.Element {
       const associations = (await result.json()) as Association[];
 
       setAssociations(associations);
-      console.log('found association data', associations);
     };
 
     if (selectedExpenses && selectedExpenses.length > 0) {
@@ -105,8 +104,6 @@ export default function AssociationContainer(): JSX.Element {
 
   // requery whenever our grouping or org changes
   useEffect(() => {
-    console.log('org changed to ', selectedOrg);
-
     if (selectedOrg) {
       setSelectedExpenses([]);
       getExpensesCallback();
@@ -129,8 +126,6 @@ export default function AssociationContainer(): JSX.Element {
 
   // TODO: pass projects?  just accessions?
   const associate = async (associations: Association[]): Promise<void> => {
-    console.log('associate', associations, selectedExpenses);
-
     if (selectedExpenses.length === 0 || associations.length === 0) return;
 
     const data = {
@@ -149,7 +144,6 @@ export default function AssociationContainer(): JSX.Element {
     });
 
     if (result.ok) {
-      console.log('success associating');
       // associate success, reset the expenses so none are selected
       await getExpensesCallback();
       setSelectedExpenses([]);
@@ -177,13 +171,10 @@ export default function AssociationContainer(): JSX.Element {
       await getExpensesCallback();
       setSelectedExpenses([]);
     }
-
-    console.log('unassociate done', result.ok);
   };
 
   return (
     <div>
-      <div>Selected expense count {selectedExpenses?.length}</div>
       <select name='orgs' onChange={orgSelected}>
         {orgs.map((org) => (
           <option key={org.code} value={org.code}>
@@ -191,7 +182,6 @@ export default function AssociationContainer(): JSX.Element {
           </option>
         ))}
       </select>
-      {selectedOrg && selectedOrg.name}
       <div className='row'>
         <div className='col-sm'>
           <ExpenseRecordsContainer

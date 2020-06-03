@@ -85,14 +85,17 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     );
   };
 
-  const handleProjectPercentageChange = (project: Project, percent: number): void => {
-    const associations = selectedAssociations.map(assoc => {
+  const handleProjectPercentageChange = (
+    project: Project,
+    percent: number
+  ): void => {
+    const associations = selectedAssociations.map((assoc) => {
       if (project.accession === assoc.accession) {
         // this is the one we want to change, so update the values
         return {
           ...assoc,
-          percent
-        }
+          percent,
+        };
       }
 
       // otherwise just return the ones we don't care about
@@ -109,13 +112,12 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     }, 0);
 
     // TODO: what precision do we care about?
-    return Math.round(totalAssocationPercent) === 100.00;
+    return Math.round(totalAssocationPercent) === 100.0;
   }, [selectedAssociations]);
 
   return (
     <div>
       <h1>Projects</h1>
-      <p>Save buttons go here</p>
       <button
         className='btn btn-primary'
         disabled={!canAssociate}

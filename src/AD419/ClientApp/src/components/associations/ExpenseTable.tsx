@@ -1,26 +1,18 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Expense } from '../../models';
-import {
-  useTable,
-  Column,
-  CellProps,
-  useFilters,
-  useGlobalFilter,
-  TableState,
-} from 'react-table';
 import NumberDisplay from '../NumberDisplay';
-import { GlobalFilter } from '../GlobalFilter';
+import { TableFilter } from '../Filter';
 
 interface Props {
-    grouping: string;
+  grouping: string;
   expenses: Expense[];
   selectedExpenses: Expense[];
   setSelectedExpenses: (expenses: Expense[]) => void;
 }
 
 export default function ExpenseTable(props: Props): JSX.Element {
-  // TODO: is this the right way to use a memo of non-static data?
-  const data = React.useMemo(() => props.expenses, [props.expenses]);
+  // ability to filter the unselected projects by project or PI
+  const [filter, setFilter] = useState<string>();
 
   const areEqual = (expA: Expense, expB: Expense): boolean => {
     return (
@@ -39,7 +31,6 @@ export default function ExpenseTable(props: Props): JSX.Element {
   ): void => {
     const { checked } = event.target;
 
-    console.log('selected', checked);
     if (checked) {
       props.setSelectedExpenses([...props.selectedExpenses, expense]);
     } else {
@@ -49,112 +40,89 @@ export default function ExpenseTable(props: Props): JSX.Element {
     }
   };
 
-  const cols: Column<Expense>[] = [
-    {
-      Header: 'Num',
-      accessor: 'num', // accessor is the "key" in the data
-    },
-    {
-      Header: 'Chart',
-      accessor: 'chart',
-    },
-    {
-      id: 'code',
-      Header: 'Code',
-      accessor: 'code',
-    },
-    {
-      Header: 'Description',
-      accessor: 'description',
-    },
-    {
-      Header: 'Spent ($)',
-      Cell: ({ row }: CellProps<Expense>): JSX.Element => (
-        <NumberDisplay value={row.original.spent} precision={2}></NumberDisplay>
-      ),
-    },
-    {
-      Header: 'FTE',
-      Cell: ({ row }: CellProps<Expense>): JSX.Element => (
-        <NumberDisplay value={row.original.fte} precision={4}></NumberDisplay>
-      ),
-    },
-    {
-      id: '_select',
-      Cell: ({ row }: CellProps<Expense>): JSX.Element => (
-        <input
-          type='checkbox'
-          checked={isSelected(row.original)}
-          onChange={(event): void => expenseSelected(row.original, event)}
-        ></input>
-      ),
-    },
-  ];
-
-  // columns will never change but we still need the memo or we'll get a memory leak
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const columns: Column<Expense>[] = React.useMemo(() => cols, [
-    props.selectedExpenses,
-    props.expenses,
-  ]);
-
-  const initialState: Partial<TableState<Expense>> = {
-    hiddenColumns: [],
-  };
-
   const { grouping } = props;
-  if (grouping === 'PI' || grouping === 'Employee' || grouping === 'None'){
-      initialState.hiddenColumns = ['code']; // hide code for certain groupings
-  }
 
-  const {
-    state,
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-  } = useTable<Expense>({ columns, data, initialState }, useFilters, useGlobalFilter);
+  const showCode = useMemo(() => {
+    return !(
+      grouping === 'PI' ||
+      grouping === 'Employee' ||
+      grouping === 'None'
+    );
+  }, [grouping]);
+
+  const data = useMemo(() => {
+    if (filter) {
+      const lowerFilter = filter.toLowerCase();
+
+      return props.expenses.filter((exp) => {
+        // TODO: what do we want to filter on?
+        // For now, filter on everything
+        for (const value of Object.values(exp)) {
+          if (value && String(value).toLowerCase().includes(lowerFilter)) {
+            return true;
+          }
+        }
+
+        // nothing matched, don't include this expense
+        return false;
+      });
+    } else {
+      return props.expenses;
+    }
+  }, [filter, props.expenses]);
 
   return (
-    <table {...getTableProps()}>
-      <thead>
-        <tr>
-          <th
-            colSpan={6}
-            style={{
-              textAlign: 'left',
-            }}
-          >
-            <GlobalFilter
-              preGlobalFilteredRows={preGlobalFilteredRows}
-              globalFilter={state.globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
-          </th>
-        </tr>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
+    <>
+      <div>
+        <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Num</th>
+            <th>Chart</th>
+            {showCode && <th>Code</th>}
+            <th>Description</th>
+            <th>Spent</th>
+            <th>FTE</th>
+            <th>{/* Select */}</th>
           </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-              })}
+        </thead>
+        <tbody>
+          {data.map((expense) => (
+            <tr
+              key={expense.chart + expense.code + expense.isAssociated}
+              className={`expense-${
+                expense.isAssociated ? 'associated' : 'unassociated'
+              }`}
+            >
+              <td>{expense.num}</td>
+              <td>{expense.chart}</td>
+              {showCode && <td>{expense.code}</td>}
+              <td>{expense.description}</td>
+              <td>
+                <NumberDisplay
+                  value={expense.spent}
+                  precision={2}
+                ></NumberDisplay>
+              </td>
+              <td>
+                <NumberDisplay
+                  value={expense.fte}
+                  precision={4}
+                ></NumberDisplay>
+              </td>
+              <td>
+                <input
+                  type='checkbox'
+                  checked={isSelected(expense)}
+                  onChange={(event): void => expenseSelected(expense, event)}
+                ></input>
+              </td>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }
