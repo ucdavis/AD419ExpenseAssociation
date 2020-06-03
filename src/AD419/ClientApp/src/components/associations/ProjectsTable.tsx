@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
-import { ProjectFilter } from '../GlobalFilter';
+import { ProjectFilter } from '../Filter';
 
 interface Props {
   projects: Project[];

@@ -1,18 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Expense } from '../../models';
-import {
-  useTable,
-  Column,
-  CellProps,
-  useFilters,
-  useGlobalFilter,
-  TableState,
-} from 'react-table';
 import NumberDisplay from '../NumberDisplay';
-import { GlobalFilter } from '../GlobalFilter';
 
 interface Props {
-    grouping: string;
+  grouping: string;
   expenses: Expense[];
   selectedExpenses: Expense[];
   setSelectedExpenses: (expenses: Expense[]) => void;
@@ -49,111 +40,48 @@ export default function ExpenseTable(props: Props): JSX.Element {
     }
   };
 
-  const cols: Column<Expense>[] = [
-    {
-      Header: 'Num',
-      accessor: 'num', // accessor is the "key" in the data
-    },
-    {
-      Header: 'Chart',
-      accessor: 'chart',
-    },
-    {
-      id: 'code',
-      Header: 'Code',
-      accessor: 'code',
-    },
-    {
-      Header: 'Description',
-      accessor: 'description',
-    },
-    {
-      Header: 'Spent ($)',
-      Cell: ({ row }: CellProps<Expense>): JSX.Element => (
-        <NumberDisplay value={row.original.spent} precision={2}></NumberDisplay>
-      ),
-    },
-    {
-      Header: 'FTE',
-      Cell: ({ row }: CellProps<Expense>): JSX.Element => (
-        <NumberDisplay value={row.original.fte} precision={4}></NumberDisplay>
-      ),
-    },
-    {
-      id: '_select',
-      Cell: ({ row }: CellProps<Expense>): JSX.Element => (
-        <input
-          type='checkbox'
-          checked={isSelected(row.original)}
-          onChange={(event): void => expenseSelected(row.original, event)}
-        ></input>
-      ),
-    },
-  ];
-
-  // columns will never change but we still need the memo or we'll get a memory leak
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const columns: Column<Expense>[] = React.useMemo(() => cols, [
-    props.selectedExpenses,
-    props.expenses,
-  ]);
-
-  const initialState: Partial<TableState<Expense>> = {
-    hiddenColumns: [],
-  };
-
   const { grouping } = props;
-  if (grouping === 'PI' || grouping === 'Employee' || grouping === 'None'){
-      initialState.hiddenColumns = ['code']; // hide code for certain groupings
-  }
 
-  const {
-    state,
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-  } = useTable<Expense>({ columns, data, initialState }, useFilters, useGlobalFilter);
+  const showCode = useMemo(() => {
+    return !(grouping === 'PI' || grouping === 'Employee' || grouping === 'None');
+  }, [grouping]);
 
   return (
-    <table {...getTableProps()}>
+    <table>
       <thead>
-        <tr>
-          <th
-            colSpan={6}
-            style={{
-              textAlign: 'left',
-            }}
-          >
-            <GlobalFilter
-              preGlobalFilteredRows={preGlobalFilteredRows}
-              globalFilter={state.globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
-          </th>
-        </tr>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
+        <th>Num</th>
+        <th>Chart</th>
+        {showCode && <th>Code</th>}
+        <th>Description</th>
+        <th>Spent</th>
+        <th>FTE</th>
+        <th>{/* Select */}</th>
+      </thead>
+      <tbody>
+        {data.map((expense) => (
+          <tr key={expense.chart + expense.code + expense.isAssociated}>
+            <td>{expense.num}</td>
+            <td>{expense.chart}</td>
+            {showCode && <td>{expense.code}</td>}
+            <td>{expense.description}</td>
+            <td>
+              <NumberDisplay
+                value={expense.spent}
+                precision={2}
+              ></NumberDisplay>
+            </td>
+            <td>
+              <NumberDisplay value={expense.fte} precision={4}></NumberDisplay>
+            </td>
+            <td>
+              <input
+                type='checkbox'
+                checked={isSelected(expense)}
+                onChange={(event): void => expenseSelected(expense, event)}
+              ></input>
+            </td>
           </tr>
         ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-              })}
-            </tr>
-          );
-        })}
       </tbody>
     </table>
   );
