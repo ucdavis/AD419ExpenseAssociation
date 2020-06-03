@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Expense } from '../../models';
 import NumberDisplay from '../NumberDisplay';
-import { ProjectFilter } from '../Filter';
+import { TableFilter } from '../Filter';
 
 interface Props {
   grouping: string;
@@ -75,7 +75,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
   return (
     <>
       <div>
-        <ProjectFilter filter={filter} setFilter={setFilter}></ProjectFilter>
+        <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       </div>
       <table>
         <thead>

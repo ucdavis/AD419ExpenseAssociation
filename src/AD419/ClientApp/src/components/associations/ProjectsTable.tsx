@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
-import { ProjectFilter } from '../Filter';
+import { TableFilter } from '../Filter';
 
 interface Props {
   projects: Project[];
@@ -64,7 +64,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
   return (
     <>
       <div>
-        <ProjectFilter filter={filter} setFilter={setFilter}></ProjectFilter>
+        <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       </div>
       <table className='table'>
         <thead>

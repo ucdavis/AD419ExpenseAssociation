@@ -3,10 +3,11 @@ import React from 'react';
 interface Props {
   filter: string | undefined;
   setFilter: (filter: string | undefined) => void;
+  placeholder?: string;
 }
 
 // Define a default UI for filtering
-export const ProjectFilter = (props: Props): JSX.Element => {
+export const TableFilter = (props: Props): JSX.Element => {
   const { filter, setFilter } = props;
 
   return (
@@ -17,7 +18,7 @@ export const ProjectFilter = (props: Props): JSX.Element => {
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
-        placeholder={`Search projects...`}
+        placeholder={props.placeholder || 'Search...'}
       />
     </span>
   );
