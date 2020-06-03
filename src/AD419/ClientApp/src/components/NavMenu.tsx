@@ -21,13 +21,17 @@ export const NavMenu = (): JSX.Element => {
   return (
     <header>
       <Navbar
-        className='navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3'
+        className='navbar-expand-sm navbar-toggleable-sm ng-white'
         light
       >
         <Container>
-          <NavbarBrand tag={Link} to='/'>
-            AD419
-          </NavbarBrand>
+        <h1 className="text-left">
+          <a href="/">
+            AD419 <br/>
+            <span className="secondary-font">
+            Fiscal Year 2019</span>
+          </a>
+        </h1>
           <NavbarToggler onClick={toggleNavbar} className='mr-2' />
           <Collapse
             className='d-sm-inline-flex flex-sm-row-reverse'
@@ -37,7 +41,27 @@ export const NavMenu = (): JSX.Element => {
             <ul className='navbar-nav flex-grow'>
               <NavItem>
                 <NavLink tag={Link} className='text-dark' to='/'>
-                  Home
+                  Associations
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className='text-dark' to='/'>
+                  Summary
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className='text-dark' to='/'>
+                  Instructions
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className='text-dark' to='/'>
+                  Emulation
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className='text-dark' to='/'>
+                  Admin
                 </NavLink>
               </NavItem>
             </ul>
