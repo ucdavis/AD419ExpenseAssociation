@@ -117,7 +117,6 @@ export default function ProjectsContainer(props: Props): JSX.Element {
 
   return (
     <div>
-      <h1>Projects</h1>
       <button
         className='btn btn-primary'
         disabled={!canAssociate}

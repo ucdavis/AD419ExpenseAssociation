@@ -34,30 +34,40 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
 
   return (
     <div>
-      <h1>Expenses</h1>
-      <Groupings
-        grouping={props.expenseGrouping.grouping}
-        setGrouping={setGrouping}
-      ></Groupings>
-      <div>
-        <input
-          type='checkbox'
-          checked={props.expenseGrouping.showAssociated}
-          onChange={(event): void =>
-            handleOptionsChange(event, 'showAssociated')
-          }
-        ></input>
-        <label>Associated</label>
-        <br></br>
-        <input
-          type='checkbox'
-          checked={props.expenseGrouping.showUnassociated}
-          onChange={(event): void =>
-            handleOptionsChange(event, 'showUnassociated')
-          }
-        ></input>
-        <label>Unassociated</label>
+      <div className="card-body card-bg">
+        <div className="row justify-content-between">
+          <div className="col">
+          <Groupings
+            grouping={props.expenseGrouping.grouping}
+            setGrouping={setGrouping}
+          ></Groupings>
+        </div>
+          <div className="col-sm">
+            <div className="form-check form-check-inline">
+            <input
+              type='checkbox'
+              className="form-check-input"
+              checked={props.expenseGrouping.showAssociated}
+              onChange={(event): void =>
+                handleOptionsChange(event, 'showAssociated')
+              }
+            ></input>
+            <label className="form-check-label">Associated</label>
+          </div>
+          <div className="form-check form-check-inline">
+            <input
+              type='checkbox'
+              className="form-check-input"
+              checked={props.expenseGrouping.showUnassociated}
+              onChange={(event): void =>
+                handleOptionsChange(event, 'showUnassociated')
+              }
+            ></input>
+            <label className="form-check-label">Unassociated</label>
+          </div>
+        </div>
       </div>
+    </div>
       <div>
         <ExpenseTable
           grouping={expenseGrouping.grouping}

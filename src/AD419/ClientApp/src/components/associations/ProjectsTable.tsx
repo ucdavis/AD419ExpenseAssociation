@@ -66,6 +66,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
       <div>
         <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       </div>
+      <div className="card">
       <table className='table'>
         <thead>
           <tr>
@@ -122,6 +123,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
           ))}
         </tbody>
       </table>
+    </div>
     </>
   );
 }

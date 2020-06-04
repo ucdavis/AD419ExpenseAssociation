@@ -25,13 +25,13 @@ export const NavMenu = (): JSX.Element => {
         light
       >
         <Container>
-        <h1 className="text-left">
-          <a href="/">
+
+          <a className="navbar-brand logo text-left" href="/">
             AD419 <br/>
-            <span className="secondary-font">
+            <span className="secondary-font current-year">
             Fiscal Year 2019</span>
           </a>
-        </h1>
+
           <NavbarToggler onClick={toggleNavbar} className='mr-2' />
           <Collapse
             className='d-sm-inline-flex flex-sm-row-reverse'

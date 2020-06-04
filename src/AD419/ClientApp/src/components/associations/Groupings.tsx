@@ -11,7 +11,7 @@ export default function Groupings(props: Props): JSX.Element {
     props.setGrouping(val);
   };
   return (
-    <select onChange={handleSelected}>
+    <select className="form-control" onChange={handleSelected}>
       {groupOptions.map((option) => (
         <option key={option.value} value={option.value}>
           {option.name}

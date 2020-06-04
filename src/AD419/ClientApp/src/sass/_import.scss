@@ -1,8 +1,8 @@
 @import "bootstrap/scss/_functions";
 @import "bootstrap/scss/_variables";
 @import '@ucdavis/gunrockin/sass/gunrockin.scss';
-$primary-color:    $bodega;
-$secondary-color:  $california;
+$primary-color:    $quad;
+$secondary-color:  $gunrock;
 $theme-colors: (
  primary: $primary-color,
  secondary: $secondary-color
@@ -10,3 +10,6 @@ $theme-colors: (
 @import "bootstrap/scss/bootstrap";
 $font-path: '/src/node_modules/@ucdavis/gunrockin/media';
 @import '@ucdavis/gunrockin/sass/_typography.scss';
+
+$bg-primary: #F3F4F7;
+$bg-secondary: #F7FAFC;

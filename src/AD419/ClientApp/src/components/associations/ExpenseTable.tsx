@@ -73,7 +73,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
 
   return (
     <>
-      <div>
+      <div className="card-body card-bg">
         <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       </div>
       <table>
