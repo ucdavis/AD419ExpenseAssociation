@@ -35,6 +35,7 @@ export const PercentInput = (props: Props): JSX.Element => {
 
   return (
     <input
+      className="form-control percent-td form-control-xs"
       key={props.project.accession}
       type='text'
       value={percent}

@@ -11,9 +11,8 @@ export const TableFilter = (props: Props): JSX.Element => {
   const { filter, setFilter } = props;
 
   return (
-    <div>
-      <form>
-        <div className="form-group">
+      <form className="form-group">
+
       <input
       type="search"
       className="form-control"
@@ -23,8 +22,6 @@ export const TableFilter = (props: Props): JSX.Element => {
         }}
         placeholder={props.placeholder || 'Search...'}
       />
-    </div>
     </form>
-    </div>
   );
 };

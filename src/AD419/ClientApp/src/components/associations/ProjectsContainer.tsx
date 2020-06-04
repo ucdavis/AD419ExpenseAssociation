@@ -121,18 +121,26 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   }, [selectedAssociations]);
 
   return (
-    <div>
+  <div>
+    <div className="row justify-content-between">
+    <div className="col-sm-7">
       <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
+    </div>
+      <div className="col-sm-5">
+      <div className="d-flex justify-content-between">
       <button
-        className='btn btn-outline-secondary'
+        className='btn btn-assigners btn-outline-secondary'
         disabled={!canAssociate}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
         Assign
       </button>
-      <button className='btn btn-outline-primary' onClick={props.unassociate}>
+      <button className='btn btn-assigners btn-outline-primary' onClick={props.unassociate}>
         Unassign
       </button>
+      </div>
+      </div>
+      </div>
       <div>
         <ProjectsTable
           filter={filter}
@@ -142,6 +150,6 @@ export default function ProjectsContainer(props: Props): JSX.Element {
           selectedAssociations={selectedAssociations}
         ></ProjectsTable>
       </div>
-    </div>
+  </div>
   );
 }
