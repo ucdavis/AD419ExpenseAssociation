@@ -48,6 +48,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     }));
 
     setSelectedAssociations(associationsWithPercentages);
+    setFilter(undefined);
   }, [props.associations]);
 
   const projectSelected = (
@@ -134,7 +135,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       </button>
       <div>
         <ProjectsTable
-        filter={filter}
+          filter={filter}
           projects={projects}
           projectSelected={projectSelected}
           projectPercentageChange={handleProjectPercentageChange}
