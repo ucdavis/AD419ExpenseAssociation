@@ -1,8 +1,8 @@
 @import "bootstrap/scss/_functions";
 @import "bootstrap/scss/_variables";
 @import '@ucdavis/gunrockin/sass/gunrockin.scss';
-$primary-color:    $quad;
-$secondary-color:  $gunrock;
+$primary-color:    $gunrock;
+$secondary-color:  $quad;
 $theme-colors: (
  primary: $primary-color,
  secondary: $secondary-color
