@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 
 import { Organization, Project, Association } from '../../models';
 import ProjectsTable from './ProjectsTable';
+import { TableFilter } from '../Filter';
 
 interface Props {
   org: Organization | undefined;
@@ -15,6 +16,9 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   const [selectedAssociations, setSelectedAssociations] = useState<
     Association[]
   >([]);
+
+  // ability to filter the unselected projects by project or PI
+  const [filter, setFilter] = useState<string>();
 
   useEffect(() => {
     const getProjects = async (): Promise<void> => {
@@ -44,6 +48,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     }));
 
     setSelectedAssociations(associationsWithPercentages);
+    setFilter(undefined);
   }, [props.associations]);
 
   const projectSelected = (
@@ -117,6 +122,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
 
   return (
     <div>
+      <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       <button
         className='btn btn-outline-secondary'
         disabled={!canAssociate}
@@ -129,6 +135,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
       </button>
       <div>
         <ProjectsTable
+          filter={filter}
           projects={projects}
           projectSelected={projectSelected}
           projectPercentageChange={handleProjectPercentageChange}

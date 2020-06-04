@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
-import { TableFilter } from '../Filter';
 
 interface Props {
+  filter: string | undefined;
   projects: Project[];
   projectSelected: (
     project: Project,
@@ -17,8 +17,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
   // TODO: is this the right way to use a memo of non-static data?
   const projects = React.useMemo(() => props.projects, [props.projects]);
 
-  // ability to filter the unselected projects by project or PI
-  const [filter, setFilter] = useState<string>();
+  const { filter } = props;
 
   // we break the projects list into separate lists for those that have already been selected
   const unselectedProjects: Project[] = [],
@@ -63,9 +62,6 @@ export default function ProjectsTable(props: Props): JSX.Element {
   // TODO: we'll do two separate tables for now.  If they prove to be similar, refactor
   return (
     <>
-      <div>
-        <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
-      </div>
       <div className="card">
       <table className='table'>
         <thead>
