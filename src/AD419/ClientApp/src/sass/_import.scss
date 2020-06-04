@@ -1,12 +1,15 @@
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
-@import 'node_modules/@ucdavis/gunrockin/sass/gunrockin.scss';
-$primary-color:    $bodega;
-$secondary-color:  $california;
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import '@ucdavis/gunrockin/sass/gunrockin.scss';
+$primary-color:    $gunrock;
+$secondary-color:  $quad;
 $theme-colors: (
  primary: $primary-color,
  secondary: $secondary-color
 );
-@import 'node_modules/bootstrap/scss/bootstrap';
+@import "bootstrap/scss/bootstrap";
 $font-path: '/src/node_modules/@ucdavis/gunrockin/media';
-@import 'node_modules/@ucdavis/gunrockin/sass/typography.scss';
+@import '@ucdavis/gunrockin/sass/_typography.scss';
+
+$bg-primary: #F3F4F7;
+$bg-secondary: #F7FAFC;

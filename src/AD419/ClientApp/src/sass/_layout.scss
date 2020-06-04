@@ -1,0 +1,15 @@
+body {
+  background-color:$bg-primary;
+  background: url(/media/rainbow.svg);
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: contain;
+  padding-top:3%;
+}
+.card {
+  box-shadow: $box-shadow;
+  border:none;
+  .card-bg {
+    background-color:$bg-secondary;
+  }
+}

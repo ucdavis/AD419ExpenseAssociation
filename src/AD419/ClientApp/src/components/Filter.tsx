@@ -11,16 +11,20 @@ export const TableFilter = (props: Props): JSX.Element => {
   const { filter, setFilter } = props;
 
   return (
-    <span>
-      Search:{' '}
+    <div>
+      <form>
+        <div className="form-group">
       <input
       type="search"
+      className="form-control"
         value={filter || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
         placeholder={props.placeholder || 'Search...'}
       />
-    </span>
+    </div>
+    </form>
+    </div>
   );
 };
