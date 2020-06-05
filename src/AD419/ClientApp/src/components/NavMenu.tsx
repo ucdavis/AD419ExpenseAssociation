@@ -60,7 +60,7 @@ export const NavMenu = (): JSX.Element => {
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className='text-dark' to='/'>
+                <NavLink tag={Link} className='text-dark' to='/useradministration'>
                   Admin
                 </NavLink>
               </NavItem>
