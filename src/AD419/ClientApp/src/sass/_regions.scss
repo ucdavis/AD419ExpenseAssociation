@@ -12,3 +12,8 @@ table.projects-table {
   }
 
 }
+table.active-table {
+  td {
+    background-color:$primary-color;
+  }
+}

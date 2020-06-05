@@ -63,7 +63,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
   return (
     <>
       <div className="card">
-      <table className='table projects-table'>
+      <table className='table projects-table active-table'>
         <thead>
           <tr>
             <th></th>
