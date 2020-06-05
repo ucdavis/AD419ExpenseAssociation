@@ -95,7 +95,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
           ))}
         </tbody>
       </table>
-      <table className='table'>
+      <table className='table projects-table'>
         <tbody>
           {unselectedProjects.map((proj) => (
             <tr key={proj.accession}>

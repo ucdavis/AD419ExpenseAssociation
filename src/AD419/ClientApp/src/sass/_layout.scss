@@ -13,3 +13,17 @@ body {
     background-color:$bg-secondary;
   }
 }
+.container {
+  padding: 0;
+  width: 80%;
+  max-width:1440px;
+  @include breakpoint (sm) {
+    width: 95%;
+  }
+  @include breakpoint (md) {
+    width: 90%;
+  }
+  @include breakpoint(lg) {
+    width: 85%;
+  }
+}
