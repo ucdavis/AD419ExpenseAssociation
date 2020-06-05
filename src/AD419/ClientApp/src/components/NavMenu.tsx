@@ -59,7 +59,7 @@ export const NavMenu = (): JSX.Element => {
                 <a
                   className='text-dark nav-link'
                   href='https://catbert.caes.ucdavis.edu/UserManagement?application=AD419'
-                  rel='noreferrer'
+                  rel='noopener noreferrer'
                   target='_blank'
                 >
                   Admin
