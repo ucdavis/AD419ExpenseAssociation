@@ -3,7 +3,6 @@ import {
   Collapse,
   Container,
   Navbar,
-  NavbarBrand,
   NavbarToggler,
   NavItem,
   NavLink,
@@ -20,16 +19,13 @@ export const NavMenu = (): JSX.Element => {
 
   return (
     <header>
-      <Navbar
-        className='navbar-expand-sm navbar-toggleable-sm ng-white'
-        light
-      >
+      <Navbar className='navbar-expand-sm navbar-toggleable-sm ng-white' light>
         <Container>
-
-          <a className="navbar-brand logo text-left" href="/">
-            AD419 <br/>
-            <span className="secondary-font current-year">
-            Fiscal Year 2019</span>
+          <a className='navbar-brand logo text-left' href='/'>
+            AD419 <br />
+            <span className='secondary-font current-year'>
+              Fiscal Year 2019
+            </span>
           </a>
 
           <NavbarToggler onClick={toggleNavbar} className='mr-2' />
@@ -60,9 +56,14 @@ export const NavMenu = (): JSX.Element => {
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className='text-dark' to='/useradministration'>
+                <a
+                  className='text-dark nav-link'
+                  href='https://catbert.caes.ucdavis.edu/UserManagement?application=AD419'
+                  rel='noreferrer'
+                  target='_blank'
+                >
                   Admin
-                </NavLink>
+                </a>
               </NavItem>
             </ul>
           </Collapse>
