@@ -123,10 +123,10 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   return (
   <div>
     <div className="row justify-content-between">
-    <div className="col-sm-7">
+    <div className="col-sm-6">
       <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
     </div>
-      <div className="col-sm-5">
+      <div className="col-sm-6">
       <div className="d-flex justify-content-between">
       <button
         className='btn btn-assigners btn-outline-secondary'

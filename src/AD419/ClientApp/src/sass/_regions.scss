@@ -44,6 +44,7 @@ table.table {
 // Active table
 table.active-table {
   th {
+    border-top:none;
     &:first-child {
       width:5%;
     }
