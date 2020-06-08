@@ -1,13 +1,25 @@
 table.table {
   font-size:0.5rem;
+  input {
+    font-size:0.5rem;
+  }
   @include breakpoint (md) {
     font-size:0.75rem;
+    input {
+      font-size:0.75rem;
+    }
   }
   @include breakpoint (lg) {
     font-size:0.85rem;
+    input {
+      font-size:0.85rem;
+    }
   }
   @include breakpoint (xl) {
     font-size:1rem;
+    input {
+      font-size:1rem;
+    }
   }
   thead {
     background-color:$bg-secondary;
@@ -24,12 +36,27 @@ table.table {
     }
   }
   .percent-td {
-    width: 50px;
-      height: 26px;
-      padding: 0.375rem 0.35rem;
+    height: 32px;
+    padding: 0.375rem 0.35rem;
   }
 }
+
+// Active table
 table.active-table {
+  th {
+    &:first-child {
+      width:5%;
+    }
+    &:nth-child(2) {
+      width:20%;
+      @include breakpoint(xl) {
+        width:17%;
+      }
+    }
+    &:nth-child(3) {
+      width:36%;
+    }
+  }
   td {
     background-color:transparentize($gunrock,0.85);
   }
@@ -38,11 +65,43 @@ table.active-table {
   }
   margin-bottom:0px;
 }
-.btn-assigners {
-  width:45%;
+
+//Projects table
+table.projects-table {
+  tbody {
+    td {
+      &:first-child {
+        width:5%;
+      }
+      &:nth-child(2) {
+        width:20%;
+        @include breakpoint(xl) {
+          width:17%;
+        }
+      }
+      &:nth-child(3) {
+        width:36%;
+      }
+    }
+  }
 }
+
+// Association table
+table.expense-table {
+  tbody {
+    td {
+
+    }
+  }
+}
+
+// Navigation
 nav {
   li.nav-item a {
     font-size:1.1rem;
   }
+}
+// Buttons
+.btn-assigners {
+  width:45%;
 }
