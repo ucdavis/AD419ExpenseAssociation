@@ -16,6 +16,9 @@ table.table {
     }
   }
   tr {
+    &.expense-associated {
+      background-color:transparentize($quad,0.85);
+    }
     td {
       padding:0.5rem;
     }
@@ -28,9 +31,18 @@ table.table {
 }
 table.active-table {
   td {
-    background-color:$primary-color;
+    background-color:transparentize($gunrock,0.85);
   }
+  tbody tr:last-child {
+    border-bottom:5px solid $borders;
+  }
+  margin-bottom:0px;
 }
 .btn-assigners {
   width:45%;
+}
+nav {
+  li.nav-item a {
+    font-size:1.1rem;
+  }
 }
