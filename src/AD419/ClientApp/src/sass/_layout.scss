@@ -15,15 +15,21 @@ body {
 }
 .container {
   padding: 0;
-  width: 80%;
+  width: 85%;
   max-width:1440px;
   @include breakpoint (sm) {
-    width: 95%;
+    width: 98%;
   }
   @include breakpoint (md) {
-    width: 90%;
+    width: 95%;
   }
   @include breakpoint(lg) {
-    width: 85%;
+    width: 90%;
   }
+}
+header {
+  margin-bottom:3rem;
+}
+.right-side {
+  margin-top:31px;
 }

@@ -176,6 +176,7 @@ export default function AssociationContainer(): JSX.Element {
   return (
       <div className='row'>
         <div className='col-sm'>
+          <div className="form-group">
           <label>Department</label>
           <select className="form-control" name='orgs' onChange={orgSelected}>
             {orgs.map((org) => (
@@ -184,6 +185,7 @@ export default function AssociationContainer(): JSX.Element {
               </option>
             ))}
           </select>
+        </div>
           <div className="card">
           <ExpenseRecordsContainer
             expenses={expenses}
@@ -194,7 +196,7 @@ export default function AssociationContainer(): JSX.Element {
           ></ExpenseRecordsContainer>
         </div>
         </div>
-        <div className='col-sm'>
+        <div className='col-sm right-side'>
           <ProjectsContainer
             org={selectedOrg}
             associations={associations}
