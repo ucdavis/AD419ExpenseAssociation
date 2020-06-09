@@ -55,3 +55,12 @@ export interface ProjectInfo {
   statusCd: string;
   title: string;
 }
+
+export interface SFNSummary {
+  groupDisplayOrder: number;
+  lineDisplayOrder: number;
+  lineTypeCode: string;
+  lineDisplayDescriptor: string;
+  sfn: string;
+  total: number;
+}
