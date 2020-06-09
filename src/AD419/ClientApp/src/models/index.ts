@@ -39,3 +39,19 @@ export interface AssociationTotal {
   fte: number;
   recs: number;
 }
+
+export interface ProjectInfo {
+  accession: string;
+  inv1: string;
+  inv2?: string;
+  inv3?: string;
+  inv4?: string;
+  inv5?: string;
+  inv6?: string;
+  beginDate: Date;
+  termDate: Date;
+  projTypeCd?: string;
+  regionalProjNum?: string;
+  statusCd: string;
+  title: string;
+}

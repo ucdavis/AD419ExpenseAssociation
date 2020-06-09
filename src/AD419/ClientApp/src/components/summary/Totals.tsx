@@ -12,7 +12,6 @@ export default function Totals(props: Props): JSX.Element {
 
   // get totals whenever orgs change
   useEffect(() => {
-    console.log('org change');
     const getTotals = async (): Promise<void> => {
       const result = await fetch(`/Summary/ExpensesByDepartment/${org?.code}`);
       const data = (await result.json()) as AssociationTotal[];

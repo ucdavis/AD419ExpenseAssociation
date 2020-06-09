@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Organization } from '../../models';
 import Totals from './Totals';
+import ProjectInformation from './ProjectInformation';
 
 export default function SummaryContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -59,10 +60,12 @@ export default function SummaryContainer(): JSX.Element {
         <div className='card'>
           <Totals org={selectedOrg}></Totals>
         </div>
+        <div className='card'>
+          FISCAL YEAR 2019
+          <ProjectInformation org={selectedOrg}></ProjectInformation>
+        </div>
       </div>
-      <div className="col-sm">
-          other col
-      </div>
+      <div className='col-sm'>other col</div>
     </div>
   );
 }
