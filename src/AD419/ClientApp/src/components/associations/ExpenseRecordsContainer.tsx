@@ -43,7 +43,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
           ></Groupings>
         </div>
           <div className="col-sm">
-            <div className="form-check form-check-inline">
+            <div className="form-check checkbox checkbox-secondary form-check-inline">
             <input
               type='checkbox'
               className="form-check-input"
@@ -54,7 +54,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
             ></input>
             <label className="form-check-label">Associated</label>
           </div>
-          <div className="form-check form-check-inline">
+          <div className="form-check checkbox checkbox-primary form-check-inline">
             <input
               type='checkbox'
               className="form-check-input"
