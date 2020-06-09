@@ -32,3 +32,10 @@ export interface ExpenseGrouping {
   showAssociated: boolean;
   showUnassociated: boolean;
 }
+
+export interface AssociationTotal {
+  name: string;
+  spent: number;
+  fte: number;
+  recs: number;
+}
