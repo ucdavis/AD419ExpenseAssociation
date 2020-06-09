@@ -34,7 +34,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
 
   return (
     <div>
-      <div className="card-body card-bg">
+      <div className="card-body pb-0 card-bg">
         <div className="row justify-content-between">
           <div className="col">
           <Groupings

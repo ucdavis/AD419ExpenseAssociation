@@ -63,7 +63,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
   return (
     <>
       <div className="card">
-      <table className='table projects-table'>
+      <table className='table active-table'>
         <thead>
           <tr>
             <th></th>
@@ -95,7 +95,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
           ))}
         </tbody>
       </table>
-      <table className='table'>
+      <table className='table projects-table'>
         <tbody>
           {unselectedProjects.map((proj) => (
             <tr key={proj.accession}>

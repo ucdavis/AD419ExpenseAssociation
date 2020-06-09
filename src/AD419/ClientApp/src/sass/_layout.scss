@@ -13,3 +13,23 @@ body {
     background-color:$bg-secondary;
   }
 }
+.container {
+  padding: 0;
+  width: 85%;
+  max-width:1440px;
+  @include breakpoint (sm) {
+    width: 98%;
+  }
+  @include breakpoint (md) {
+    width: 95%;
+  }
+  @include breakpoint(lg) {
+    width: 90%;
+  }
+}
+header {
+  margin-bottom:3rem;
+}
+.right-side {
+  margin-top:31px;
+}
