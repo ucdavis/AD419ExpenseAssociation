@@ -174,11 +174,15 @@ export default function AssociationContainer(): JSX.Element {
   };
 
   return (
-      <div className='row mb-5'>
-        <div className='col-sm'>
-          <div className="form-group">
+    <div className='row mb-5'>
+      <div className='col-sm'>
+        <div className='form-group'>
           <label>Department</label>
-          <select className="form-control box-shadow" name='orgs' onChange={orgSelected}>
+          <select
+            className='form-control box-shadow'
+            name='orgs'
+            onChange={orgSelected}
+          >
             {orgs.map((org) => (
               <option key={org.code} value={org.code}>
                 {org.name}
@@ -186,7 +190,7 @@ export default function AssociationContainer(): JSX.Element {
             ))}
           </select>
         </div>
-          <div className="card">
+        <div className='card'>
           <ExpenseRecordsContainer
             expenses={expenses}
             selectedExpenses={selectedExpenses}
@@ -195,15 +199,15 @@ export default function AssociationContainer(): JSX.Element {
             setExpenseGrouping={setExpenseGrouping}
           ></ExpenseRecordsContainer>
         </div>
-        </div>
-        <div className='col-sm right-side'>
-          <ProjectsContainer
-            org={selectedOrg}
-            associations={associations}
-            associate={associate}
-            unassociate={unassociate}
-          ></ProjectsContainer>
-        </div>
       </div>
+      <div className='col-sm right-side'>
+        <ProjectsContainer
+          org={selectedOrg}
+          associations={associations}
+          associate={associate}
+          unassociate={unassociate}
+        ></ProjectsContainer>
+      </div>
+    </div>
   );
 }
