@@ -42,7 +42,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
             setGrouping={setGrouping}
           ></Groupings>
         </div>
-          <div className="col-sm">
+          <div className="col-sm d-flex align-items-center">
             <div className="form-check checkbox checkbox-secondary form-check-inline">
             <input
               type='checkbox'

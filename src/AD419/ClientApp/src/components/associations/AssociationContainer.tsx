@@ -179,7 +179,7 @@ export default function AssociationContainer(): JSX.Element {
         <div className='form-group'>
           <label>Department</label>
           <select
-            className='form-control box-shadow'
+            className='form-control form-shadow'
             name='orgs'
             onChange={orgSelected}
           >

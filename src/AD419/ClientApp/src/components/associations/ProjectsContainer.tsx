@@ -123,7 +123,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   return (
   <div>
     <div className="row justify-content-between">
-    <div className="col-sm-6 box-shadow-form">
+    <div className="col-sm-6 form-shadow-right">
       <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
     </div>
       <div className="col-sm-6">
