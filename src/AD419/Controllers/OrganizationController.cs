@@ -21,10 +21,12 @@ namespace AD419.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            var currentUser = User.Identity.Name;
+
             using (var conn = _dbService.GetConnection())
             {
                 var roles = await conn.QueryAsync<string>("usp_GetRolesByLoginID",
-                    new { LoginID = "postit", ApplicationName = "AD419" },
+                    new { LoginID = currentUser, ApplicationName = "AD419" },
                     commandType: CommandType.StoredProcedure);
 
                 if (roles.Any(r => r == "Admin"))
@@ -37,7 +39,7 @@ namespace AD419.Controllers
                 {
                     // not an admin, return just the user's orgs
                     return Ok(await conn.QueryAsync("usp_GetReportingOrgByUser",
-                        new { LoginID = "postit", ApplicationName = "AD419" },
+                        new { LoginID = currentUser, ApplicationName = "AD419" },
                         commandType: CommandType.StoredProcedure));
                 }
             }

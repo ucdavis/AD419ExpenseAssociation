@@ -14,28 +14,34 @@ namespace AD419.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IDbService _dbService;
+        private readonly IPermissionService _permissionService;
 
-        public ProjectController(IDbService dbService)
+        public ProjectController(IDbService dbService, IPermissionService permissionService)
         {
             this._dbService = dbService;
+            this._permissionService = permissionService;
         }
 
         [HttpGet("ByDepartment/{code}")]
-        public async Task<IEnumerable<ProjectModel>> GetByDepartment(string code)
+        public async Task<IActionResult> GetByDepartment(string code)
         {
-            // TODO: make sure they have acess to that dept
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, code))
+            {
+                return Forbid();
+            }
+
             using (var conn = _dbService.GetConnection())
             {
-                return await conn.QueryAsync<ProjectModel>("usp_getProjectsByDept",
+                return Ok(await conn.QueryAsync<ProjectModel>("usp_getProjectsByDept",
                     new { OrgR = code },
-                    commandType: CommandType.StoredProcedure);
+                    commandType: CommandType.StoredProcedure));
             }
         }
 
         [HttpGet("{id}")]
         public async Task<ProjectInfo> GetByProject(string id)
         {
-            // TODO: make sure they have acess to that dept
+            // TODO: make sure they have acess to that project
             using (var conn = _dbService.GetConnection())
             {
                 var projects = await conn.QueryAsync<ProjectInfo>("usp_getProjectInfoByID",
@@ -47,7 +53,8 @@ namespace AD419.Controllers
         }
     }
 
-    public class ProjectInfo {
+    public class ProjectInfo
+    {
         public string Accession { get; set; }
         public string Inv1 { get; set; }
         public string Inv2 { get; set; }
