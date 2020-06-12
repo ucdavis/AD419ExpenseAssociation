@@ -104,6 +104,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
                 <NumberDisplay
                   value={expense.spent}
                   precision={2}
+                  type='currency'
                 ></NumberDisplay>
               </td>
               <td>
