@@ -12,19 +12,27 @@ namespace AD419.Controllers
     public class ExpenseController : ControllerBase
     {
         private readonly IDbService _dbService;
+        private readonly IPermissionService _permissionService;
 
-        public ExpenseController(IDbService dbService)
+        public ExpenseController(IDbService dbService, IPermissionService permissionService)
         {
             this._dbService = dbService;
+            this._permissionService = permissionService;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ExpenseModel>> Get(string org, string grouping, bool showAssociated = true, bool showUnassociated = true)
+        public async Task<IActionResult> Get(string org, string grouping, bool showAssociated = true, bool showUnassociated = true)
         {
-            using (var conn = _dbService.GetConnection()) {
-                return await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGrouping", 
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, org))
+            {
+                return Forbid();
+            }
+
+            using (var conn = _dbService.GetConnection())
+            {
+                return Ok(await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGrouping",
                 new { Grouping = grouping, OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
-                commandType: CommandType.StoredProcedure);
+                commandType: CommandType.StoredProcedure));
             }
         }
     }

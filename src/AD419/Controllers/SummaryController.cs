@@ -12,33 +12,43 @@ namespace AD419.Controllers
     public class SummaryController : ControllerBase
     {
         private readonly IDbService _dbService;
+        private readonly IPermissionService _permissionService;
 
-        public SummaryController(IDbService dbService)
+        public SummaryController(IDbService dbService, IPermissionService permissionService)
         {
             this._dbService = dbService;
+            this._permissionService = permissionService;
         }
 
         [HttpGet("ExpensesByDepartment/{code}")]
-        public async Task<IEnumerable<ExpenseSummary>> GetExpensesByDepartment(string code)
+        public async Task<IActionResult> GetExpensesByDepartment(string code)
         {
-            // TODO: make sure they have acess to that dept
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, code))
+            {
+                return Forbid();
+            }
+
             using (var conn = _dbService.GetConnection())
             {
-                return await conn.QueryAsync<ExpenseSummary>("usp_getTotalExpensesByDepartment",
+                return Ok(await conn.QueryAsync<ExpenseSummary>("usp_getTotalExpensesByDepartment",
                     new { OrgR = code },
-                    commandType: CommandType.StoredProcedure);
+                    commandType: CommandType.StoredProcedure));
             }
         }
 
         [HttpGet("ExpensesBySFN/{code}")]
-        public async Task<IEnumerable<SFNSummary>> GetExpensesBySFN(string code, string accession, int associationStatus)
+        public async Task<IActionResult> GetExpensesBySFN(string code, string accession, int associationStatus)
         {
-            // TODO: make sure they have acess to that dept
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, code))
+            {
+                return Forbid();
+            }
+
             using (var conn = _dbService.GetConnection())
             {
-                return await conn.QueryAsync<SFNSummary>("usp_GetExpensesBySFN",
+                return Ok(await conn.QueryAsync<SFNSummary>("usp_GetExpensesBySFN",
                     new { OrgR = code, Accession = accession, IntAssociationStatus = associationStatus },
-                    commandType: CommandType.StoredProcedure);
+                    commandType: CommandType.StoredProcedure));
             }
         }
     }
