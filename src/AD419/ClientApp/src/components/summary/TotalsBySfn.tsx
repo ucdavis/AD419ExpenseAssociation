@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Organization, SFNSummary } from '../../models';
+import NumberDisplay from '../NumberDisplay';
 
 interface Props {
   org: Organization | undefined;
@@ -43,7 +44,17 @@ export default function TotalsBySfn(props: Props): JSX.Element {
             <tr className={lineTotal.lineTypeCode}>
               <td>{lineTotal.lineDisplayDescriptor}</td>
               <td>{lineTotal.sfn}</td>
-              <td>{lineTotal.lineTypeCode === 'heading' ? '' : lineTotal.total}</td>
+              <td>
+                {lineTotal.lineTypeCode === 'Heading' ? (
+                  ''
+                ) : (
+                  <NumberDisplay
+                    value={lineTotal.total}
+                    precision={2}
+                    type={lineTotal.lineTypeCode.startsWith('FTE') ? 'number' : 'currency'}
+                  ></NumberDisplay>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
