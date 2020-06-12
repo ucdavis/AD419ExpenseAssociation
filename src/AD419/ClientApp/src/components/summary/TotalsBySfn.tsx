@@ -30,13 +30,24 @@ export default function TotalsBySfn(props: Props): JSX.Element {
   // TODO: find a better key
   return (
     <div>
-      <ul>
-        {totals.map((lineTotal) => (
-          <li key={lineTotal.lineDisplayDescriptor}>
-            {lineTotal.lineDisplayDescriptor}- {lineTotal.total}
-          </li>
-        ))}
-      </ul>
+      <table className='table'>
+        <thead>
+          <tr>
+            <th>Line Description</th>
+            <th>SFN</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {totals.map((lineTotal) => (
+            <tr className={lineTotal.lineTypeCode}>
+              <td>{lineTotal.lineDisplayDescriptor}</td>
+              <td>{lineTotal.sfn}</td>
+              <td>{lineTotal.total}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
