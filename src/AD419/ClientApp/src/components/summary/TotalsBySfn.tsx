@@ -43,7 +43,7 @@ export default function TotalsBySfn(props: Props): JSX.Element {
             <tr className={lineTotal.lineTypeCode}>
               <td>{lineTotal.lineDisplayDescriptor}</td>
               <td>{lineTotal.sfn}</td>
-              <td>{lineTotal.total}</td>
+              <td>{lineTotal.lineTypeCode === 'heading' ? '' : lineTotal.total}</td>
             </tr>
           ))}
         </tbody>
