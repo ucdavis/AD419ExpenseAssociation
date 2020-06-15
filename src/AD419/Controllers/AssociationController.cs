@@ -14,28 +14,40 @@ namespace AD419.Controllers
     public class AssociationController : ControllerBase
     {
         private readonly IDbService _dbService;
+        private readonly IPermissionService _permissionService;
 
-        public AssociationController(IDbService dbService)
+        public AssociationController(IDbService dbService, IPermissionService permissionService)
         {
             this._dbService = dbService;
+            this._permissionService = permissionService;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProjectModel>> GetAsync(string org)
+        public async Task<IActionResult> GetAsync(string org)
         {
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, org))
+            {
+                return Forbid();
+            }
+
             using (var conn = _dbService.GetConnection())
             {
-                return await conn.QueryAsync<ProjectModel>("usp_getProjectsByDept",
+                return Ok(await conn.QueryAsync<ProjectModel>("usp_getProjectsByDept",
                 new { OrgR = org },
-                commandType: CommandType.StoredProcedure);
+                commandType: CommandType.StoredProcedure));
             }
         }
 
         // POST /association/bygrouping
         // return all association expenses for the given grouping the expenses
         [HttpPost("ByGrouping")]
-        public async Task<IEnumerable<AssociationModel>> PostByGrouping([FromBody] AssociationsModel model)
+        public async Task<IActionResult> PostByGrouping([FromBody] AssociationsModel model)
         {
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, model.ExpenseGrouping.Org))
+            {
+                return Forbid();
+            }
+
             var associations = new List<AssociationModel>();
 
             // for each expense we need ot get back the association records and then join them together
@@ -53,18 +65,23 @@ namespace AD419.Controllers
             }
 
             // need to group/sum by project in case we have multiple associations against the same project
-            return associations.GroupBy(g => new { g.Project, g.Accession }).Select(r => new AssociationModel
+            return Ok(associations.GroupBy(g => new { g.Project, g.Accession }).Select(r => new AssociationModel
             {
                 Project = r.Key.Project,
                 Accession = r.Key.Accession,
                 Spent = r.Sum(s => s.Spent),
                 FTE = r.Sum(s => s.FTE)
-            });
+            }));
         }
 
         [HttpPut]
-        public async Task<bool> Assign([FromBody] AssignmentModel model)
+        public async Task<IActionResult> Assign([FromBody] AssignmentModel model)
         {
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, model.ExpenseGrouping.Org))
+            {
+                return Forbid();
+            }
+
             // Nested loop through each expense grouping
             // each one contains multiple expenses (expenseId)
             // for each, delete their existing associations and create new ones according to distribution percentages
@@ -170,12 +187,17 @@ namespace AD419.Controllers
                 }
             }
 
-            return true;
+            return Ok();
         }
 
         [HttpDelete]
-        public async Task<bool> Unassign([FromBody] UnassignmentModel model)
+        public async Task<IActionResult> Unassign([FromBody] UnassignmentModel model)
         {
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, model.ExpenseGrouping.Org))
+            {
+                return Forbid();
+            }
+
             // calls usp_deleteAssociationsByGrouping for each expense group to be unassociated
             using (var conn = _dbService.GetConnection())
             {
@@ -205,7 +227,7 @@ namespace AD419.Controllers
                         // once everything is good, commit
                         await txn.CommitAsync();
 
-                        return true;
+                        return Ok();
                     }
                     catch
                     {
@@ -232,12 +254,14 @@ namespace AD419.Controllers
     }
 
     // TODO: maybe grouping + expenses can be a base class others will inherit from?
-    public class AssociationsModel {
+    public class AssociationsModel
+    {
         public ExpenseGroupingModel ExpenseGrouping { get; set; }
         public ExpenseModel[] Expenses { get; set; }
     }
 
-    public class UnassignmentModel {
+    public class UnassignmentModel
+    {
         public ExpenseGroupingModel ExpenseGrouping { get; set; }
         public ExpenseModel[] Expenses { get; set; }
     }
