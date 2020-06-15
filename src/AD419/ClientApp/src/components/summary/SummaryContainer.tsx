@@ -44,7 +44,9 @@ export default function SummaryContainer(): JSX.Element {
   return (
     <div className='row mb-5'>
       <div className='col-sm'>
-        <div className='form-group'>
+        <div className="card">
+          <div className="card-body">
+          <div className='form-group'>
           <label>Department</label>
           <select
             className='form-control box-shadow'
@@ -58,12 +60,13 @@ export default function SummaryContainer(): JSX.Element {
             ))}
           </select>
         </div>
-        <div className='card'>
           <Totals org={selectedOrg}></Totals>
+          </div>
         </div>
-        <div className='card'>
-          FISCAL YEAR 2019
+        <div className='card mt-5'>
+          <div className="card-body">
           <ProjectInformation org={selectedOrg}></ProjectInformation>
+          </div>
         </div>
       </div>
       <div className='col-sm'>

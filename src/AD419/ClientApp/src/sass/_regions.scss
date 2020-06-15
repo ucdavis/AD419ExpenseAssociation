@@ -91,16 +91,17 @@ table.projects-table {
     }
   }
 }
-
-// Association table
-table.expense-table {
+// Summary Table
+table.summary-table {
   tbody {
-    td {
-
+    tr.Heading {
+      background-color:transparentize($sunflower, .9)
+    }
+    tr.GroupSum {
+      background-color:transparentize($quad,0.85);
     }
   }
 }
-
 // Navigation
 nav {
   li.nav-item a {
@@ -122,53 +123,60 @@ nav {
 
 // checkboxes
 
-.checkbox > input {
-    height: 24px;
-    width: 24px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -o-appearance: none;
-    appearance: none;
-    border: 1px solid $borders;
-    border-radius: 2px;
-    outline: none;
-    transition-duration: 0.2s;
-    background-color: #fff;
-    cursor: pointer;
-  }
-  .checkbox > input:checked {
-      content: '\2713';
-      display: block;
-      text-align: center;
-      color: pink;
-      z-index: 999;
-  }
+// .checkbox > input {
+//     height: 24px;
+//     width: 24px;
+//     -webkit-appearance: none;
+//     -moz-appearance: none;
+//     -o-appearance: none;
+//     appearance: none;
+//     border: 1px solid $borders;
+//     border-radius: 2px;
+//     outline: none;
+//     transition-duration: 0.2s;
+//     background-color: #fff;
+//     cursor: pointer;
+//   }
+//   .checkbox > input:checked {
+//       content: '\2713';
+//       display: block;
+//       text-align: center;
+//       color: pink;
+//       z-index: 999;
+//   }
 
-  .checkbox > input:active {
-      border: 1px solid $primary-font;
+//   .checkbox > input:active {
+//       border: 1px solid $primary-font;
+//   }
+// .checkbox > input:checked {
+//     background-color: $primary-font;
+// }
+// .checkbox {
+//   &.checkbox-primary {
+//     &> input:checked {
+//       background-color: $primary-color;
+//       border-color: $primary-color;
+//     }
+//     &> input:active {
+//       border:1px solid $primary-color;
+//     }
+//   }
+// }
+// .checkbox {
+//   &.checkbox-secondary {
+//     &> input:checked {
+//       background-color: $secondary-color;
+//       border-color: $secondary-color;
+//     }
+//     &> input:active {
+//       border:1px solid $secondary-color;
+//     }
+//   }
+// }
+// Project info {
+  .projectinfo {
+    p {
+      font-size:1rem;
+      margin-bottom:0.8rem;
+    }
   }
-.checkbox > input:checked {
-    background-color: $primary-font;
-}
-.checkbox {
-  &.checkbox-primary {
-    &> input:checked {
-      background-color: $primary-color;
-      border-color: $primary-color;
-    }
-    &> input:active {
-      border:1px solid $primary-color;
-    }
-  }
-}
-.checkbox {
-  &.checkbox-secondary {
-    &> input:checked {
-      background-color: $secondary-color;
-      border-color: $secondary-color;
-    }
-    &> input:active {
-      border:1px solid $secondary-color;
-    }
-  }
-}

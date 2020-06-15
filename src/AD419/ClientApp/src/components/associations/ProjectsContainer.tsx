@@ -133,9 +133,11 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         disabled={!canAssociate}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
+        <i className="far fa-arrow-alt-circle-up"></i>
         Assign
       </button>
       <button className='btn btn-assigners btn-primary' onClick={props.unassociate}>
+      <i className="far fa-arrow-alt-circle-down"></i>
         Unassign
       </button>
       </div>

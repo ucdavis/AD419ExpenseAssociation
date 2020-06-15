@@ -44,7 +44,7 @@ export default function ProjectInformation(props: Props): JSX.Element {
   return (
     <div>
       <div className='form-group'>
-        <label>Projects</label>
+        <label>2019 Projects</label>
         <select
           className='form-control box-shadow'
           name='projects'
@@ -61,12 +61,11 @@ export default function ProjectInformation(props: Props): JSX.Element {
         </select>
       </div>
       {projectInfo && (
-        <div>
-          <h5>Investigators</h5>
-          <p>{projectInfo.inv1}</p>
-          <p>Begin: {projectInfo.beginDate}</p>
-          <p>End: {projectInfo.termDate}</p>
-          <textarea readOnly={true} value={projectInfo.title}></textarea>
+        <div className="projectinfo">
+          <p><b>Investigators:</b> {projectInfo.inv1}</p>
+          <p><b>Begin:</b> {projectInfo.beginDate}</p>
+          <p><b>End:</b> {projectInfo.termDate}</p>
+          <p><b>Project title:</b> {projectInfo.title}</p>
         </div>
       )}
     </div>
