@@ -61,11 +61,25 @@ export default function ProjectInformation(props: Props): JSX.Element {
         </select>
       </div>
       {projectInfo && (
-        <div className="projectinfo">
-          <p><b>Investigators:</b> {projectInfo.inv1}</p>
-          <p><b>Begin:</b> {projectInfo.beginDate}</p>
-          <p><b>End:</b> {projectInfo.termDate}</p>
-          <p><b>Project title:</b> {projectInfo.title}</p>
+        <div className='projectinfo'>
+          <p>
+            <b>Investigators:</b> {projectInfo.inv1}
+          </p>
+          <p>
+            <b>Begin:</b>{' '}
+            {projectInfo.beginDate
+              ? new Date(projectInfo.beginDate).toDateString()
+              : ''}
+          </p>
+          <p>
+            <b>End:</b>{' '}
+            {projectInfo.termDate
+              ? new Date(projectInfo.termDate).toDateString()
+              : ''}
+          </p>
+          <p>
+            <b>Project title:</b> {projectInfo.title}
+          </p>
         </div>
       )}
     </div>

@@ -4,10 +4,9 @@ import {
   Container,
   Navbar,
   NavbarToggler,
-  NavItem,
-  NavLink,
+  NavItem
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import './NavMenu.css';
 
 export const NavMenu = (): JSX.Element => {
@@ -36,23 +35,18 @@ export const NavMenu = (): JSX.Element => {
           >
             <ul className='navbar-nav flex-grow'>
               <NavItem>
-                <NavLink tag={Link} className='text-dark' to='/'>
+                <NavLink exact={true} className='nav-link text-dark' to='/'>
                   Associations
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className='text-dark' to='/summary'>
+                <NavLink className='nav-link text-dark' to='/summary'>
                   Summary
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className='text-dark' to='/'>
+                <NavLink className='nav-link text-dark' to='/instructions'>
                   Instructions
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className='text-dark' to='/'>
-                  Emulation
                 </NavLink>
               </NavItem>
               <NavItem>

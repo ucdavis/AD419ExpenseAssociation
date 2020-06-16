@@ -121,27 +121,33 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   }, [selectedAssociations]);
 
   return (
-  <div>
-    <div className="row justify-content-between">
-    <div className="col-sm-6 form-shadow-right">
-      <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
-    </div>
-      <div className="col-sm-6">
-      <div className="d-flex justify-content-between">
-      <button
-        className='btn btn-assigners btn-secondary'
-        disabled={!canAssociate}
-        onClick={(): Promise<void> => props.associate(selectedAssociations)}
-      >
-        <i className="far fa-arrow-alt-circle-up"></i>
-        Assign
-      </button>
-      <button className='btn btn-assigners btn-primary' onClick={props.unassociate}>
-      <i className="far fa-arrow-alt-circle-down"></i>
-        Unassign
-      </button>
-      </div>
-      </div>
+    <div>
+      <div className='row justify-content-between'>
+        <div className='col-sm-6 form-shadow-right'>
+          <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
+        </div>
+        <div className='col-sm-6'>
+          <div className='d-flex justify-content-between'>
+            <button
+              className='btn btn-assigners btn-secondary'
+              disabled={!canAssociate}
+              onClick={(): Promise<void> =>
+                props.associate(selectedAssociations)
+              }
+            >
+              <i className='far fa-arrow-alt-circle-up'></i>
+              Assign
+            </button>
+            <button
+              className='btn btn-assigners btn-primary'
+              disabled={props.associations.length === 0}
+              onClick={props.unassociate}
+            >
+              <i className='far fa-arrow-alt-circle-down'></i>
+              Unassign
+            </button>
+          </div>
+        </div>
       </div>
       <div>
         <ProjectsTable
@@ -152,6 +158,6 @@ export default function ProjectsContainer(props: Props): JSX.Element {
           selectedAssociations={selectedAssociations}
         ></ProjectsTable>
       </div>
-  </div>
+    </div>
   );
 }
