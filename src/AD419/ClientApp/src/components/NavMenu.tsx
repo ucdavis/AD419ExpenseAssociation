@@ -6,7 +6,7 @@ import {
   NavbarToggler,
   NavItem
 } from 'reactstrap';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './NavMenu.css';
 
 export const NavMenu = (): JSX.Element => {
