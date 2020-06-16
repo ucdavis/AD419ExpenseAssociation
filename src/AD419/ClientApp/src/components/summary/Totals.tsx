@@ -25,6 +25,7 @@ export default function Totals(props: Props): JSX.Element {
   }, [org]);
 
   return (
+    <div className="card">
     <table className='table'>
       <thead>
         <tr>
@@ -45,5 +46,6 @@ export default function Totals(props: Props): JSX.Element {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }

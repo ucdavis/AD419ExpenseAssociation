@@ -123,7 +123,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   return (
   <div>
     <div className="row justify-content-between">
-    <div className="col-sm-6 box-shadow-form">
+    <div className="col-sm-6 form-shadow-right">
       <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
     </div>
       <div className="col-sm-6">
@@ -133,9 +133,11 @@ export default function ProjectsContainer(props: Props): JSX.Element {
         disabled={!canAssociate}
         onClick={(): Promise<void> => props.associate(selectedAssociations)}
       >
+        <i className="far fa-arrow-alt-circle-up"></i>
         Assign
       </button>
       <button className='btn btn-assigners btn-primary' onClick={props.unassociate}>
+      <i className="far fa-arrow-alt-circle-down"></i>
         Unassign
       </button>
       </div>

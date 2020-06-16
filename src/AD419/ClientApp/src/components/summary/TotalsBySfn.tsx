@@ -30,8 +30,11 @@ export default function TotalsBySfn(props: Props): JSX.Element {
   // TODO: sort, order, make into a table
   // TODO: find a better key
   return (
-    <div>
-      <table className='table'>
+    <div className="card">
+      <div className="card-body">
+      <p className="mb-0">Funding information for <b>All Departments</b></p>
+      </div>
+      <table className='table summary-table'>
         <thead>
           <tr>
             <th>Line Description</th>
