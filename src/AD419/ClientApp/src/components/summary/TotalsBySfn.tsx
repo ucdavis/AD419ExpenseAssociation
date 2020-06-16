@@ -32,7 +32,7 @@ export default function TotalsBySfn(props: Props): JSX.Element {
   return (
     <div className="card">
       <div className="card-body">
-      <p className="mb-0">Funding information for <b>All Departments</b></p>
+      <p className="mb-0">Funding information for <b>{org?.name}</b></p>
       </div>
       <table className='table summary-table'>
         <thead>
