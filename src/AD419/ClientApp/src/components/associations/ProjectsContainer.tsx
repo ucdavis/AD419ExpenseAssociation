@@ -110,6 +110,30 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     setSelectedAssociations(associations);
   };
 
+  const toggleAllAssociations = (selected: boolean): void => {
+    if (selected) {
+      // select every project which isn't already selected
+      const evenPercentage = 100.0 / projects.length;
+
+      const everyProjectAsAssociation = projects.map((project) => {
+        const newAssociation: Association = {
+          project: project.project,
+          accession: project.accession,
+          percent: evenPercentage,
+          spent: 0,
+          fte: 0,
+        };
+
+        return newAssociation;
+      });
+
+      setSelectedAssociations(everyProjectAsAssociation);
+    } else {
+      // set selected associations back to empty
+      setSelectedAssociations([]);
+    }
+  };
+
   const canAssociate = useMemo((): boolean => {
     // % needs to add up to 100 (or close to)
     const totalAssocationPercent = selectedAssociations.reduce((sum, curr) => {
@@ -156,6 +180,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
           projectSelected={projectSelected}
           projectPercentageChange={handleProjectPercentageChange}
           selectedAssociations={selectedAssociations}
+          toggleAllAssociations={toggleAllAssociations}
         ></ProjectsTable>
       </div>
     </div>
