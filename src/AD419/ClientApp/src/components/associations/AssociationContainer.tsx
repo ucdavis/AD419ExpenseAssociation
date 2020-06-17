@@ -1,4 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
+
+import { useHistory } from 'react-router-dom';
+
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
 
@@ -32,6 +35,8 @@ export default function AssociationContainer(): JSX.Element {
 
   const [associations, setAssociations] = useState<Association[]>([]);
 
+  const history = useHistory();
+
   // fire only once to grab initial orgs
   useEffect(() => {
     const getDepartments = async (): Promise<void> => {
@@ -52,11 +57,14 @@ export default function AssociationContainer(): JSX.Element {
       if (data && data.length > 0) {
         setOrgs(orgs);
         setSelectedOrg(orgs[0]);
+      } else {
+        // no department access
+        history.push('/access');
       }
     };
 
     getDepartments(); // go grab the depts
-  }, []);
+  }, [history]);
 
   // query for associations whenever the expense grouping changes
   useEffect(() => {

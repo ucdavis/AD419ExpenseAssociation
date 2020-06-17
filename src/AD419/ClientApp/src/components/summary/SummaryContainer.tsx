@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+
+
+import { useHistory } from 'react-router-dom';
+
 import { Organization } from '../../models';
 import Totals from './Totals';
 import ProjectInformation from './ProjectInformation';
@@ -7,6 +11,7 @@ import TotalsBySfn from './TotalsBySfn';
 export default function SummaryContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization>();
+  const history = useHistory();
 
   // fire only once to grab initial orgs
   useEffect(() => {
@@ -28,11 +33,14 @@ export default function SummaryContainer(): JSX.Element {
       if (data && data.length > 0) {
         setOrgs(orgs);
         setSelectedOrg(orgs[0]);
+      } else {
+        // no department access
+        history.push('/access');
       }
     };
 
     getDepartments(); // go grab the depts
-  }, []);
+  }, [history]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;
@@ -44,33 +52,33 @@ export default function SummaryContainer(): JSX.Element {
   return (
     <div className='row mb-5'>
       <div className='col-sm'>
-        <div className="card">
-          <div className="card-body">
-          <div className='form-group'>
-          <label>Department</label>
-          <select
-            className='form-control box-shadow'
-            name='orgs'
-            onChange={orgSelected}
-          >
-            {orgs.map((org) => (
-              <option key={org.code} value={org.code}>
-                {org.name}
-              </option>
-            ))}
-          </select>
-        </div>
-          <Totals org={selectedOrg}></Totals>
+        <div className='card'>
+          <div className='card-body'>
+            <div className='form-group'>
+              <label>Department</label>
+              <select
+                className='form-control box-shadow'
+                name='orgs'
+                onChange={orgSelected}
+              >
+                {orgs.map((org) => (
+                  <option key={org.code} value={org.code}>
+                    {org.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Totals org={selectedOrg}></Totals>
           </div>
         </div>
         <div className='card mt-5'>
-          <div className="card-body">
-          <ProjectInformation org={selectedOrg}></ProjectInformation>
+          <div className='card-body'>
+            <ProjectInformation org={selectedOrg}></ProjectInformation>
           </div>
         </div>
       </div>
       <div className='col-sm'>
-          <TotalsBySfn org={selectedOrg}></TotalsBySfn>
+        <TotalsBySfn org={selectedOrg}></TotalsBySfn>
       </div>
     </div>
   );
