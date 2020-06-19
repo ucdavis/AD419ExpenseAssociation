@@ -49,8 +49,8 @@ export default function AssociationContainer(): JSX.Element {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const orgs: Organization[] = data.map((d: any) => {
         return {
-          code: d.OrgR,
-          name: d['Org-Dept'],
+          code: d.orgR,
+          name: d.name,
         };
       });
 

@@ -18,15 +18,15 @@ export default function SummaryContainer(): JSX.Element {
     const getDepartments = async (): Promise<void> => {
       // TODO: handle just getting orgs for current user
       // TODO: handle api errors and possibly login issue errors
-      const result = await fetch('/Organization');
+      const result = await fetch('/Organization?includeAll=true');
       const data = await result.json();
 
       // need to allow any because the return type is odd
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const orgs: Organization[] = data.map((d: any) => {
         return {
-          code: d.OrgR,
-          name: d['Org-Dept'],
+          code: d.orgR,
+          name: d.name,
         };
       });
 
