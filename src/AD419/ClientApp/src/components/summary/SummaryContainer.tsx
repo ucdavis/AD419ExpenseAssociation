@@ -18,7 +18,7 @@ export default function SummaryContainer(): JSX.Element {
     const getDepartments = async (): Promise<void> => {
       // TODO: handle just getting orgs for current user
       // TODO: handle api errors and possibly login issue errors
-      const result = await fetch('/Organization');
+      const result = await fetch('/Organization?includeAll=true');
       const data = await result.json();
 
       // need to allow any because the return type is odd

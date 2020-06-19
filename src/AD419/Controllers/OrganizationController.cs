@@ -19,7 +19,7 @@ namespace AD419.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(bool includeAll = false)
         {
             var currentUser = User.Identity.Name;
 
@@ -31,9 +31,17 @@ namespace AD419.Controllers
 
                 if (roles.Any(r => r == "Admin"))
                 {
-                    // return all orgs
-                    return Ok(await conn.QueryAsync<Org>("usp_getReportingOrgs",
-                        commandType: CommandType.StoredProcedure));
+                    // all orgs
+                    var orgs = (await conn.QueryAsync<Org>("usp_getReportingOrgs",
+                        commandType: CommandType.StoredProcedure)).ToList();
+
+                    if (includeAll)
+                    {
+                        // admins can include a special "all" department if desired
+                        orgs.Insert(0, new Org { OrgR = "All", Name = "-- All Departments --" });
+                    }
+
+                    return Ok(orgs);
                 }
                 else
                 {
@@ -46,7 +54,8 @@ namespace AD419.Controllers
         }
     }
 
-    public class Org {
+    public class Org
+    {
         public string OrgR { get; set; }
         public string Name { get; set; }
     }

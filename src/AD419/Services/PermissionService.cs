@@ -36,9 +36,29 @@ namespace AD419.Services
 
         public async Task<bool> CanAccessDepartment(string username, string orgR)
         {
-            var accessibleOrgs = await GetDepartments(username);
+            using (var conn = _dbService.GetConnection())
+            {
+                var roles = await conn.QueryAsync<string>("usp_GetRolesByLoginID",
+                    new { LoginID = username, ApplicationName = "AD419" },
+                    commandType: CommandType.StoredProcedure);
 
-            return accessibleOrgs.Contains(orgR);
+                IEnumerable<ReportingOrg> orgs;
+
+                if (roles.Any(r => r == "Admin"))
+                {
+                    // admin can see anything
+                    return true;
+                }
+                else
+                {
+                    // not an admin, return just the user's orgs
+                    orgs = await conn.QueryAsync<ReportingOrg>("usp_GetReportingOrgByUser",
+                        new { LoginID = username, ApplicationName = "AD419" },
+                        commandType: CommandType.StoredProcedure);
+
+                    return orgs.Any(org => org.OrgR == orgR);
+                }
+            }
         }
 
         public async Task<string[]> GetDepartments(string username)
@@ -53,7 +73,7 @@ namespace AD419.Services
 
                 if (roles.Any(r => r == "Admin"))
                 {
-                    // return all orgs
+                    // all orgs
                     orgs = await conn.QueryAsync<ReportingOrg>("usp_getReportingOrg",
                         commandType: CommandType.StoredProcedure);
                 }
