@@ -180,3 +180,10 @@ nav {
       margin-bottom:0.8rem;
     }
   }
+
+  // Navigation
+  nav {
+    a.active {
+      border-bottom:$sunflower 2px solid,
+    }
+  }
