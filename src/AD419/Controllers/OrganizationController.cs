@@ -32,17 +32,22 @@ namespace AD419.Controllers
                 if (roles.Any(r => r == "Admin"))
                 {
                     // return all orgs
-                    return Ok(await conn.QueryAsync("usp_getReportingOrg",
+                    return Ok(await conn.QueryAsync<Org>("usp_getReportingOrgs",
                         commandType: CommandType.StoredProcedure));
                 }
                 else
                 {
                     // not an admin, return just the user's orgs
-                    return Ok(await conn.QueryAsync("usp_GetReportingOrgByUser",
+                    return Ok(await conn.QueryAsync<Org>("usp_GetReportingOrgsByUser",
                         new { LoginID = currentUser, ApplicationName = "AD419" },
                         commandType: CommandType.StoredProcedure));
                 }
             }
         }
+    }
+
+    public class Org {
+        public string OrgR { get; set; }
+        public string Name { get; set; }
     }
 }
