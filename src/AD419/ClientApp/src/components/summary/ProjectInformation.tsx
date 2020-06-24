@@ -66,7 +66,7 @@ export default function ProjectInformation(props: Props): JSX.Element {
       {projectInfo && (
         <div className='projectinfo'>
           <p>
-            <b>Investigators:</b> {projectInfo.inv1}
+            <b>PI:</b> {projectInfo.inv1}
           </p>
           <p>
             <b>Begin:</b>{' '}
