@@ -23,16 +23,32 @@ export default function TotalsBySfn(props: Props): JSX.Element {
     };
 
     if (org && org.code) {
+      setTotals([]);
       getTotals();
     }
   }, [org]);
 
+  if (totals.length === 0) {
+    return (
+      <div className='card'>
+        <div className='card-body'>
+          <p className='mb-0'>
+            Loading information for <b>{org?.name}</b>
+          </p>
+          <img src='/media/loading.gif' alt='loading'></img>
+        </div>
+      </div>
+    );
+  }
+
   // TODO: sort, order, make into a table
   // TODO: find a better key
   return (
-    <div className="card">
-      <div className="card-body">
-      <p className="mb-0">Funding information for <b>{org?.name}</b></p>
+    <div className='card'>
+      <div className='card-body'>
+        <p className='mb-0'>
+          Funding information for <b>{org?.name}</b>
+        </p>
       </div>
       <table className='table summary-table'>
         <thead>
@@ -44,7 +60,10 @@ export default function TotalsBySfn(props: Props): JSX.Element {
         </thead>
         <tbody>
           {totals.map((lineTotal) => (
-            <tr key={lineTotal.lineDisplayDescriptor} className={lineTotal.lineTypeCode}>
+            <tr
+              key={lineTotal.lineDisplayDescriptor}
+              className={lineTotal.lineTypeCode}
+            >
               <td>{lineTotal.lineDisplayDescriptor}</td>
               <td>{lineTotal.sfn}</td>
               <td>
@@ -54,7 +73,11 @@ export default function TotalsBySfn(props: Props): JSX.Element {
                   <NumberDisplay
                     value={lineTotal.total}
                     precision={2}
-                    type={lineTotal.lineTypeCode.startsWith('FTE') ? 'number' : 'currency'}
+                    type={
+                      lineTotal.lineTypeCode.startsWith('FTE')
+                        ? 'number'
+                        : 'currency'
+                    }
                   ></NumberDisplay>
                 )}
               </td>
