@@ -19,6 +19,9 @@ export default function ProjectInformation(props: Props): JSX.Element {
       setProjects(data);
     };
     if (org && org.code) {
+      setProjects([]);
+      setSelectedProject(undefined);
+      setProjectInfo(undefined);
       getProjects();
     }
   }, [org]);
