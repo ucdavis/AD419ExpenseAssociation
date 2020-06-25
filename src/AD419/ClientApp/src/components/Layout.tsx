@@ -8,7 +8,7 @@ export const Layout = (props: React.PropsWithChildren<{}>): JSX.Element => (
            <Container>{props.children}</Container>
            <footer className='container text-center'>
              <p className='discreet'>
-               &copy; Copyright 2000-{new Date().getFullYear()}
+               &copy; Copyright {new Date().getFullYear()}
                The Regents of the University of California, Davis campus. All
                rights reserved.
              </p>
