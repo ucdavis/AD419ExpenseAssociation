@@ -30,7 +30,7 @@ export default function TotalsBySfn(props: Props): JSX.Element {
 
   if (totals.length === 0) {
     return (
-      <div className='card'>
+      <div className='card loading-card text-center'>
         <div className='card-body'>
           <p className='mb-0'>
             Loading information for <b>{org?.name}</b>
