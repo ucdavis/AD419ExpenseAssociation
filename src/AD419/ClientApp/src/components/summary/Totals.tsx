@@ -9,10 +9,6 @@ interface Props {
 export default function Totals(props: Props): JSX.Element {
   const { totals } = props;
 
-  if (!totals || totals.length === 0) {
-    return <div></div>;
-  }
-
   return (
     <div className='card'>
       <table className='table'>
