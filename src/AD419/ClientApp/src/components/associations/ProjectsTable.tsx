@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
+import { filterMatchesProject } from '../../util/filters';
 
 interface Props {
   filter: string | undefined;
@@ -33,12 +34,9 @@ export default function ProjectsTable(props: Props): JSX.Element {
       selectedProjects.push(proj);
     } else {
       if (filter) {
-        const lowercaseFilter = filter.toLowerCase();
         // we have a filter, so we need to only push if we match the filter
-        if (
-          proj.project.toLowerCase().includes(lowercaseFilter) ||
-          proj.pi.toLowerCase().includes(lowercaseFilter)
-        ) {
+        if (filterMatchesProject(filter, proj)) 
+        {
           unselectedProjects.push(proj);
         }
       } else {
