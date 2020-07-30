@@ -1,30 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Organization, AssociationTotal } from '../../models';
+import React from 'react';
+import { AssociationTotal } from '../../models';
 import NumberDisplay from '../NumberDisplay';
 
 interface Props {
-  org: Organization | undefined;
+  totals: AssociationTotal[];
 }
 
 export default function Totals(props: Props): JSX.Element {
-  const [totals, setTotals] = useState<AssociationTotal[]>([]);
+  const { totals } = props;
 
-  const { org } = props;
-
-  // get totals whenever orgs change
-  useEffect(() => {
-    const getTotals = async (): Promise<void> => {
-      const result = await fetch(`/Summary/ExpensesByDepartment/${org?.code}`);
-      const data = (await result.json()) as AssociationTotal[];
-
-      setTotals(data);
-    };
-
-    if (org && org.code) {
-      setTotals([]);
-      getTotals();
-    }
-  }, [org]);
+  if (!totals || totals.length === 0) {
+    return <div></div>;
+  }
 
   return (
     <div className='card'>
