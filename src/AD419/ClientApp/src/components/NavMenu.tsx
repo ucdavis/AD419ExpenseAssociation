@@ -17,9 +17,9 @@ export const NavMenu = (): JSX.Element => {
   };
 
   return (
-    <header>
-      <Navbar className='navbar-expand-sm navbar-toggleable-sm ng-white' light>
-        <Container>
+    <header className="container">
+      <Navbar className='row navbar-expand-sm navbar-toggleable-sm ng-white' light>
+    
           <a className='navbar-brand logo text-left' href='/'>
             AD419 <br />
             <span className='secondary-font current-year'>
@@ -61,7 +61,7 @@ export const NavMenu = (): JSX.Element => {
               </NavItem>
             </ul>
           </Collapse>
-        </Container>
+ 
       </Navbar>
     </header>
   );
