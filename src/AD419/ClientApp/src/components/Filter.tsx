@@ -11,11 +11,15 @@ export const TableFilter = (props: Props): JSX.Element => {
   const { filter, setFilter } = props;
 
   return (
-      <form className="form-group">
-
+    <form
+      className='form-group'
+      onSubmit={(e): void => {
+        e.preventDefault();
+      }}
+    >
       <input
-      type="search"
-      className="form-control"
+        type='search'
+        className='form-control'
         value={filter || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely

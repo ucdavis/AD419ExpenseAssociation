@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Organization } from '../../models';
-import Totals from './Totals';
 import ProjectInformation from './ProjectInformation';
 import TotalsBySfn from './TotalsBySfn';
+import TotalsByOrg from './TotalsByOrg';
 
 export default function SummaryContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -68,7 +68,7 @@ export default function SummaryContainer(): JSX.Element {
                 ))}
               </select>
             </div>
-            <Totals org={selectedOrg}></Totals>
+            <TotalsByOrg org={selectedOrg}></TotalsByOrg>
           </div>
         </div>
         <div className='card mt-5'>
