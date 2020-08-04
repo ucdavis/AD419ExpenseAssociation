@@ -10,7 +10,9 @@ import {
   ExpenseGrouping,
   Association,
   Expense,
+  AssociationTotal,
 } from '../../models';
+import Totals from '../summary/Totals';
 
 const JSONHeader = {
   'Content-type': 'application/json; charset=UTF-8',
@@ -19,6 +21,7 @@ const JSONHeader = {
 export default function AssociationContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization>();
+  const [totals, setTotals] = useState<AssociationTotal[]>([]);
 
   // keep track of which groupings are selected in the expenses table
   const defaultExpenseGrouping: ExpenseGrouping = {
@@ -110,11 +113,21 @@ export default function AssociationContainer(): JSX.Element {
     selectedOrg,
   ]);
 
+  const getTotalsCallback = useCallback(async (): Promise<void> => {
+    const result = await fetch(
+      `/Summary/ExpensesByDepartment/${selectedOrg?.code}`
+    );
+    const data = (await result.json()) as AssociationTotal[];
+
+    setTotals(data);
+  }, [selectedOrg]);
+
   // requery whenever our grouping or org changes
   useEffect(() => {
     if (selectedOrg) {
       setSelectedExpenses([]);
       getExpensesCallback();
+      getTotalsCallback();
     }
   }, [
     selectedOrg,
@@ -123,6 +136,7 @@ export default function AssociationContainer(): JSX.Element {
     expenseGrouping.showUnassociated,
     setSelectedExpenses,
     getExpensesCallback,
+    getTotalsCallback
   ]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -154,6 +168,7 @@ export default function AssociationContainer(): JSX.Element {
     if (result.ok) {
       // associate success, reset the expenses so none are selected
       await getExpensesCallback();
+      getTotalsCallback();
       setSelectedExpenses([]);
     }
   };
@@ -177,6 +192,7 @@ export default function AssociationContainer(): JSX.Element {
     if (result.ok) {
       // delete success, reset the expenses so none are selected
       await getExpensesCallback();
+      getTotalsCallback();
       setSelectedExpenses([]);
     }
   };
@@ -206,6 +222,9 @@ export default function AssociationContainer(): JSX.Element {
             expenseGrouping={expenseGrouping}
             setExpenseGrouping={setExpenseGrouping}
           ></ExpenseRecordsContainer>
+        </div>
+        <div className='card'>
+          <Totals totals={totals}></Totals>
         </div>
       </div>
       <div className='col-sm right-side'>
