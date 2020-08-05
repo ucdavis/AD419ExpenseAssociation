@@ -11,7 +11,7 @@ export default function Totals(props: Props): JSX.Element {
 
   return (
     <div className='card'>
-      <table className='table'>
+      <table className='table totals-table'>
         <thead>
           <tr>
             <th></th>

@@ -3,14 +3,20 @@ body {
   background: url(/media/rainbow.svg);
   background-repeat: no-repeat;
   background-position: top;
-  background-size: contain;
+  background-size: 101%;
   padding-top:3%;
+}
+.site-content {
+  flex: 1;
 }
 .card {
   box-shadow: $box-shadow;
   border:none;
   .card-bg {
     background-color:$bg-secondary;
+  }
+  .card-body {
+    padding:0.5rem;
   }
 }
 .container {
@@ -28,7 +34,7 @@ body {
   }
 }
 header {
-  margin-bottom:3rem;
+  margin-bottom:.5rem;
 }
 .right-side {
   margin-top:31px;
