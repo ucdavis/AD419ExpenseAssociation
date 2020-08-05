@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
-import AssociationsEmpty from './AssociationsEmpty';
 
 import {
   Organization,
@@ -14,6 +13,7 @@ import {
   AssociationTotal,
 } from '../../models';
 import Totals from '../summary/Totals';
+import ExpensesEmpty from './ExpensesEmpty';
 
 const JSONHeader = {
   'Content-type': 'application/json; charset=UTF-8',
@@ -223,11 +223,15 @@ export default function AssociationContainer(): JSX.Element {
             expenseGrouping={expenseGrouping}
             setExpenseGrouping={setExpenseGrouping}
           ></ExpenseRecordsContainer>
+          {expenses.length === 0 && (
+            <ExpensesEmpty expenseGrouping={expenseGrouping}></ExpensesEmpty>
+          )}
         </div>
         <div className='card mt-5'>
-          <div className="card-body">
+          <div className='card-body'>
             <label>Department Totals</label>
-          <Totals totals={totals}></Totals></div>
+            <Totals totals={totals}></Totals>
+          </div>
         </div>
       </div>
       <div className='col-sm right-side'>
