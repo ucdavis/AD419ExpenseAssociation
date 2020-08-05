@@ -3,11 +3,8 @@ body {
   background: url(/media/rainbow.svg);
   background-repeat: no-repeat;
   background-position: top;
-  background-size: 100%;
+  background-size: 101%;
   padding-top:3%;
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
 }
 .site-content {
   flex: 1;

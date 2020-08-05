@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import ExpenseRecordsContainer from './ExpenseRecordsContainer';
 import ProjectsContainer from './ProjectsContainer';
+import AssociationsEmpty from './AssociationsEmpty';
 
 import {
   Organization,
@@ -223,8 +224,10 @@ export default function AssociationContainer(): JSX.Element {
             setExpenseGrouping={setExpenseGrouping}
           ></ExpenseRecordsContainer>
         </div>
-        <div className='card'>
-          <Totals totals={totals}></Totals>
+        <div className='card mt-5'>
+          <div className="card-body">
+            <label>Department Totals</label>
+          <Totals totals={totals}></Totals></div>
         </div>
       </div>
       <div className='col-sm right-side'>

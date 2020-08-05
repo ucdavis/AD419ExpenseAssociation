@@ -38,7 +38,9 @@ table.table {
 // Totals table
 table.totals-table {
   tr{
+    border-top:none;
     th {
+      border-top:none;
       &:nth-child(2){
         text-align: right;
       }
@@ -47,6 +49,7 @@ table.totals-table {
       }
     }
     td {
+      border-top:none;
       &:nth-child(2){
         text-align: right;
       }
