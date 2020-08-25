@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Typeahead } from 'react-bootstrap-typeahead';
+
 import { Organization, Project, ProjectInfo } from '../../models';
 
 interface Props {
@@ -41,31 +43,21 @@ export default function ProjectInformation(props: Props): JSX.Element {
     }
   }, [selectedProject]);
 
-  const projectSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    const val = e.target.value;
-
-    const proj = projects.find((p) => p.accession === val);
-    setSelectedProject(proj);
+  const projectSelected = (selectedProjects: Project[]): void => {
+    setSelectedProject(selectedProjects[0]);
   };
 
   return (
     <div>
       <div className='form-group'>
         <label>2019 Projects</label>
-        <select
-          className='form-control box-shadow'
-          name='projects'
+        <Typeahead
+          id='project-typeahead'
+          placeholder='Select A Project'
+          labelKey='project'
+          options={projects}
           onChange={projectSelected}
-        >
-          <option key='none' value='none'>
-            -- Select a project --
-          </option>
-          {projects.map((project) => (
-            <option key={project.accession} value={project.accession}>
-              {project.project}
-            </option>
-          ))}
-        </select>
+        />
       </div>
       {projectInfo && (
         <div className='projectinfo'>
