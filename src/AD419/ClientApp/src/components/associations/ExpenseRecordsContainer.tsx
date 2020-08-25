@@ -2,9 +2,11 @@ import React from 'react';
 import { Expense, ExpenseGrouping } from '../../models';
 import Groupings from './Groupings';
 import ExpenseTable from './ExpenseTable';
+import ExpensesEmpty from './ExpensesEmpty';
 
 interface Props {
   expenses: Expense[];
+  loading: boolean;
   selectedExpenses: Expense[];
   setSelectedExpenses: (expenses: Expense[]) => void;
   expenseGrouping: ExpenseGrouping;
@@ -30,6 +32,26 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
       ...expenseGrouping,
       grouping,
     });
+  };
+
+  const renderExpenseRecords = (): JSX.Element => {
+    if (props.loading) {
+      return <div>Loading</div>;
+    }
+
+    return (
+      <>
+        <ExpenseTable
+          grouping={expenseGrouping.grouping}
+          expenses={props.expenses}
+          selectedExpenses={props.selectedExpenses}
+          setSelectedExpenses={props.setSelectedExpenses}
+        ></ExpenseTable>
+        {props.expenses.length === 0 && props.loading === false && (
+          <ExpensesEmpty expenseGrouping={expenseGrouping}></ExpensesEmpty>
+        )}
+      </>
+    );
   };
 
   return (
@@ -75,12 +97,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
         </div>
       </div>
       <div>
-        <ExpenseTable
-          grouping={expenseGrouping.grouping}
-          expenses={props.expenses}
-          selectedExpenses={props.selectedExpenses}
-          setSelectedExpenses={props.setSelectedExpenses}
-        ></ExpenseTable>
+        {renderExpenseRecords()}
       </div>
     </div>
   );

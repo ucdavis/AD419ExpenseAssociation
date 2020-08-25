@@ -13,7 +13,6 @@ import {
   AssociationTotal,
 } from '../../models';
 import Totals from '../summary/Totals';
-import ExpensesEmpty from './ExpensesEmpty';
 
 const JSONHeader = {
   'Content-type': 'application/json; charset=UTF-8',
@@ -39,7 +38,7 @@ export default function AssociationContainer(): JSX.Element {
 
   const [associations, setAssociations] = useState<Association[]>([]);
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [expensesLoading, setExpensesLoading] = useState<boolean>(true);
 
   const history = useHistory();
 
@@ -103,14 +102,14 @@ export default function AssociationContainer(): JSX.Element {
   }, [selectedOrg, expenseGrouping, selectedExpenses]);
 
   const getExpensesCallback = useCallback(async (): Promise<void> => {
-    setLoading(true);
+    setExpensesLoading(true);
     const result = await fetch(
       `/Expense?org=${selectedOrg?.code}&grouping=${expenseGrouping.grouping}&showAssociated=${expenseGrouping.showAssociated}&showUnassociated=${expenseGrouping.showUnassociated}`
     );
     const expenses = await result.json();
 
     setExpenses(expenses);
-    setLoading(false);
+    setExpensesLoading(false);
   }, [
     expenseGrouping.grouping,
     expenseGrouping.showAssociated,
@@ -202,25 +201,6 @@ export default function AssociationContainer(): JSX.Element {
     }
   };
 
-  const renderExpenseRecords = (): JSX.Element => {
-    if (loading) {
-      return <div>Loading</div>;
-    }
-
-    return (
-      <>
-      <ExpenseRecordsContainer
-        expenses={expenses}
-        selectedExpenses={selectedExpenses}
-        setSelectedExpenses={setSelectedExpenses}
-        expenseGrouping={expenseGrouping}
-        setExpenseGrouping={setExpenseGrouping}
-      ></ExpenseRecordsContainer>
-      {expenses.length === 0 && (<ExpensesEmpty expenseGrouping={expenseGrouping}></ExpensesEmpty>)}
-      </>
-    );
-  };
-
   return (
     <div className='row mb-5'>
       <div className='col-sm'>
@@ -239,7 +219,14 @@ export default function AssociationContainer(): JSX.Element {
           </select>
         </div>
         <div className='card'>
-          {renderExpenseRecords()}
+          <ExpenseRecordsContainer
+            loading={expensesLoading}
+            expenses={expenses}
+            selectedExpenses={selectedExpenses}
+            setSelectedExpenses={setSelectedExpenses}
+            expenseGrouping={expenseGrouping}
+            setExpenseGrouping={setExpenseGrouping}
+          ></ExpenseRecordsContainer>
         </div>
         <div className='card mt-5'>
           <div className='card-body'>
