@@ -16,7 +16,11 @@ export default function ProjectInformation(props: Props): JSX.Element {
     const getProjects = async (): Promise<void> => {
       const result = await fetch(`/Project/ByDepartment/${org?.code}`);
       const data = (await result.json()) as Project[];
-      setProjects(data);
+      const orderedProjects = data.sort((a, b) =>
+        a.project.localeCompare(b.project)
+      );
+
+      setProjects(orderedProjects);
     };
     if (org && org.code) {
       setProjects([]);
