@@ -36,7 +36,11 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
 
   const renderExpenseRecords = (): JSX.Element => {
     if (props.loading) {
-      return <div>Loading</div>;
+      return (
+        <div className='loading-expander text-center'>
+          <b>Loading...</b>
+        </div>
+      );
     }
 
     return (
@@ -96,9 +100,7 @@ export default function ExpenseRecordsContainer(props: Props): JSX.Element {
           </div>
         </div>
       </div>
-      <div>
-        {renderExpenseRecords()}
-      </div>
+      <div>{renderExpenseRecords()}</div>
     </div>
   );
 }

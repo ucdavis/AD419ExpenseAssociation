@@ -1,33 +1,36 @@
+.loading-expander {
+  padding: 1.2rem 0;
+}
 .form-group {
-  margin-bottom:0.5rem;
+  margin-bottom: 0.5rem;
   .form-control {
-    height:36px;
+    height: 36px;
   }
 }
 table.table {
-  font-size:0.9rem;
-  margin-bottom:0px;
+  font-size: 0.9rem;
+  margin-bottom: 0px;
   tr {
     th {
-      padding:0.25rem 0.5rem;
+      padding: 0.25rem 0.5rem;
     }
     td {
-      padding:0.25rem 0.5rem;
+      padding: 0.25rem 0.5rem;
       vertical-align: middle;
     }
   }
   input {
-    font-size:0.8rem;
+    font-size: 0.8rem;
   }
   thead {
-    background-color:$bg-secondary;
+    background-color: $bg-secondary;
     th {
-      border-bottom:1px solid $borders-secondary;
+      border-bottom: 1px solid $borders-secondary;
     }
   }
   tr {
     &.expense-associated {
-      background-color:transparentize($quad,0.85);
+      background-color: transparentize($quad, 0.85);
     }
   }
   .percent-td {
@@ -37,23 +40,23 @@ table.table {
 }
 // Totals table
 table.totals-table {
-  tr{
-    border-top:none;
+  tr {
+    border-top: none;
     th {
-      border-top:none;
-      &:nth-child(2){
+      border-top: none;
+      &:nth-child(2) {
         text-align: right;
       }
-      &:nth-child(3){
+      &:nth-child(3) {
         text-align: right;
       }
     }
     td {
-      border-top:none;
-      &:nth-child(2){
+      border-top: none;
+      &:nth-child(2) {
         text-align: right;
       }
-      &:nth-child(3){
+      &:nth-child(3) {
         text-align: right;
       }
     }
@@ -63,19 +66,19 @@ table.totals-table {
 table.expense-table {
   tr {
     th {
-      &:nth-child(5){
-        text-align:right;
+      &:nth-child(5) {
+        text-align: right;
       }
-      &:nth-child(6){
-        text-align:right;
+      &:nth-child(6) {
+        text-align: right;
       }
     }
     td {
-      &:nth-child(5){
-        text-align:right;
+      &:nth-child(5) {
+        text-align: right;
       }
-      &:nth-child(6){
-        text-align:right;
+      &:nth-child(6) {
+        text-align: right;
       }
     }
   }
@@ -84,27 +87,27 @@ table.expense-table {
 // Active table
 table.active-table {
   th {
-    border-top:none;
+    border-top: none;
     &:first-child {
-      width:5%;
+      width: 5%;
     }
     &:nth-child(2) {
-      width:20%;
+      width: 20%;
       @include breakpoint(xl) {
-        width:17%;
+        width: 17%;
       }
     }
     &:nth-child(3) {
-      width:36%;
+      width: 36%;
     }
   }
   td {
-    background-color:transparentize($sunflower,0.91);
+    background-color: transparentize($sunflower, 0.91);
   }
   tbody tr:last-child {
-    border-bottom:5px solid $sunflower;
+    border-bottom: 5px solid $sunflower;
   }
-  margin-bottom:0px;
+  margin-bottom: 0px;
 }
 
 //Projects table
@@ -112,16 +115,16 @@ table.projects-table {
   tbody {
     td {
       &:first-child {
-        width:5%;
+        width: 5%;
       }
       &:nth-child(2) {
-        width:20%;
+        width: 20%;
         @include breakpoint(xl) {
-          width:17%;
+          width: 17%;
         }
       }
       &:nth-child(3) {
-        width:36%;
+        width: 36%;
       }
     }
   }
@@ -131,28 +134,28 @@ table.summary-table {
   tr {
     th {
       &:nth-child(3) {
-        text-align: right;;
+        text-align: right;
       }
     }
     td {
       &:nth-child(3) {
-        text-align: right;;
+        text-align: right;
       }
     }
   }
   tbody {
     tr.Heading {
-      background-color:transparentize($sunflower, .9)
+      background-color: transparentize($sunflower, 0.9);
     }
     tr.GroupSum {
-      background-color:transparentize($quad,0.85);
+      background-color: transparentize($quad, 0.85);
     }
   }
 }
 // Navigation
 nav {
   li.nav-item a {
-    font-size:1.1rem;
+    font-size: 1.1rem;
   }
 }
 // Buttons
@@ -160,32 +163,33 @@ nav {
   font-family: $sans-bold;
 }
 .btn-assigners {
-  width:45%;
+  width: 45%;
 }
 
 // Misc
-.form-shadow, .form-shadow-right input {
+.form-shadow,
+.form-shadow-right input {
   box-shadow: $box-shadow;
 }
 
 // Project info {
-  .projectinfo {
-    p {
-      font-size:1rem;
-      margin-bottom:0.8rem;
-    }
+.projectinfo {
+  p {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
   }
+}
 
-  // Navigation
-  nav {
-    a.active {
-      border-bottom:$sunflower 2px solid,
-    }
+// Navigation
+nav {
+  a.active {
+    border-bottom: $sunflower 2px solid;
   }
+}
 
-  // loading section
-  .loading-card {
-    img {
-      width:25%;
-    }
+// loading section
+.loading-card {
+  img {
+    width: 25%;
   }
+}
