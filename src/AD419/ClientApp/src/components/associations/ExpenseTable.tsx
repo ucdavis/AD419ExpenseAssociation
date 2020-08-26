@@ -98,8 +98,8 @@ export default function ExpenseTable(props: Props): JSX.Element {
             >
               <td>{expense.num}</td>
               <td>{expense.chart}</td>
-              {showCode && <td>{expense.code}</td>}
-              <td>{expense.description}</td>
+              {showCode && <td>{expense.code || '----'}</td>}
+              <td>{expense.description || '----'}</td>
               <td>
                 <NumberDisplay
                   value={expense.spent}
