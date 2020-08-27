@@ -15,7 +15,7 @@ table.table {
       padding: 0.25rem 0.5rem;
     }
     td {
-      padding: 0.25rem 0.5rem;
+      padding: 0.12rem 0.5rem;
       vertical-align: middle;
     }
   }
@@ -34,8 +34,7 @@ table.table {
     }
   }
   .percent-td {
-    height: 24px;
-    padding: 0.375rem 0.35rem;
+    height: 20px;
   }
 }
 // Totals table
@@ -92,13 +91,10 @@ table.active-table {
       width: 5%;
     }
     &:nth-child(2) {
-      width: 20%;
-      @include breakpoint(xl) {
-        width: 17%;
-      }
+      width: 12%;
     }
     &:nth-child(3) {
-      width: 36%;
+      width: 38%;
     }
   }
   td {
@@ -118,13 +114,10 @@ table.projects-table {
         width: 5%;
       }
       &:nth-child(2) {
-        width: 20%;
-        @include breakpoint(xl) {
-          width: 17%;
-        }
+        width: 12%;
       }
       &:nth-child(3) {
-        width: 36%;
+        width: 38%;
       }
     }
   }
