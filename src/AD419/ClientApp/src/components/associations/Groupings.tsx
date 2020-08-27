@@ -28,7 +28,7 @@ interface Option {
 const groupOptions: Option[] = [
   { name: 'Organization', value: 'Organization' },
   {
-    name: 'Principle Investigator',
+    name: 'Principal Investigator',
     value: 'PI',
   },
   {
