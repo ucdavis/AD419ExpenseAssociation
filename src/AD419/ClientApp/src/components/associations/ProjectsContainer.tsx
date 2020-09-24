@@ -147,11 +147,11 @@ export default function ProjectsContainer(props: Props): JSX.Element {
   return (
     <div>
       <div className='row justify-content-between'>
-        <div className='col-sm-6 form-shadow-right'>
+        <div className='col-12 col-sm-6 form-shadow-right'>
           <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
         </div>
-        <div className='col-sm-6'>
-          <div className='d-flex justify-content-between'>
+        <div className='col-12 col-sm-6'>
+          <div className='d-flex flex-wrap justify-content-between'>
             <button
               className='btn btn-assigners btn-secondary'
               disabled={!canAssociate}
