@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-
 import { useHistory } from 'react-router-dom';
 
 import { Organization } from '../../models';
@@ -51,7 +50,7 @@ export default function SummaryContainer(): JSX.Element {
 
   return (
     <div className='row mb-5'>
-      <div className='col-sm'>
+      <div className='col-12 col-md-6'>
         <div className='card'>
           <div className='card-body'>
             <div className='form-group'>
@@ -77,7 +76,7 @@ export default function SummaryContainer(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className='col-sm'>
+      <div className='col-12 col-md-6'>
         <TotalsBySfn org={selectedOrg}></TotalsBySfn>
       </div>
     </div>

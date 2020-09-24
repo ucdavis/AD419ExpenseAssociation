@@ -12,11 +12,21 @@ table.table {
   margin-bottom: 0px;
   tr {
     th {
-      padding: 0.25rem 0.5rem;
+      font-size: 12px;
+      padding: 2px;
+      @include breakpoint(lg) {
+        font-size: 14px;
+        padding: 4px;
+      }
     }
     td {
-      padding: 0.12rem 0.5rem;
       vertical-align: middle;
+      font-size: 12px;
+      padding: 2px;
+      @include breakpoint(lg) {
+        font-size: 14px;
+        padding: 4px;
+      }
     }
   }
   input {
@@ -79,6 +89,11 @@ table.expense-table {
       &:nth-child(6) {
         text-align: right;
       }
+    }
+  }
+  td {
+    &:nth-child(4) {
+      word-break: break-all;
     }
   }
 }
@@ -156,7 +171,7 @@ nav {
   font-family: $sans-bold;
 }
 .btn-assigners {
-  width: 45%;
+  width: 100px;
 }
 
 // Misc
