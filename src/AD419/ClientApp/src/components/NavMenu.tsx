@@ -22,7 +22,7 @@ export const NavMenu = (): JSX.Element => {
           <a className='navbar-brand logo text-left' href='/'>
             AD419 <br />
             <span className='secondary-font current-year'>
-              Fiscal Year 2019
+              Fiscal Year 2020
             </span>
           </a>
 
