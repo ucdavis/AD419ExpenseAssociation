@@ -50,7 +50,7 @@ export default function ProjectInformation(props: Props): JSX.Element {
   return (
     <div>
       <div className='form-group'>
-        <label>2019 Projects</label>
+        <label>Projects</label>
         <Typeahead
           id='project-typeahead'
           placeholder='Select A Project'
