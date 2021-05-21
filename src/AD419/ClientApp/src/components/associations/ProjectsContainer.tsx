@@ -110,21 +110,29 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     setSelectedAssociations(associations);
   };
 
-  // Tries to find an association through accession
-  const searchAssociation = (project: Project) => {
-    for (let i = 0; i < selectedAssociations.length; i++) {
-      if (selectedAssociations[i].accession == project.accession) {
-        return selectedAssociations[i];
-      }
-    }
-  };
+  // Function to return different associations depending on the percentage
+  const chooseSelectAllOptions = (percentage: number) => {
+    let everyProjectAsAssociation;
+    
+    if (percentage >= 100 || percentage == 0) {
+      const evenPercentage = 100 / projects.length;
 
-  const toggleAllAssociations = (selected: boolean): void => {
-    if (selected) {
-      // select every project which isn't already selected
-      const evenPercentage = 100.0 / projects.length;
+      everyProjectAsAssociation = projects.map((project) => {
+        const newAssociation: Association = {
+          project: project.project,
+          accession: project.accession,
+          percent: evenPercentage,
+          spent: 0,
+          fte: 0,
+        };
 
-      const everyProjectAsAssociation = projects.map((project) => {
+        return newAssociation;
+      });
+    } else {
+      const evenPercentage =
+        (100 - percentage) / (projects.length - selectedAssociations.length);
+
+      everyProjectAsAssociation = projects.map((project) => {
         const targetAssc = searchAssociation(project);
 
         if (!targetAssc) {
@@ -140,6 +148,27 @@ export default function ProjectsContainer(props: Props): JSX.Element {
           return targetAssc;
         }
       });
+    }
+
+    return everyProjectAsAssociation;
+  };
+
+  // Tries to find an association through accession
+  const searchAssociation = (project: Project) => {
+    for (let i = 0; i < selectedAssociations.length; i++) {
+      if (selectedAssociations[i].accession == project.accession) {
+        return selectedAssociations[i];
+      }
+    }
+  };
+
+  const toggleAllAssociations = (selected: boolean): void => {
+    if (selected) {
+      const percentage = selectedAssociations.reduce((sum, curr) => {
+        return sum + curr.percent;
+      }, 0);
+
+      const everyProjectAsAssociation = chooseSelectAllOptions(percentage);
 
       setSelectedAssociations(everyProjectAsAssociation);
     } else {
