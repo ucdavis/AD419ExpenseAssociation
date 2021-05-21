@@ -110,21 +110,35 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     setSelectedAssociations(associations);
   };
 
+  // Tries to find an association through accession
+  const searchAssociation = (project: Project) => {
+    for (let i = 0; i < selectedAssociations.length; i++) {
+      if (selectedAssociations[i].accession == project.accession) {
+        return selectedAssociations[i];
+      }
+    }
+  };
+
   const toggleAllAssociations = (selected: boolean): void => {
     if (selected) {
       // select every project which isn't already selected
       const evenPercentage = 100.0 / projects.length;
 
       const everyProjectAsAssociation = projects.map((project) => {
-        const newAssociation: Association = {
-          project: project.project,
-          accession: project.accession,
-          percent: evenPercentage,
-          spent: 0,
-          fte: 0,
-        };
+        const targetAssc = searchAssociation(project);
 
-        return newAssociation;
+        if (!targetAssc) {
+          const newAssociation: Association = {
+            project: project.project,
+            accession: project.accession,
+            percent: evenPercentage,
+            spent: 0,
+            fte: 0,
+          };
+          return newAssociation;
+        } else {
+          return targetAssc;
+        }
       });
 
       setSelectedAssociations(everyProjectAsAssociation);
