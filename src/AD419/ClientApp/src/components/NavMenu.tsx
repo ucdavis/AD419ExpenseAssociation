@@ -18,7 +18,7 @@ export const NavMenu = (): JSX.Element => {
       >
         <a className='navbar-brand logo text-left' href='/'>
           AD419 <br />
-          <span className='secondary-font current-year'>Fiscal Year 2020</span>
+          <span className='secondary-font current-year'>Fiscal Year 2021</span>
         </a>
 
         <NavbarToggler onClick={toggleNavbar} className='mr-2' />
