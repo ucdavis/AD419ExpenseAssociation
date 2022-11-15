@@ -54,8 +54,11 @@ export default function ProjectsTable(props: Props): JSX.Element {
   };
 
   const areAllSelected = (): boolean => {
-    return props.selectedAssociations.length > 0 && props.selectedAssociations.length === props.projects.length;
-  }
+    return (
+      props.selectedAssociations.length > 0 &&
+      props.selectedAssociations.length === props.projects.length
+    );
+  };
 
   const toggleSelectAll = (): void => {
     const shouldUnassignAll = areAllSelected();
@@ -84,8 +87,11 @@ export default function ProjectsTable(props: Props): JSX.Element {
                 ></input>
               </th>
               <th>{total.toFixed(2)} %</th>
-              <th>Project</th>
               <th>PI</th>
+              <th>
+                Project ({props.selectedAssociations.length} of{' '}
+                {props.projects.length})
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -107,8 +113,8 @@ export default function ProjectsTable(props: Props): JSX.Element {
                     projectPercentageChange={props.projectPercentageChange}
                   ></PercentInput>
                 </td>
-                <td>{proj.project}</td>
                 <td>{proj.pi}</td>
+                <td>{proj.project}</td>
               </tr>
             ))}
           </tbody>
