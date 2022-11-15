@@ -88,7 +88,10 @@ export default function ProjectsTable(props: Props): JSX.Element {
               </th>
               <th>{total.toFixed(2)} %</th>
               <th>PI</th>
-              <th>Project ({props.selectedAssociations.length})</th>
+              <th>
+                Project ({props.selectedAssociations.length} of{' '}
+                {props.projects.length})
+              </th>
             </tr>
           </thead>
           <tbody>
