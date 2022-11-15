@@ -88,7 +88,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
               </th>
               <th>{total.toFixed(2)} %</th>
               <th>PI</th>
-              <th>Project (0)</th>
+              <th>Project ({props.selectedAssociations.length})</th>
             </tr>
           </thead>
           <tbody>
