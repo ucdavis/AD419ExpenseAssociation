@@ -48,7 +48,7 @@ namespace AD419.Controllers
             {
                 return Ok(await conn.QueryAsync<SFNSummary>("usp_GetExpensesBySFN",
                     new { OrgR = code, Accession = accession, IntAssociationStatus = associationStatus },
-                    commandType: CommandType.StoredProcedure));
+                    commandType: CommandType.StoredProcedure, commandTimeout: 120));
             }
         }
     }
