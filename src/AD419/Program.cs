@@ -58,7 +58,7 @@ namespace AD419
             {
                 loggerConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
                 {
-                    IndexFormat = "aspnet-ad419-expenseassociation-{0:yyyy.MM}"
+                    IndexFormat = "aspnet-ad419-ea-{0:yyyy.MM}"
                 });
             }
 
