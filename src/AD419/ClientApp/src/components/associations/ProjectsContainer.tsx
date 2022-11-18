@@ -94,28 +94,43 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     project: Project,
     percent: number
   ): void => {
-    const associations = selectedAssociations.map((assoc) => {
-      if (project.accession === assoc.accession) {
-        // this is the one we want to change, so update the values
-        return {
-          ...assoc,
-          percent,
-        };
-      }
+    let adjustedAssociations = adjustAssociations(selectedAssociations);
 
-      // otherwise just return the ones we don't care about
-      return assoc;
-    });
+    // ensure total doesn't exceed 100%
+    var totalPercent = adjustedAssociations.reduce((sum, curr) => {
+      return sum + curr.percent;
+    }, 0);
+    if (totalPercent > 100) {
+      percent = 100 - (totalPercent - percent);
+      adjustedAssociations = adjustAssociations(selectedAssociations);
+    }
 
-    setSelectedAssociations(associations);
+    setSelectedAssociations(adjustedAssociations);
+
+    function adjustAssociations(associations: Association[]) {
+      return associations.map((assoc) => {
+        if (project.accession === assoc.accession) {
+          // this is the one we want to change, so update the values
+          return {
+            ...assoc,
+            percent,
+          };
+        }
+
+        // otherwise just return the ones we don't care about
+        return assoc;
+      });
+    }
   };
 
-  const toggleAllAssociations = (selected: boolean): void => {
-    if (selected) {
-      // select every project which isn't already selected
-      const evenPercentage = 100.0 / projects.length;
+  // Function to return different associations depending on the percentage
+  const chooseSelectAllOptions = (percentage: number) => {
+    let everyProjectAsAssociation;
 
-      const everyProjectAsAssociation = projects.map((project) => {
+    if (percentage >= 100 || percentage == 0) {
+      const evenPercentage = 100 / projects.length;
+
+      everyProjectAsAssociation = projects.map((project) => {
         const newAssociation: Association = {
           project: project.project,
           accession: project.accession,
@@ -126,6 +141,47 @@ export default function ProjectsContainer(props: Props): JSX.Element {
 
         return newAssociation;
       });
+    } else {
+      const evenPercentage =
+        (100 - percentage) / (projects.length - selectedAssociations.length);
+
+      everyProjectAsAssociation = projects.map((project) => {
+        const targetAssc = searchAssociation(project);
+
+        if (!targetAssc) {
+          const newAssociation: Association = {
+            project: project.project,
+            accession: project.accession,
+            percent: evenPercentage,
+            spent: 0,
+            fte: 0,
+          };
+          return newAssociation;
+        } else {
+          return targetAssc;
+        }
+      });
+    }
+
+    return everyProjectAsAssociation;
+  };
+
+  // Tries to find an association through accession
+  const searchAssociation = (project: Project) => {
+    for (let i = 0; i < selectedAssociations.length; i++) {
+      if (selectedAssociations[i].accession == project.accession) {
+        return selectedAssociations[i];
+      }
+    }
+  };
+
+  const toggleAllAssociations = (selected: boolean): void => {
+    if (selected) {
+      const percentage = selectedAssociations.reduce((sum, curr) => {
+        return sum + curr.percent;
+      }, 0);
+
+      const everyProjectAsAssociation = chooseSelectAllOptions(percentage);
 
       setSelectedAssociations(everyProjectAsAssociation);
     } else {
