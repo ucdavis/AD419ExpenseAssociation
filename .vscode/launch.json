@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/AD419/bin/Debug/netcoreapp3.1/AD419.dll",
+            "program": "${workspaceFolder}/src/AD419/bin/Debug/net6.0/AD419.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/AD419",
             "stopAtEntry": false,
