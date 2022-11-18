@@ -51,6 +51,18 @@ namespace AD419.Controllers
                     commandType: CommandType.StoredProcedure, commandTimeout: 120));
             }
         }
+
+        [HttpGet("CurrentFiscalYear")]
+        public async Task<IActionResult> GetCurrentFiscalYear()
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                var objParams = new DynamicParameters();
+                objParams.Add("@CurrentFiscalYear", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await conn.ExecuteAsync("usp_GetCurrentFiscalYear", objParams, commandType: CommandType.StoredProcedure);
+                return Ok(objParams.Get<int>("@CurrentFiscalYear"));
+            }
+        }
     }
 
     public class ExpenseSummary
