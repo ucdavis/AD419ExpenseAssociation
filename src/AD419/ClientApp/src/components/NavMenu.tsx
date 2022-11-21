@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Collapse, Navbar, NavbarToggler, NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import './NavMenu.css';
 
 export const NavMenu = (): JSX.Element => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
+  const [fiscalYear, setFiscalYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    const getFiscalYear = async (): Promise<void> => {
+      const result = await fetch('/Summary/CurrentFiscalYear');
+      const data = await result.json();
+
+      setFiscalYear(data);
+    };
+
+    getFiscalYear();
+  }, []);
 
   const toggleNavbar = (): void => {
     setCollapsed(!collapsed);
@@ -18,7 +30,9 @@ export const NavMenu = (): JSX.Element => {
       >
         <a className='navbar-brand logo text-left' href='/'>
           AD419 <br />
-          <span className='secondary-font current-year'>Fiscal Year 2022</span>
+          <span className='secondary-font current-year'>
+            Fiscal Year {fiscalYear || '...'}
+          </span>
         </a>
 
         <NavbarToggler onClick={toggleNavbar} className='mr-2' />
