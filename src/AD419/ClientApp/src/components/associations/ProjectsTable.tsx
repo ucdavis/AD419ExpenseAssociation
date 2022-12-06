@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Project, Association } from '../../models';
 import { PercentInput } from './PercentInput';
+import NumberDisplay from '../NumberDisplay';
 
 interface Props {
   filter: string | undefined;
@@ -92,31 +93,55 @@ export default function ProjectsTable(props: Props): JSX.Element {
                 Project ({props.selectedAssociations.length} of{' '}
                 {props.projects.length})
               </th>
+              <th>Spent</th>
+              <th>FTE</th>
             </tr>
           </thead>
           <tbody>
-            {selectedProjects.map((proj) => (
-              <tr key={proj.accession}>
-                <td>
-                  <input
-                    type='checkbox'
-                    checked={isSelected(proj)}
-                    onChange={(event): void =>
-                      props.projectSelected(proj, event)
-                    }
-                  ></input>
-                </td>
-                <td>
-                  <PercentInput
-                    project={proj}
-                    selectedAssociations={props.selectedAssociations}
-                    projectPercentageChange={props.projectPercentageChange}
-                  ></PercentInput>
-                </td>
-                <td>{proj.pi}</td>
-                <td>{proj.project}</td>
-              </tr>
-            ))}
+            {selectedProjects.map((proj) => {
+              const projAssociation = {
+                spent: 0,
+                fte: 0,
+                ...props.selectedAssociations.find(
+                  (association) => association.project === proj.project
+                ),
+              };
+              return (
+                <tr key={proj.accession}>
+                  <td>
+                    <input
+                      type='checkbox'
+                      checked={isSelected(proj)}
+                      onChange={(event): void =>
+                        props.projectSelected(proj, event)
+                      }
+                    ></input>
+                  </td>
+                  <td>
+                    <PercentInput
+                      project={proj}
+                      selectedAssociations={props.selectedAssociations}
+                      projectPercentageChange={props.projectPercentageChange}
+                    ></PercentInput>
+                  </td>
+                  <td>{proj.pi}</td>
+                  <td className='text-nowrap'>{proj.project}</td>
+                  <td>
+                    <NumberDisplay
+                      value={projAssociation.spent}
+                      precision={2}
+                      type='currency'
+                    ></NumberDisplay>
+                  </td>
+                  <td>
+                    <NumberDisplay
+                      value={projAssociation.fte}
+                      precision={4}
+                    ></NumberDisplay>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <table className='table projects-table'>
