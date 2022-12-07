@@ -98,41 +98,46 @@ table.expense-table {
   }
 }
 
-// Active table
-table.active-table {
-  th {
-    border-top: none;
-    &:first-child {
-      width: 5%;
-    }
-    &:nth-child(2) {
-      width: 20%;
-    }
-    &:nth-child(3) {
-      width: 38%;
-    }
-  }
+// Active row
+tr.active-row {
   td {
     background-color: transparentize($sunflower, 0.91);
   }
   tbody tr:last-child {
     border-bottom: 5px solid $sunflower;
   }
-  margin-bottom: 0px;
+}
+tr.last-active-row {
+  td {
+    background-color: transparentize($sunflower, 0.91);
+    border-bottom: 5px solid $sunflower;
+  }
 }
 
 //Projects table
 table.projects-table {
+  th {
+    border-top: none;
+    &:first-child {
+      width: 5%;
+    }
+    &:nth-child(3) {
+      width: 38%;
+    }
+    &:nth-child(2) {
+      width: 20%;
+    }
+  }
   tbody {
     td {
       &:first-child {
         width: 5%;
       }
-      &:nth-child(2) {
-        width: 20%;
-      }
       &:nth-child(3) {
         width: 38%;
+      }
+      &:nth-child(2) {
+        width: 20%;
       }
     }
   }

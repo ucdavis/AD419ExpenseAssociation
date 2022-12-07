@@ -73,11 +73,10 @@ export default function ProjectsTable(props: Props): JSX.Element {
     }, 0);
   }, [props.selectedAssociations]);
 
-  // TODO: we'll do two separate tables for now.  If they prove to be similar, refactor
   return (
     <>
       <div className='card'>
-        <table className='table active-table'>
+        <table className='table projects-table'>
           <thead>
             <tr>
               <th>
@@ -98,7 +97,8 @@ export default function ProjectsTable(props: Props): JSX.Element {
             </tr>
           </thead>
           <tbody>
-            {selectedProjects.map((proj) => {
+            {selectedProjects.map((proj, i) => {
+              const isLastRow = i === selectedProjects.length - 1;
               const projAssociation = {
                 spent: 0,
                 fte: 0,
@@ -107,7 +107,10 @@ export default function ProjectsTable(props: Props): JSX.Element {
                 ),
               };
               return (
-                <tr key={proj.accession}>
+                <tr
+                  key={proj.accession}
+                  className={(isLastRow && 'last-active-row') || 'active-row'}
+                >
                   <td>
                     <input
                       type='checkbox'
@@ -142,12 +145,8 @@ export default function ProjectsTable(props: Props): JSX.Element {
                 </tr>
               );
             })}
-          </tbody>
-        </table>
-        <table className='table projects-table'>
-          <tbody>
             {unselectedProjects.map((proj) => (
-              <tr key={proj.accession}>
+              <tr key={proj.accession} className='projects-table'>
                 <td>
                   <input
                     type='checkbox'
@@ -164,8 +163,10 @@ export default function ProjectsTable(props: Props): JSX.Element {
                     projectPercentageChange={props.projectPercentageChange}
                   ></PercentInput>
                 </td>
-                <td>{proj.project}</td>
                 <td>{proj.pi}</td>
+                <td className='text-nowrap'>{proj.project}</td>
+                <td></td>
+                <td></td>
               </tr>
             ))}
           </tbody>
