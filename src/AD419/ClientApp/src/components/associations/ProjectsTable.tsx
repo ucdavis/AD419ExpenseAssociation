@@ -164,7 +164,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
                   ></PercentInput>
                 </td>
                 <td>{proj.pi}</td>
-                <td>{proj.project}</td>
+                <td className='text-nowrap'>{proj.project}</td>
                 <td></td>
                 <td></td>
               </tr>
