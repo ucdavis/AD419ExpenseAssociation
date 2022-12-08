@@ -121,11 +121,11 @@ table.projects-table {
     &:first-child {
       width: 5%;
     }
-    &:nth-child(3) {
-      width: 38%;
-    }
     &:nth-child(2) {
       width: 20%;
+    }
+    &:nth-child(3) {
+      width: 38%;
     }
   }
   tbody {
@@ -133,11 +133,11 @@ table.projects-table {
       &:first-child {
         width: 5%;
       }
-      &:nth-child(3) {
-        width: 38%;
-      }
       &:nth-child(2) {
         width: 20%;
+      }
+      &:nth-child(3) {
+        width: 38%;
       }
     }
   }
