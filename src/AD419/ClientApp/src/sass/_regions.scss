@@ -98,8 +98,24 @@ table.expense-table {
   }
 }
 
-// Active table
-table.active-table {
+// Active row
+tr.active-row {
+  td {
+    background-color: transparentize($sunflower, 0.91);
+  }
+  tbody tr:last-child {
+    border-bottom: 5px solid $sunflower;
+  }
+}
+tr.last-active-row {
+  td {
+    background-color: transparentize($sunflower, 0.91);
+    border-bottom: 5px solid $sunflower;
+  }
+}
+
+//Projects table
+table.projects-table {
   th {
     border-top: none;
     &:first-child {
@@ -112,17 +128,6 @@ table.active-table {
       width: 38%;
     }
   }
-  td {
-    background-color: transparentize($sunflower, 0.91);
-  }
-  tbody tr:last-child {
-    border-bottom: 5px solid $sunflower;
-  }
-  margin-bottom: 0px;
-}
-
-//Projects table
-table.projects-table {
   tbody {
     td {
       &:first-child {
