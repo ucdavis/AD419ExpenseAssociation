@@ -21,8 +21,6 @@ export default function ExpensesContainer(): JSX.Element {
   // fire only once to grab initial orgs
   useEffect(() => {
     const getDepartments = async (): Promise<void> => {
-      // TODO: handle just getting orgs for current user
-      // TODO: handle api errors and possibly login issue errors
       const result = await fetch('/Organization');
       const data = await result.json();
 
