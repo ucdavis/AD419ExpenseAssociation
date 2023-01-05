@@ -203,7 +203,7 @@ export default function AssociationContainer(): JSX.Element {
 
   return (
     <div className='row mb-5'>
-      <div className='col-12 col-md-7'>
+      <div className='col-12 col-md-6'>
         <div className='form-group'>
           <label>Department</label>
           <select
@@ -235,7 +235,7 @@ export default function AssociationContainer(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className='col-12 col-md-5 right-side'>
+      <div className='col-12 col-md-6 right-side'>
         <ProjectsContainer
           org={selectedOrg}
           associations={associations}
