@@ -4,24 +4,13 @@ import { useHistory } from 'react-router-dom';
 
 import ExpenseTable from './ExpenseTable';
 
-import {
-  Organization,
-  AssociationTotal,
-  SFNRecord,
-  UngroupedExpense,
-} from '../../models';
-import Totals from '../summary/Totals';
-
-const JSONHeader = {
-  'Content-type': 'application/json; charset=UTF-8',
-};
+import { Organization, SFNRecord, UngroupedExpense } from '../../models';
 
 export default function ExpensesContainer(): JSX.Element {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [sfns, setSFNs] = useState<SFNRecord[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization>();
   const [selectedSFN, setSelectedSFN] = useState<SFNRecord>();
-  const [totals, setTotals] = useState<AssociationTotal[]>([]);
 
   const [expenses, setExpenses] = useState<UngroupedExpense[]>([]);
 
@@ -82,22 +71,12 @@ export default function ExpensesContainer(): JSX.Element {
     setExpensesLoading(false);
   }, [selectedOrg, selectedSFN]);
 
-  const getTotalsCallback = useCallback(async (): Promise<void> => {
-    const result = await fetch(
-      `/Summary/ExpensesByDepartment/${selectedOrg?.code}`
-    );
-    const data = (await result.json()) as AssociationTotal[];
-
-    setTotals(data);
-  }, [selectedOrg]);
-
   // requery whenever our grouping or org changes
   useEffect(() => {
     if (selectedOrg) {
       getExpensesCallback();
-      getTotalsCallback();
     }
-  }, [selectedOrg, getExpensesCallback, getTotalsCallback]);
+  }, [selectedOrg, getExpensesCallback]);
 
   const orgSelected = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const val = e.target.value;
@@ -157,14 +136,7 @@ export default function ExpensesContainer(): JSX.Element {
               expenses={expenses}
             ></ExpenseTable>
           </div>
-          <div className='card mt-5'>
-            <div className='card-body'>
-              <label>Department Totals</label>
-              <Totals totals={totals}></Totals>
-            </div>
-          </div>
         </div>
-        {/* <div className='col-12 col-md-5 right-side'></div> */}
       </div>
     </>
   );

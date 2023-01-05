@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Expense, UngroupedExpense } from '../../models';
+import { UngroupedExpense } from '../../models';
 import NumberDisplay from '../NumberDisplay';
 import { TableFilter } from '../Filter';
+import { groupBy } from '../../utilities';
 
 interface Props {
   expenses: UngroupedExpense[];
@@ -75,15 +76,21 @@ export default function ExpenseTable(props: Props): JSX.Element {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4}>Total</td>
-            <td>
-              <NumberDisplay
-                value={data.reduce((sum, exp) => sum + exp.expenses, 0)}
-                precision={2}
-                type='currency'
-              ></NumberDisplay>
-            </td>
+            <th colSpan={4}></th>
+            <th>SFN Subtotal</th>
           </tr>
+          {groupBy(data, (d) => d.sfn).map(([sfn, expenses]) => (
+            <tr key={sfn}>
+              <td colSpan={4}>{sfn}</td>
+              <td>
+                <NumberDisplay
+                  value={expenses.reduce((sum, exp) => sum + exp.expenses, 0)}
+                  precision={2}
+                  type='currency'
+                ></NumberDisplay>
+              </td>
+            </tr>
+          ))}
         </tfoot>
       </table>
       {data.length === 0 && (
