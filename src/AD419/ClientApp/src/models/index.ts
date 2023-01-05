@@ -32,15 +32,12 @@ export interface Expense {
 }
 
 export interface UngroupedExpense {
+  expenseId: number;
   sfn: string;
-  fte: number;
-  chart: string;
-  isAssociated: boolean;
-  orgR: string;
   project: string;
-  accession: string;
+  expenses: number;
+  orgR: string;
   pi: string;
-  spent: number;
 }
 
 export interface ExpenseGrouping {

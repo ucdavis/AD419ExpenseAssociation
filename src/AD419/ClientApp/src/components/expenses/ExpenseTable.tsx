@@ -50,40 +50,24 @@ export default function ExpenseTable(props: Props): JSX.Element {
         <thead>
           <tr>
             <th>SFN</th>
-            <th>Chart</th>
             <th>OrgR</th>
             <th>Project</th>
             <th>PI</th>
-            <th>Accession</th>
             <th>Spent</th>
-            <th>FTE</th>
           </tr>
         </thead>
         <tbody>
           {data.map((expense, i) => (
-            <tr
-              key={expense.chart + expense.orgR + expense.isAssociated + i}
-              className={`expense-${
-                expense.isAssociated ? 'associated' : 'unassociated'
-              }`}
-            >
+            <tr key={expense.expenseId + expense.orgR + i}>
               <td>{expense.sfn}</td>
-              <td>{expense.chart}</td>
               <td>{expense.orgR}</td>
               <td>{expense.project}</td>
               <td>{expense.pi}</td>
-              <td>{expense.accession}</td>
               <td>
                 <NumberDisplay
-                  value={expense.spent}
+                  value={expense.expenses}
                   precision={2}
                   type='currency'
-                ></NumberDisplay>
-              </td>
-              <td>
-                <NumberDisplay
-                  value={expense.fte}
-                  precision={4}
                 ></NumberDisplay>
               </td>
             </tr>
@@ -91,58 +75,12 @@ export default function ExpenseTable(props: Props): JSX.Element {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={6}>Total</td>
+            <td colSpan={4}>Total</td>
             <td>
               <NumberDisplay
-                value={data.reduce((sum, exp) => sum + exp.spent, 0)}
+                value={data.reduce((sum, exp) => sum + exp.expenses, 0)}
                 precision={2}
                 type='currency'
-              ></NumberDisplay>
-            </td>
-            <td>
-              <NumberDisplay
-                value={data.reduce((sum, exp) => sum + exp.fte, 0)}
-                precision={4}
-              ></NumberDisplay>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={6}>Associated</td>
-            <td>
-              <NumberDisplay
-                value={data
-                  .filter((exp) => exp.isAssociated)
-                  .reduce((sum, exp) => sum + exp.spent, 0)}
-                precision={2}
-                type='currency'
-              ></NumberDisplay>
-            </td>
-            <td>
-              <NumberDisplay
-                value={data
-                  .filter((exp) => exp.isAssociated)
-                  .reduce((sum, exp) => sum + exp.fte, 0)}
-                precision={4}
-              ></NumberDisplay>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={6}>Unassociated</td>
-            <td>
-              <NumberDisplay
-                value={data
-                  .filter((exp) => !exp.isAssociated)
-                  .reduce((sum, exp) => sum + exp.spent, 0)}
-                precision={2}
-                type='currency'
-              ></NumberDisplay>
-            </td>
-            <td>
-              <NumberDisplay
-                value={data
-                  .filter((exp) => !exp.isAssociated)
-                  .reduce((sum, exp) => sum + exp.fte, 0)}
-                precision={4}
               ></NumberDisplay>
             </td>
           </tr>
