@@ -2,6 +2,10 @@ export interface Organization {
   code: string;
   name: string;
 }
+export interface SFNRecord {
+  sfn: string;
+  description: string;
+}
 
 export interface Project {
   project: string;
@@ -25,6 +29,15 @@ export interface Expense {
   fte: number;
   num: number;
   isAssociated: boolean;
+}
+
+export interface UngroupedExpense {
+  expenseId: number;
+  sfn: string;
+  project: string;
+  expenses: number;
+  orgR: string;
+  pi: string;
 }
 
 export interface ExpenseGrouping {

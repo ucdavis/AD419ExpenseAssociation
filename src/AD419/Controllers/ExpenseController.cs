@@ -35,6 +35,30 @@ namespace AD419.Controllers
                 commandType: CommandType.StoredProcedure));
             }
         }
+
+        [HttpGet("Ungrouped")]
+        public async Task<IActionResult> Ungrouped(string org, string sfn)
+        {
+            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, org))
+            {
+                return Forbid();
+            }
+
+            using (var conn = _dbService.GetConnection())
+            {
+                return Ok(await conn.QueryAsync<UngroupedExpenseModel>("usp_getProjectExpenses",
+                new { OrgR = org, SFN = sfn }, commandType: CommandType.StoredProcedure));
+            }
+        }
+
+        [HttpGet("SFNs")]
+        public async Task<IActionResult> SFNs()
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return Ok(await conn.QueryAsync<SFNModel>("usp_getSFN", commandType: CommandType.StoredProcedure));
+            }
+        }
     }
 
     public class ExpenseModel
@@ -46,5 +70,21 @@ namespace AD419.Controllers
         public decimal FTE { get; set; }
         public int Num { get; set; }
         public bool IsAssociated { get; set; }
+    }
+
+    public class UngroupedExpenseModel
+    {
+        public int ExpenseId { get; set; }
+        public string SFN { get; set; }
+        public string Project { get; set; }
+        public decimal Expenses { get; set; }
+        public string OrgR { get; set; }
+        public string PI { get; set; }
+    }
+
+    public class SFNModel
+    {
+        public string SFN { get; set; }
+        public string Description { get; set; }
     }
 }

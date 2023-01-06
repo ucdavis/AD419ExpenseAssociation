@@ -19,7 +19,7 @@
     "react-scripts": "^3.4.1",
     "reactstrap": "^8.4.1",
     "rimraf": "^3.0.2",
-    "sass": "^1.56.1"
+    "sass": "^1.56.2"
   },
   "devDependencies": {
     "@types/react-bootstrap-typeahead": "^3.4.6",

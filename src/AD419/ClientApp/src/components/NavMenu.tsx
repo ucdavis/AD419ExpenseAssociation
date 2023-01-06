@@ -48,6 +48,11 @@ export const NavMenu = (): JSX.Element => {
               </NavLink>
             </NavItem>
             <NavItem>
+              <NavLink className='nav-link text-dark' to='/expenses'>
+                Expenses
+              </NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink className='nav-link text-dark' to='/summary'>
                 Summary
               </NavLink>
