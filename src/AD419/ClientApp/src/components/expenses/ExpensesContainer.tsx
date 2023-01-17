@@ -13,6 +13,7 @@ export default function ExpensesContainer(): JSX.Element {
   const [selectedSFN, setSelectedSFN] = useState<SFNRecord>();
 
   const [expenses, setExpenses] = useState<UngroupedExpense[]>([]);
+  const [emptyMessage, setEmptyMessage] = useState<string>('');
 
   const [expensesLoading, setExpensesLoading] = useState<boolean>(true);
 
@@ -26,12 +27,15 @@ export default function ExpensesContainer(): JSX.Element {
 
       // need to allow any because the return type is odd
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const orgs: Organization[] = data.map((d: any) => {
-        return {
-          code: d.orgR,
-          name: d.name,
-        };
-      });
+      const orgs: Organization[] = [
+        { code: 'All', name: '-- All Departments --' },
+        ...data.map((d: any) => {
+          return {
+            code: d.orgR,
+            name: d.name,
+          };
+        }),
+      ];
 
       if (data && data.length > 0) {
         setOrgs(orgs);
@@ -63,9 +67,21 @@ export default function ExpensesContainer(): JSX.Element {
     const result = await fetch(
       `/Expense/Ungrouped?org=${selectedOrg?.code}&sfn=${selectedSFN?.sfn}`
     );
-    const expenses = await result.json();
+    if (result.redirected) {
+      setEmptyMessage('Not authorized to view expenses');
+      setExpenses([]);
+    } else {
+      const expenses = await result.json();
+      expenses.sort(
+        (a: UngroupedExpense, b: UngroupedExpense) =>
+          a.sfn.localeCompare(b.sfn) ||
+          a.orgR.localeCompare(b.orgR) ||
+          a.project.localeCompare(b.project)
+      );
 
-    setExpenses(expenses);
+      setEmptyMessage('No expenses found for given parameters');
+      setExpenses(expenses);
+    }
     setExpensesLoading(false);
   }, [selectedOrg, selectedSFN]);
 
@@ -132,6 +148,7 @@ export default function ExpensesContainer(): JSX.Element {
             <ExpenseTable
               loading={expensesLoading}
               expenses={expenses}
+              emptyMessage={emptyMessage}
             ></ExpenseTable>
           </div>
         </div>

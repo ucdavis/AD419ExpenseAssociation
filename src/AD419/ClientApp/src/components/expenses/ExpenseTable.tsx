@@ -7,6 +7,7 @@ import { groupBy } from '../../utilities';
 interface Props {
   expenses: UngroupedExpense[];
   loading: boolean;
+  emptyMessage: string;
 }
 
 export default function ExpenseTable(props: Props): JSX.Element {
@@ -95,9 +96,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
       </table>
       {data.length === 0 && (
         <div>
-          <p className='text-center mt-2'>
-            No expenses found for given parameters.
-          </p>
+          <p className='text-center mt-2'>{props.emptyMessage}</p>
         </div>
       )}
     </>

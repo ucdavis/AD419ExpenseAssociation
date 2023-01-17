@@ -39,7 +39,7 @@ namespace AD419.Controllers
         [HttpGet("Ungrouped")]
         public async Task<IActionResult> Ungrouped(string org, string sfn)
         {
-            if (!await _permissionService.CanAccessDepartment(User.Identity.Name, org))
+            if (!await _permissionService.IsAdmin(User.Identity.Name))
             {
                 return Forbid();
             }
