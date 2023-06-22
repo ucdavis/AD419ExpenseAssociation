@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using MvcReact;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -52,18 +54,15 @@ namespace AD419
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            // Init services for hybrid mvc/react app
+            services.AddMvcReact();
 
             services.AddTransient<IDbService, DbService>();
             services.AddTransient<IPermissionService, PermissionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<MvcReactOptions> mvcReactOptions)
         {
             app.UseSerilogRequestLogging();
             app.UseMiddleware<CorrelationIdMiddleware>();
@@ -81,8 +80,7 @@ namespace AD419
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
+            app.UseMvcReactStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -105,18 +103,12 @@ namespace AD419
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}",
+                    constraints: new { controller = mvcReactOptions.Value.ExcludeHmrPathsRegex });
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            // During development, SPA will kick in for all remaining paths
+            app.UseMvcReact();
         }
     }
 }
