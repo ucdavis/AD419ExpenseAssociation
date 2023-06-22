@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 export const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
   Object.entries<T[]>(
     arr.reduce((groups, item) => {

@@ -97,7 +97,7 @@ export default function ProjectsContainer(props: Props): JSX.Element {
     let adjustedAssociations = adjustAssociations(selectedAssociations);
 
     // ensure total doesn't exceed 100%
-    var totalPercent = adjustedAssociations.reduce((sum, curr) => {
+    const totalPercent = adjustedAssociations.reduce((sum, curr) => {
       return sum + curr.percent;
     }, 0);
     if (totalPercent > 100) {

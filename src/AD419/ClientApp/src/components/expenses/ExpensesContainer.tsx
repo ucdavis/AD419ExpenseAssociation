@@ -25,10 +25,10 @@ export default function ExpensesContainer(): JSX.Element {
       const result = await fetch('/Organization');
       const data = await result.json();
 
-      // need to allow any because the return type is odd
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const orgs: Organization[] = [
         { code: 'All', name: '-- All Departments --' },
+        // need to allow any because the return type is odd
+        // eslint-disable-next-line
         ...data.map((d: any) => {
           return {
             code: d.orgR,
