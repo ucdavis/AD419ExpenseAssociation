@@ -30,7 +30,7 @@ namespace AD419.Controllers
 
             using (var conn = _dbService.GetConnection())
             {
-                return Ok(await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGrouping",
+                return Ok(await conn.QueryAsync<ExpenseModel>("usp_getExpenseRecordGroupingAE",
                 new { Grouping = grouping, OrgR = org, Associated = showAssociated, Unassociated = showUnassociated },
                 commandType: CommandType.StoredProcedure));
             }
@@ -63,7 +63,7 @@ namespace AD419.Controllers
 
     public class ExpenseModel
     {
-        public string Chart { get; set; }
+        public int Entity { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
         public decimal Spent { get; set; }

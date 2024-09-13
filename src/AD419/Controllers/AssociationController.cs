@@ -56,8 +56,8 @@ namespace AD419.Controllers
                 foreach (var expense in model.Expenses)
                 {
                     // TODO: NOTE: need to use the new version of this SPROC
-                    var expenseAssociations = await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGrouping",
-                        new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
+                    var expenseAssociations = await conn.QueryAsync<AssociationModel>("usp_getAssociationsByGroupingAE",
+                        new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Entity = expense.Entity, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                         commandType: CommandType.StoredProcedure);
 
                     associations.AddRange(expenseAssociations);
@@ -101,7 +101,7 @@ namespace AD419.Controllers
                                 {
                                     OrgR = model.ExpenseGrouping.Org,
                                     Grouping = model.ExpenseGrouping.Grouping,
-                                    Chart = expense.Chart,
+                                    Entity = expense.Entity,
                                     Criterion = expense.Code,
                                     isAssociated = expense.IsAssociated
                                 },
@@ -212,7 +212,7 @@ namespace AD419.Controllers
                         foreach (var expense in model.Expenses)
                         {
                             var expenseIdentifiers = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
-                                new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Chart = expense.Chart, Criterion = expense.Code, isAssociated = expense.IsAssociated },
+                                new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Entity = expense.Entity, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                                 commandType: CommandType.StoredProcedure, transaction: txn);
 
                             foreach (var expenseIdentifier in expenseIdentifiers)
