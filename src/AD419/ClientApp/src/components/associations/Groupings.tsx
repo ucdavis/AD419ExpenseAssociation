@@ -11,7 +11,7 @@ export default function Groupings(props: Props): JSX.Element {
     props.setGrouping(val);
   };
   return (
-    <select className="form-control" onChange={handleSelected}>
+    <select className='form-control' onChange={handleSelected}>
       {groupOptions.map((option) => (
         <option key={option.value} value={option.value}>
           {option.name}
@@ -26,25 +26,21 @@ interface Option {
   name: string;
 }
 const groupOptions: Option[] = [
-  { name: 'Organization', value: 'Organization' },
+  { name: 'Financial Department', value: 'FinancialDepartment' },
   {
     name: 'Principal Investigator',
     value: 'PI',
   },
   {
-    name: 'Account',
-    value: 'Account',
+    name: 'Project',
+    value: 'Project',
   },
   {
     name: 'Employee',
     value: 'Employee',
   },
   {
-    name: 'Sub-Account',
-    value: 'Sub-Account',
-  },
-  {
-    name: 'No Grouping',
-    value: 'None',
+    name: 'Activity',
+    value: 'Activity',
   },
 ];

@@ -16,7 +16,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
 
   const areEqual = (expA: Expense, expB: Expense): boolean => {
     return (
-      expA.chart === expB.chart &&
+      expA.entity === expB.entity &&
       expA.code === expB.code &&
       expA.isAssociated === expB.isAssociated
     );
@@ -43,11 +43,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
   const { grouping } = props;
 
   const showCode = useMemo(() => {
-    return !(
-      grouping === 'PI' ||
-      grouping === 'Employee' ||
-      grouping === 'None'
-    );
+    return !(grouping === 'PI' || grouping === 'Employee');
   }, [grouping]);
 
   const data = useMemo(() => {
@@ -71,18 +67,38 @@ export default function ExpenseTable(props: Props): JSX.Element {
     }
   }, [filter, props.expenses]);
 
+  const codeHeader =
+    grouping === 'FinancialDepartment'
+      ? 'Fin Dept'
+      : grouping === 'Project'
+      ? 'Project'
+      : grouping === 'Activity'
+      ? 'Activity'
+      : 'Code';
+
+  const descriptionHeader =
+    grouping === 'FinancialDepartment'
+      ? 'Fin Dept Description'
+      : grouping === 'PI'
+      ? 'Principal Investigator'
+      : grouping === 'Project'
+      ? 'Project Description'
+      : grouping === 'Activity'
+      ? 'Activity Description'
+      : 'Description';
+
   return (
     <>
-      <div className="card-body card-bg">
+      <div className='card-body card-bg'>
         <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       </div>
-      <table className="table expense-table">
+      <table className='table expense-table'>
         <thead>
           <tr>
             <th>Num</th>
-            <th>Chart</th>
-            {showCode && <th>Code</th>}
-            <th>Description</th>
+            <th>Entity</th>
+            {showCode && <th>{codeHeader}</th>}
+            <th>{descriptionHeader}</th>
             <th>Spent</th>
             <th>FTE</th>
             <th>{/* Select */}</th>
@@ -91,13 +107,13 @@ export default function ExpenseTable(props: Props): JSX.Element {
         <tbody>
           {data.map((expense) => (
             <tr
-              key={expense.chart + expense.code + expense.isAssociated}
+              key={expense.entity + expense.code + expense.isAssociated}
               className={`expense-${
                 expense.isAssociated ? 'associated' : 'unassociated'
               }`}
             >
               <td>{expense.num}</td>
-              <td>{expense.chart}</td>
+              <td>{expense.entity}</td>
               {showCode && <td>{expense.code || '----'}</td>}
               <td>{expense.description || '----'}</td>
               <td>

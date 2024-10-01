@@ -22,7 +22,7 @@ export interface Association {
 }
 
 export interface Expense {
-  chart: string;
+  entity: number;
   code: string;
   description: string;
   spent: number;
