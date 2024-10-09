@@ -59,9 +59,9 @@ export default function TotalsBySfn(props: Props): JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {totals.map((lineTotal) => (
+          {totals.map((lineTotal, i) => (
             <tr
-              key={lineTotal.lineDisplayDescriptor}
+              key={lineTotal.lineDisplayDescriptor + i}
               className={lineTotal.lineTypeCode}
             >
               <td>{lineTotal.lineDisplayDescriptor}</td>
