@@ -25,7 +25,7 @@ export default function AssociationContainer(): JSX.Element {
 
   // keep track of which groupings are selected in the expenses table
   const defaultExpenseGrouping: ExpenseGrouping = {
-    grouping: 'Organization',
+    grouping: 'FinancialDepartment',
     showAssociated: false,
     showUnassociated: true,
   };
