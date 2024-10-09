@@ -46,7 +46,7 @@ namespace AD419.Controllers
 
             using (var conn = _dbService.GetConnection())
             {
-                return Ok(await conn.QueryAsync<UngroupedExpenseModel>("usp_getProjectExpenses",
+                return Ok(await conn.QueryAsync<UngroupedExpenseModel>("usp_getProjectExpensesAE",
                 new { OrgR = org, SFN = sfn }, commandType: CommandType.StoredProcedure));
             }
         }
