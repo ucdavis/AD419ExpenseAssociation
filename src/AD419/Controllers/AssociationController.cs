@@ -96,7 +96,7 @@ namespace AD419.Controllers
                         // get the expenses which exist inside each expense grouping
                         foreach (var expense in model.Expenses)
                         {
-                            var expenseDetails = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
+                            var expenseDetails = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGroupingAE",
                                 new
                                 {
                                     OrgR = model.ExpenseGrouping.Org,
@@ -111,7 +111,7 @@ namespace AD419.Controllers
                             // Delete all existing association for this expense
                             foreach (var expenseDetail in expenseDetails)
                             {
-                                await conn.QueryAsync<ExpenseDetail>("usp_deleteAssociation",
+                                await conn.QueryAsync<ExpenseDetail>("usp_deleteAssociationAE",
                                    new
                                    {
                                        OrgR = model.ExpenseGrouping.Org,
@@ -163,7 +163,7 @@ namespace AD419.Controllers
                                 // create the needed number of new associations with expenses distributed
                                 foreach (var association in associationsToInsert)
                                 {
-                                    await conn.QueryAsync<ExpenseDetail>("usp_insertAssociation",
+                                    await conn.QueryAsync<ExpenseDetail>("usp_insertAssociationAE",
                                         new
                                         {
                                             OrgR = model.ExpenseGrouping.Org,
@@ -211,14 +211,14 @@ namespace AD419.Controllers
                         // for each of those, we then unassociate
                         foreach (var expense in model.Expenses)
                         {
-                            var expenseIdentifiers = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGrouping",
+                            var expenseIdentifiers = await conn.QueryAsync<ExpenseDetail>("usp_getExpensesByRecordGroupingAE",
                                 new { OrgR = model.ExpenseGrouping.Org, Grouping = model.ExpenseGrouping.Grouping, Entity = expense.Entity, Criterion = expense.Code, isAssociated = expense.IsAssociated },
                                 commandType: CommandType.StoredProcedure, transaction: txn);
 
                             foreach (var expenseIdentifier in expenseIdentifiers)
                             {
                                 // now unassign each of these ids
-                                await conn.ExecuteAsync("usp_deleteAssociation",
+                                await conn.ExecuteAsync("usp_deleteAssociationAE",
                                   new { OrgR = model.ExpenseGrouping.Org, ExpenseId = expenseIdentifier.ExpenseId },
                                   commandType: CommandType.StoredProcedure, transaction: txn);
                             }

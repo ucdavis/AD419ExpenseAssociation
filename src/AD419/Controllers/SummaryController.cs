@@ -30,7 +30,7 @@ namespace AD419.Controllers
 
             using (var conn = _dbService.GetConnection())
             {
-                return Ok(await conn.QueryAsync<ExpenseSummary>("usp_getTotalExpensesByDepartment",
+                return Ok(await conn.QueryAsync<ExpenseSummary>("usp_getTotalExpensesByDepartmentAE",
                     new { OrgR = code },
                     commandType: CommandType.StoredProcedure));
             }
@@ -46,7 +46,7 @@ namespace AD419.Controllers
 
             using (var conn = _dbService.GetConnection())
             {
-                return Ok(await conn.QueryAsync<SFNSummary>("usp_GetExpensesBySFN",
+                return Ok(await conn.QueryAsync<SFNSummary>("usp_GetExpensesBySFNAE",
                     new { OrgR = code, Accession = accession, IntAssociationStatus = associationStatus },
                     commandType: CommandType.StoredProcedure, commandTimeout: 120));
             }
