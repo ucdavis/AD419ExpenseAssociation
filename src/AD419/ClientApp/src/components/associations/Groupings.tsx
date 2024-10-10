@@ -43,4 +43,8 @@ const groupOptions: Option[] = [
     name: 'Activity',
     value: 'Activity',
   },
+  {
+    name: 'No Grouping',
+    value: 'None',
+  },
 ];

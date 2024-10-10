@@ -74,6 +74,8 @@ export default function ExpenseTable(props: Props): JSX.Element {
       ? 'Project'
       : grouping === 'Activity'
       ? 'Activity'
+      : grouping === 'None'
+      ? 'ExpenseId'
       : 'Code';
 
   const descriptionHeader =
