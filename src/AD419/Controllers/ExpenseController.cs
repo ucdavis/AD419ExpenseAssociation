@@ -66,6 +66,7 @@ namespace AD419.Controllers
         public int Entity { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public string Code2 { get; set; }
         public decimal Spent { get; set; }
         public decimal FTE { get; set; }
         public int Num { get; set; }

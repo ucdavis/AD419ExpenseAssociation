@@ -36,6 +36,10 @@ const groupOptions: Option[] = [
     value: 'Project',
   },
   {
+    name: 'Fund and Project',
+    value: 'Fund/Project',
+  },
+  {
     name: 'Employee',
     value: 'Employee',
   },
