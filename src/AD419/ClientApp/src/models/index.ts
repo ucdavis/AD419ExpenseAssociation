@@ -25,6 +25,7 @@ export interface Expense {
   entity: number;
   code: string;
   description: string;
+  code2: string;
   spent: number;
   fte: number;
   num: number;

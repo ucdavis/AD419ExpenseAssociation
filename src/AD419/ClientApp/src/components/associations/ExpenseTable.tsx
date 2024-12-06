@@ -46,6 +46,10 @@ export default function ExpenseTable(props: Props): JSX.Element {
     return !(grouping === 'PI' || grouping === 'Employee');
   }, [grouping]);
 
+  const showCode2 = useMemo(() => {
+    return grouping === 'Fund/Project';
+  }, [grouping]);
+
   const data = useMemo(() => {
     if (filter) {
       const lowerFilter = filter.toLowerCase();
@@ -70,13 +74,15 @@ export default function ExpenseTable(props: Props): JSX.Element {
   const codeHeader =
     grouping === 'FinancialDepartment'
       ? 'Fin Dept'
-      : grouping === 'Project'
+      : grouping === 'Project' || grouping === 'Fund/Project'
       ? 'Project'
       : grouping === 'Activity'
       ? 'Activity'
       : grouping === 'None'
       ? 'ExpenseId'
       : 'Code';
+
+  const code2Header = grouping === 'Fund/Project' ? 'Fund' : 'Code2';
 
   const descriptionHeader =
     grouping === 'FinancialDepartment'
@@ -99,6 +105,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
           <tr>
             <th>Num</th>
             <th>Entity</th>
+            {showCode2 && <th>{code2Header}</th>}
             {showCode && <th>{codeHeader}</th>}
             <th>{descriptionHeader}</th>
             <th>Spent</th>
@@ -116,7 +123,12 @@ export default function ExpenseTable(props: Props): JSX.Element {
             >
               <td>{expense.num}</td>
               <td>{expense.entity}</td>
-              {showCode && <td>{expense.code || '----'}</td>}
+              {showCode2 && <td>{expense.code2 || '----'}</td>}
+              {showCode && (
+                <td style={{ whiteSpace: 'nowrap' }}>
+                  {expense.code || '----'}
+                </td>
+              )}
               <td>{expense.description || '----'}</td>
               <td>
                 <NumberDisplay
