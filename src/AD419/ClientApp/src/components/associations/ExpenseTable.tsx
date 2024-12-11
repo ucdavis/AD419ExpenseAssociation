@@ -18,6 +18,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
     return (
       expA.entity === expB.entity &&
       expA.code === expB.code &&
+      expA.code2 === expB.code2 &&
       expA.isAssociated === expB.isAssociated
     );
   };
