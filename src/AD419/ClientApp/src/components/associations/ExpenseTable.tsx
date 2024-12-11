@@ -100,7 +100,7 @@ export default function ExpenseTable(props: Props): JSX.Element {
       <div className='card-body card-bg'>
         <TableFilter filter={filter} setFilter={setFilter}></TableFilter>
       </div>
-      <table className='table expense-table'>
+      <table className='table'>
         <thead>
           <tr>
             <th>Num</th>
@@ -108,8 +108,8 @@ export default function ExpenseTable(props: Props): JSX.Element {
             {showCode2 && <th>{code2Header}</th>}
             {showCode && <th>{codeHeader}</th>}
             <th>{descriptionHeader}</th>
-            <th>Spent</th>
-            <th>FTE</th>
+            <th className='expense-numeric'>Spent</th>
+            <th className='expense-numeric'>FTE</th>
             <th>{/* Select */}</th>
           </tr>
         </thead>
@@ -129,20 +129,18 @@ export default function ExpenseTable(props: Props): JSX.Element {
               <td>{expense.num}</td>
               <td>{expense.entity}</td>
               {showCode2 && <td>{expense.code2 || '----'}</td>}
-              {showCode && (
-                <td style={{ whiteSpace: 'nowrap' }}>
-                  {expense.code || '----'}
-                </td>
-              )}
-              <td>{expense.description || '----'}</td>
-              <td>
+              {showCode && <td>{expense.code || '----'}</td>}
+              <td className='expense-description'>
+                {expense.description || '----'}
+              </td>
+              <td className='expense-numeric'>
                 <NumberDisplay
                   value={expense.spent}
                   precision={2}
                   type='currency'
                 ></NumberDisplay>
               </td>
-              <td>
+              <td className='expense-numeric'>
                 <NumberDisplay
                   value={expense.fte}
                   precision={4}
