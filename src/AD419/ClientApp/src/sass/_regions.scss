@@ -72,30 +72,14 @@ table.totals-table {
   }
 }
 // Expense table
-table.expense-table {
-  tr {
-    th {
-      &:nth-child(5) {
-        text-align: right;
-      }
-      &:nth-child(6) {
-        text-align: right;
-      }
-    }
-    td {
-      &:nth-child(5) {
-        text-align: right;
-      }
-      &:nth-child(6) {
-        text-align: right;
-      }
-    }
-  }
-  td {
-    &:nth-child(4) {
-      word-break: break-all;
-    }
-  }
+th.expense-numeric {
+  text-align: right;
+}
+td.expense-numeric {
+  text-align: right;
+}
+td.expense-description {
+  word-break: break-all;
 }
 
 // Active row
