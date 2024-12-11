@@ -116,7 +116,12 @@ export default function ExpenseTable(props: Props): JSX.Element {
         <tbody>
           {data.map((expense) => (
             <tr
-              key={expense.entity + expense.code + expense.isAssociated}
+              key={
+                expense.entity +
+                expense.code +
+                expense.code2 +
+                expense.isAssociated
+              }
               className={`expense-${
                 expense.isAssociated ? 'associated' : 'unassociated'
               }`}
