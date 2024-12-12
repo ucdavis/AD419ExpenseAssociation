@@ -43,6 +43,11 @@ table.table {
       background-color: transparentize($quad, 0.85);
     }
   }
+  td {
+    &.expense-project-CG {
+      background-color: transparentize($doubledecker, 0.85);
+    }
+  }
   .percent-td {
     height: 20px;
   }

@@ -73,6 +73,13 @@ export default function ProjectsTable(props: Props): JSX.Element {
     }, 0);
   }, [props.selectedAssociations]);
 
+  function getProjectClass(project: string) {
+    if (project.endsWith('CG')) {
+      return ' expense-project-CG';
+    }
+    return '';
+  }
+
   return (
     <>
       <div className='card'>
@@ -128,7 +135,9 @@ export default function ProjectsTable(props: Props): JSX.Element {
                     ></PercentInput>
                   </td>
                   <td>{proj.pi}</td>
-                  <td className='text-nowrap'>{proj.project}</td>
+                  <td className={'text-nowrap' + getProjectClass(proj.project)}>
+                    {proj.project}
+                  </td>
                   <td>
                     <NumberDisplay
                       value={projAssociation.spent}
@@ -164,7 +173,9 @@ export default function ProjectsTable(props: Props): JSX.Element {
                   ></PercentInput>
                 </td>
                 <td>{proj.pi}</td>
-                <td className='text-nowrap'>{proj.project}</td>
+                <td className={'text-nowrap' + getProjectClass(proj.project)}>
+                  {proj.project}
+                </td>
                 <td></td>
                 <td></td>
               </tr>
