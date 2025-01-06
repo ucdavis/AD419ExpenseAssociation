@@ -74,7 +74,7 @@ export default function ProjectsTable(props: Props): JSX.Element {
   }, [props.selectedAssociations]);
 
   function getProjectClass(project: string) {
-    if (project.endsWith('CG')) {
+    if (project.toUpperCase().includes('CG')) {
       return ' expense-project-CG';
     }
     return '';
